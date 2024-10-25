@@ -32,7 +32,7 @@ from agir.donations.actions import (
     is_waiting_contribution,
 )
 from agir.donations.models import SpendingRequest
-from agir.events.models import EventSubtype
+from agir.events.models import EventSubtype, Calendar
 from agir.events.views.event_views import EventDetailMixin
 from agir.front.view_mixins import (
     ReactBaseView,
@@ -416,6 +416,20 @@ class GroupUpcomingEventsForGroupView(BaseAppSoftAuthView):
         return [
             reverse_lazy("api_group_view", kwargs=self.kwargs),
         ]
+
+
+## CalendarView
+class CalendarView(BaseDetailView, ReactBaseView, BasicOpenGraphMixin):
+    queryset = Calendar.objects.not_archived()
+
+    def get_meta_title(self):
+        return self.object.name
+
+    def get_meta_description(self, **kwargs):
+        return self.object.description
+
+    def get_api_preloads(self):
+        return [reverse_lazy("api_calendar_detail", kwargs=self.kwargs)]
 
 
 ## SEARCH VIEW

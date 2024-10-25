@@ -95,7 +95,11 @@ urlpatterns = [
         views.EventSubtypeIcsView.as_view(),
         name="eventsubtype_ics_calendar",
     ),
-    path("agenda/<slug:slug>/", views.CalendarView.as_view(), name="view_calendar"),
+    path(
+        "api/agenda/<slug:slug>",
+        views.CalendarDetailAPIView.as_view(),
+        name="api_calendar_detail",
+    ),
     path(
         "agenda/<slug:slug>/icalendar/",
         views.CalendarIcsView.as_view(),

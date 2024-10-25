@@ -1348,6 +1348,9 @@ class CalendarManager(models.Manager):
 
         return super().create(name=name, slug=slug, **kwargs)
 
+    def not_archived(self):
+        return self.filter(archived=False)
+
 
 class Calendar(ImageMixin):
     objects = CalendarManager()

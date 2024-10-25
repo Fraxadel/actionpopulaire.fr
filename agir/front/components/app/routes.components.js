@@ -13,6 +13,12 @@ const Routes = {
         /* webpackChunkName: "r-agendapage" */ "@agir/events/agendaPage/Agenda"
       ),
   ),
+  CalendarPage: lazy(
+      () =>
+      import(
+          /* webpackChunkName: "r-calendar" */ "@agir/events/calendarPage/Calendar"
+      ),
+  ),
   EventMap: lazy(
     () =>
       import(
@@ -59,18 +65,6 @@ const Routes = {
     () =>
       import(
         /* webpackChunkName: "r-createevent" */ "@agir/events/createEventPage/CreateEvent"
-      ),
-  ),
-  EventRequiredDocuments: lazy(
-    () =>
-      import(
-        /* webpackChunkName: "r-eventrequireddocuments" */ "@agir/events/eventRequiredDocuments/EventRequiredDocumentsPage"
-      ),
-  ),
-  GroupsPage: lazy(
-    () =>
-      import(
-        /* webpackChunkName: "r-groupspage" */ "@agir/groups/groupsPage/GroupsPage"
       ),
   ),
   FullGroupPage: lazy(

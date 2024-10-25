@@ -84,7 +84,7 @@ const Skeleton = () => (
   </>
 );
 
-const EventList = (props) => {
+export const EventList = (props) => {
   const { events } = props;
   const byDay = useEventsByDay(events);
 

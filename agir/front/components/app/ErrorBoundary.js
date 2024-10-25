@@ -18,7 +18,7 @@ class DevErrorBoundary extends React.Component {
 
   static getDerivedStateFromError(error) {
     return {
-      errorMessage: error.toString(),
+      errorMessage: error !== undefined ? error.toString() : `Something bad happened`,
     };
   }
 

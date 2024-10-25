@@ -472,6 +472,8 @@ urlpatterns = [
         views.BaseAppSoftAuthView.as_view(),
         name="toktok_preview",
     ),
+    ## AGENDA VIEWS
+    path("agenda/<slug:slug>", views.CalendarView.as_view(), name="view_calendar"),
     ## SUPPORTGROUP VIEWS
     path(
         "groupes/",

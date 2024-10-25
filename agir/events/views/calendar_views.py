@@ -1,70 +1,43 @@
 import ics
-from django.conf import settings
-from django.http import Http404, HttpResponse
-from django.utils import timezone
-from django.views.generic import ListView, DetailView
+from django.http import HttpResponse
+from django.views.generic import DetailView
+from rest_framework.generics import RetrieveAPIView, ListAPIView
 
+from agir.events.calendar_serializers import CalendarSerializer
 from agir.events.models import Calendar, Event, EventSubtype
-from agir.front.view_mixins import ObjectOpengraphMixin
-from agir.lib.views import IframableMixin
+from agir.events.serializers import EventListSerializer
 
 
-class CalendarView(IframableMixin, ObjectOpengraphMixin, ListView):
-    model = Calendar
-    paginate_by = 10
-    context_object_name = "events"
+class CalendarDetailAPIView(RetrieveAPIView):
+    permission_classes = ()
+    queryset = Calendar.objects.not_archived()
+    serializer_class = CalendarSerializer
+    lookup_field = "slug"
 
-    def get_template_names(self):
-        if self.request.GET.get("iframe"):
-            return ["events/calendar_iframe.html"]
-        return ["events/calendar.html"]
+    def get_query(self):
+        return super().get_queryset().get(slug=self.kwargs["slug"])
 
-    def get(self, request, *args, **kwargs):
-        try:
-            self.calendar = self.object = self.model.objects.get(
-                slug=self.kwargs.get("slug")
-            )
-        except self.model.DoesNotExist:
-            raise Http404("Ce calendrier n'existe pas.")
 
-        return super().get(request, *args, **kwargs)
+class CalendarEventListAPIView(ListAPIView):
+    permission_classes = ()
+    serializer_class = EventListSerializer
+    queryset = Event.objects.public()
 
     def get_queryset(self):
-        calendar_ids = self.get_calendar_ids(self.calendar.id)
-
         return (
-            Event.objects.upcoming(as_of=timezone.now())
-            .filter(calendar_items__calendar_id__in=calendar_ids)
-            .order_by("start_time", "id")
-            .distinct("start_time", "id")
+            super()
+            .get_queryset()
+            .filter(calendars__slug=self.kwargs["slug"], calendars__archived=False)
+            .order_by("start_time")
+            .upcoming()
         )
 
-    def get_context_data(self, **kwargs):
-        # get all ids of calendar that are either the one selected, or children of it
-        return super().get_context_data(
-            default_event_image=settings.DEFAULT_EVENT_IMAGE, calendar=self.calendar
+    def get_serializer(self, *args, **kwargs):
+        return super().get_serializer(
+            *args,
+            fields=EventListSerializer.EVENT_CARD_FIELDS,
+            **kwargs,
         )
-
-    @staticmethod
-    def get_calendar_ids(parent_id):
-        ids = Calendar.objects.raw(
-            """
-        WITH RECURSIVE children AS (
-            SELECT id
-            FROM events_calendar
-            WHERE id = %s
-          UNION ALL
-            SELECT c.id
-            FROM events_calendar AS c
-            JOIN children
-            ON c.parent_id = children.id
-        )
-        SELECT id FROM children;
-        """,
-            [parent_id],
-        )
-
-        return list(ids)
 
 
 class CalendarIcsView(DetailView):

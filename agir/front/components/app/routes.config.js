@@ -66,6 +66,15 @@ const notificationSettingRoute = new RouteConfig({
 });
 
 export const routeConfig = {
+  agenda: new RouteConfig({
+    id: "agenda",
+    path: "/agenda/:agendaSlug",
+    neededAuthentication: AUTHENTICATION.NONE,
+    label: "Agenda",
+    exact: true,
+    hasLayout: true,
+    Component: RouteComponents.CalendarPage,
+  }),
   events: new RouteConfig({
     id: "events",
     path: ["/", "/documents-justificatifs/"],

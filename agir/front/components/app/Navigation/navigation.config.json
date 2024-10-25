@@ -3,14 +3,14 @@
     {
       "id": "events",
       "icon": "calendar",
-      "title": "Événements",
+      "title": "Événement",
       "route": "events",
       "desktop": true,
       "mobile": true,
       "secondaryLinks": [
         {
           "id": "nationalCalendar",
-          "route": "nationalCalendar",
+          "route": "agenda/national",
           "label": "L'agenda national"
         }
       ]
