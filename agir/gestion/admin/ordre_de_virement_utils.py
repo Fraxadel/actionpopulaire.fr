@@ -18,7 +18,7 @@ def extract_virements(df):
         virements.append(
             Virement(
                 beneficiaire=beneficiaire,
-                montant=round(int(df["MONTANT"][ind]) * 100),
+                montant=round(df["MONTANT"][ind] * 100),
                 date_execution=timezone.now().date(),
                 description=df["MOTIF"][ind],
                 id=generer_endtoend_id(),
