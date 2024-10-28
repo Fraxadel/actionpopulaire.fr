@@ -56,7 +56,7 @@ export default function NotificationRationaleModal({ shouldOpen, onClose }) {
                               onDismiss={onDismiss}
                               onConfirm={onConfirm}
                               onClose={() => setModalOpen(false)}
-                              shouldShow={modalOpen}>
+                              shouldShow={false}>
         <BellTitle><span className="fa-regular fa-bell fa-2xl"/></BellTitle>
         <p>Nous allons vous demander un accès aux notifications.
             Elles vous permettent par exemple de connaître des événements proches de chez vous, de vous tenir au courant des nouvelles de vos groupes.
