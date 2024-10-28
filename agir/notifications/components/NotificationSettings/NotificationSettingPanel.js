@@ -137,9 +137,6 @@ const NotificationSettingPanel = (props) => {
           Gérer mes paramètres de contact
         </Button>
       </div>
-      <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-        <NotificationGrantedPanel />
-      </div>
       <PageFadeIn ready={ready}>
         {Object.keys(byType).map((type) => (
           <Accordion key={type} name={type} icon={icons[type] || "settings"}>
