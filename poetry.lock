@@ -2208,6 +2208,24 @@ test = ["jaraco.test (>=5.4)", "pytest (>=6,!=8.1.*)", "zipp (>=3.17)"]
 type = ["pytest-mypy"]
 
 [[package]]
+name = "inscriptis"
+version = "2.5.0"
+description = "inscriptis - HTML to text converter."
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "inscriptis-2.5.0-py3-none-any.whl", hash = "sha256:28ac4eed83bc470833eada0139d07672a74b4f7eb4dbab69c93ca1e903de2ea0"},
+    {file = "inscriptis-2.5.0.tar.gz", hash = "sha256:3ebccaa0fca3d860ff8943d22f10c8ade8adbf481a0f81eb150c7b911db6f3c9"},
+]
+
+[package.dependencies]
+lxml = ">=4.9.3"
+requests = ">=2.31.0"
+
+[package.extras]
+web-service = ["fastapi (>=0.109.0,<0.110.0)", "uvicorn (>=0.25.0,<0.26.0)"]
+
+[[package]]
 name = "ipython"
 version = "8.18.1"
 description = "IPython: Productive Interactive Computing"
@@ -2626,27 +2644,27 @@ files = [
 
 [[package]]
 name = "nuntius"
-version = "2.4.0"
+version = "2.4.1"
 description = "A newsletter app to be used with Django or standalone."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "nuntius-2.4.0-py3-none-any.whl", hash = "sha256:7ea82e81c5d7ded29b33b412f0ac97b11e79d7c63ef67e3e0e92371634894100"},
-    {file = "nuntius-2.4.0.tar.gz", hash = "sha256:6bb68a10c8a0a08c6d0cd23f7b22afbc672aba0b50b092b71b64ece51cf72a26"},
+    {file = "nuntius-2.4.1-py3-none-any.whl", hash = "sha256:cfba84427242b9a95e848b6df211effad438e4329690b92471059cf8cc1a1033"},
+    {file = "nuntius-2.4.1.tar.gz", hash = "sha256:c3c7cf26b51e3d0d2d7794ad258a93c155a081c61f62613a568784f121a8c4e6"},
 ]
 
 [package.dependencies]
 dj-database-url = ">=1.2.0"
 Django = ">=2.0"
 django-stdimage = "*"
-html2text = "*"
+inscriptis = "==2.5.*"
 Pillow = "10.1.0"
 tenacity = "*"
 
 [package.extras]
 anymail = ["boto3", "django-anymail"]
 mysql = ["mysqlclient"]
-push = ["apns (>=2.0.1)", "django-push-notifications (>=2.0.0)", "pywebpush (>=1.14.0)"]
+push = ["apns (>=2.0.1)", "django-push-notifications[fcm,wp] (>=3.1.0,<4.0.0)", "pywebpush (>=1.14.0)"]
 
 [[package]]
 name = "oauthlib"
@@ -4403,4 +4421,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "04b5e5d63552799bacb540c7c7addf7dd1b53502b1af8a471c2cd02d3b5eff09"
+content-hash = "48953a62cde511e78d85b0ee88be61106a7b68b0937ca23446c63e7c4fbb0e30"
