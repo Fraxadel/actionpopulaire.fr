@@ -99,7 +99,7 @@ const useAndroidPush = () => {
 
 const useIOSPush = () => {
   const [phoneReady, setPhoneReady] = useState(false);
-  const [subscriptionToken, setSubscriptionToken, removeToken, refreshToken] =  useLocalStorage("AP_FCMToken", null);
+  const [subscriptionToken, setSubscriptionToken, removeToken, refreshToken] = useLocalStorage("AP_FCMToken", null);
 
   const {
     ready: serverReady,

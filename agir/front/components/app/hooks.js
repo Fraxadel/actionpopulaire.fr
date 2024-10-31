@@ -64,12 +64,22 @@ export function useNotificationGrant() {
     }
   }, [alreadyGrant])
 
-  const {notificationIsGranted: notificationGrantedAndroid, grantNotification: grantNotificationAndroid } = useAndroidNotificationGrant(onNotificationGrant)
-  const {notificationIsGranted: notificationGrantedIOS, grantNotification: grantNotificationIOS} = useIOSNotificationGrant(onNotificationGrant)
+  const {
+    hasUpdate: hasUpdateAndroid,
+    notificationIsGranted: notificationGrantedAndroid,
+    grantNotification: grantNotificationAndroid
+  } = useAndroidNotificationGrant(onNotificationGrant)
+
+  const {
+    hasUpdate: hasUpdateIOS,
+    notificationIsGranted: notificationGrantedIOS,
+    grantNotification: grantNotificationIOS
+  } = useIOSNotificationGrant(onNotificationGrant)
 
   return {
     notificationIsGranted: notificationGrantedAndroid || notificationGrantedIOS,
-    grantNotification: isMobileApp ? (isAndroid ? grantNotificationAndroid : grantNotificationIOS) : null
+    grantNotification: isMobileApp ? (isAndroid ? grantNotificationAndroid : grantNotificationIOS) : null,
+    hasUpdate: hasUpdateAndroid || hasUpdateIOS
   }
 
 }

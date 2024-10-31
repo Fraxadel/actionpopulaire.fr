@@ -2,6 +2,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {setupDefaultNotification} from "@agir/notifications/common/api";
 
 import logger from "@agir/lib/utils/logger";
+import {useLocalStorage} from "@agir/lib/utils/hooks";
 
 const log = logger(__filename);
 
@@ -25,6 +26,7 @@ const iosAction= {
 
 export const useIOSNotificationGrant = (onNotificationGrant) => {
   const [notificationIsGranted, setNotificationIsGranted] = useState(false)
+  const [fcmToken] = useLocalStorage("AP_FCMToken", null);
 
   const iosMessageHandler = useCallback(async ({action, noPermission}) => {
     if (action === iosAction.SET_NOTIFICATION_STATE && noPermission === "false") {
@@ -49,7 +51,8 @@ export const useIOSNotificationGrant = (onNotificationGrant) => {
 
   return {
     grantNotification,
-    notificationIsGranted
+    notificationIsGranted,
+    hasUpdate: fcmToken !== null
   }
 }
 

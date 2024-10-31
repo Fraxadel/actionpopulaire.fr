@@ -115,64 +115,67 @@ const NotificationSettingPanel = (props) => {
   );
 
   return (
-    <StyledPanel shouldShow={isOpen} onClose={close} onBack={close} noScroll>
-      <h3
-        style={{
-          fontSize: "1.25rem",
-          fontWeight: 700,
-          padding: "0 1.5rem 0.5rem",
-        }}
-      >
-        Paramètres de notifications&nbsp;<InlineBlock>et e-mails</InlineBlock>
-      </h3>
-      <p>
-        Paramétrez la réception de vos e-mails et des notifications sur votre
-        téléphone.
-        <br />
-        Vous recevez les e-mails sur votre adresse <u>{user.email}</u>&nbsp;
-        <Link route="personalInformation">(modifier)</Link>
-      </p>
-      <div style={{ marginLeft: "20px", marginBottom: "20px" }}>
-        <Button small link route="contactConfiguration">
-          Gérer mes paramètres de contact
-        </Button>
-      </div>
-      <PageFadeIn ready={ready}>
-        {Object.keys(byType).map((type) => (
-          <Accordion key={type} name={type} icon={icons[type] || "settings"}>
-            <AccordionContent>
-              {Object.keys(byType[type]).map((subtype) => (
-                <StyledGroup key={subtype}>
-                  <StyledGroupName>
-                    <span>{subtype}</span>
-                    <small>Téléphone</small>
-                    <small>E-mail</small>
-                  </StyledGroupName>
-                  {byType[type][subtype].map((notificationId) => (
-                    <NotificationSettingItem
-                      key={notificationId}
-                      notification={byId[notificationId]}
-                      onChange={onChange}
-                      disabled={disabled}
-                      email={
-                        activeNotifications[notificationId]?.email || false
-                      }
-                      push={activeNotifications[notificationId]?.push || false}
-                    />
-                  ))}
-                </StyledGroup>
+      <StyledPanel shouldShow={isOpen} onClose={close} onBack={close} noScroll>
+          <h3
+              style={{
+                  fontSize: "1.25rem",
+                  fontWeight: 700,
+                  padding: "0 1.5rem 0.5rem",
+              }}
+          >
+              Paramètres de notifications&nbsp;<InlineBlock>et e-mails</InlineBlock>
+          </h3>
+          <p>
+              Paramétrez la réception de vos e-mails et des notifications sur votre
+              téléphone.
+              <br/>
+              Vous recevez les e-mails sur votre adresse <u>{user.email}</u>&nbsp;
+              <Link route="personalInformation">(modifier)</Link>
+          </p>
+          <div style={{marginLeft: "20px", marginBottom: "20px"}}>
+              <Button small link route="contactConfiguration">
+                  Gérer mes paramètres de contact
+              </Button>
+          </div>
+          <div style={{paddingLeft: "10px", paddingRight: "10px"}}>
+              <NotificationGrantedPanel/>
+          </div>
+          <PageFadeIn ready={ready}>
+              {Object.keys(byType).map((type) => (
+                  <Accordion key={type} name={type} icon={icons[type] || "settings"}>
+                      <AccordionContent>
+                          {Object.keys(byType[type]).map((subtype) => (
+                              <StyledGroup key={subtype}>
+                                  <StyledGroupName>
+                                      <span>{subtype}</span>
+                                      <small>Téléphone</small>
+                                      <small>E-mail</small>
+                                  </StyledGroupName>
+                                  {byType[type][subtype].map((notificationId) => (
+                                      <NotificationSettingItem
+                                          key={notificationId}
+                                          notification={byId[notificationId]}
+                                          onChange={onChange}
+                                          disabled={disabled}
+                                          email={
+                                              activeNotifications[notificationId]?.email || false
+                                          }
+                                          push={activeNotifications[notificationId]?.push || false}
+                                      />
+                                  ))}
+                              </StyledGroup>
+                          ))}
+                      </AccordionContent>
+                  </Accordion>
               ))}
-            </AccordionContent>
-          </Accordion>
-        ))}
-      </PageFadeIn>
-    </StyledPanel>
+          </PageFadeIn>
+      </StyledPanel>
   );
 };
 NotificationSettingPanel.propTypes = {
-  isOpen: PropTypes.bool,
-  close: PropTypes.func,
-  notifications: PropTypes.arrayOf(
+    isOpen: PropTypes.bool,
+    close: PropTypes.func,
+    notifications: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
       label: PropTypes.string.isRequired,

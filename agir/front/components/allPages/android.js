@@ -44,7 +44,8 @@ export function useAndroidNotificationGrant(onNotificationGrant) {
 
     return {
         notificationIsGranted: isMobileApp && androidNotificationGranted,
-        grantNotification
+        grantNotification,
+        hasUpdate: window.androidApp !== undefined
     }
 
 }

@@ -5,15 +5,15 @@ import ActionCard from "../../../front/components/genericComponents/ActionCard";
 
 export default function NotificationGrantedPanel() {
     const {isMobileApp} = useMobileApp();
-    const {notificationIsGranted} = useNotificationGrant()
+    const {hasUpdate, notificationIsGranted} = useNotificationGrant()
     const [openModal, setOpenModal] = useState(false);
 
     return <>
-        {isMobileApp && <NotificationRationaleModal
+        {isMobileApp && hasUpdate && <NotificationRationaleModal
             onClose={() => setOpenModal(false)}
             shouldOpen={openModal}/>
         }
-        {isMobileApp && !notificationIsGranted &&
+        {isMobileApp && hasUpdate && !notificationIsGranted &&
             <>
                 <ActionCard
                     text="Vos notifications mobiles sont désactivées. Activez-les pour ne rien rater."

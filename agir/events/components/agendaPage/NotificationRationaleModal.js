@@ -15,8 +15,8 @@ const BellTitle = styled.div`
 export default function NotificationRationaleModal({ shouldOpen, onClose }) {
     const {isAndroid, isIOS} = useMobileApp();
     const [userDeclinedNotification, setUserDeclinedNotification] = useLocalStorage("AP__userDeclinedNotification", false);
-    const {notificationIsGranted, grantNotification} = useNotificationGrant()
-    const [modalOpen, setModalOpen] = useState(!notificationIsGranted && (isAndroid || isIOS) && !userDeclinedNotification);
+    const {hasUpdate, notificationIsGranted, grantNotification} = useNotificationGrant()
+    const [modalOpen, setModalOpen] = useState(!notificationIsGranted && (isAndroid || isIOS) && !userDeclinedNotification && hasUpdate);
     const { subscribe, isSubscribed, refreshToken } = usePush()
 
     useEffect(() => {
@@ -56,7 +56,7 @@ export default function NotificationRationaleModal({ shouldOpen, onClose }) {
                               onDismiss={onDismiss}
                               onConfirm={onConfirm}
                               onClose={() => setModalOpen(false)}
-                              shouldShow={false}>
+                              shouldShow={modalOpen}>
         <BellTitle><span className="fa-regular fa-bell fa-2xl"/></BellTitle>
         <p>Nous allons vous demander un accès aux notifications.
             Elles vous permettent par exemple de connaître des événements proches de chez vous, de vous tenir au courant des nouvelles de vos groupes.
