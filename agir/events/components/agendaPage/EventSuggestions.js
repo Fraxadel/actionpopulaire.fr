@@ -37,7 +37,6 @@ const EventSectionTitle = styled.h3`
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 600;
-  margin-top: 1.5rem;
 
   &::first-letter {
     text-transform: uppercase;

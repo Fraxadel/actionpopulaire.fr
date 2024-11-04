@@ -8,7 +8,7 @@ import PageFadeIn from "@agir/front/genericComponents/PageFadeIn";
 
 const StyledRangeField = styled(RangeField)``;
 const StyledField = styled.div`
-  margin: 1.5rem 0;
+  margin: 0.5rem 0;
   position: relative;
 `;
 
@@ -22,7 +22,6 @@ const ActionRadiusField = (props) => {
           value={value}
           onChange={onChange}
           disabled={disabled}
-          label="Proposer des événements dans un rayon de :"
           helpText={
             <p style={{ margin: "0.25rem 0 0", textAlign: "right" }}>
               Un doute sur la localisation utilisée&nbsp;?&ensp;
