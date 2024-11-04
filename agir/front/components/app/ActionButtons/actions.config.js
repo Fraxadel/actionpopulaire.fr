@@ -233,7 +233,7 @@ const GROUP_MANAGER_ACTION_ORDER = [
   "donations",
   "createEvent",
   "materiel",
-  "cafePopulaireRequest",
+  "publicMeetingRequest",
   "createContact",
   "help",
   "actionTools",
