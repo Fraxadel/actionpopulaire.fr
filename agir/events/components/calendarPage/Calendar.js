@@ -5,18 +5,31 @@ import NotFoundWrapper from "@agir/front/notFoundPage/NotFoundWrapper";
 import PageFadeIn from "@agir/front/genericComponents/PageFadeIn";
 import Skeleton from "@agir/front/genericComponents/Skeleton";
 import styled from "styled-components";
-import Button from "@agir/front/genericComponents/Button";;
-import { EventList } from '@agir/events/agendaPage/EventSuggestions'
-import { LayoutTitle } from "@agir/front/app/Layout/StyledComponents";
+import Button from "@agir/front/genericComponents/Button";
+
+;
+import {EventList} from '@agir/events/agendaPage/EventSuggestions'
+import {LayoutTitle} from "@agir/front/app/Layout/StyledComponents";
 import ModalConfirmation from "@agir/front/genericComponents/ModalConfirmation";
 import ShareLink from "@agir/front/genericComponents/ShareLink";
+
+const AlertInfo = styled.div`
+
+    background-color: ${({theme}) => theme.primary50};
+    border-radius: 10px;
+    padding: 15px;
+
+    a {
+        font-weight: bold;
+    }
+`
 
 const HeaderContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    
+
     margin-bottom: 25px;
-   
+
 `
 
 const StyledContainer = styled.div`
@@ -33,7 +46,7 @@ const StyledTitle = styled.div`
     text-align: center;
     font-weight: bold;
     font-size: 1.2em;
-    
+
     span {
         margin-bottom: 25px;
     }
@@ -42,7 +55,6 @@ const StyledModalContent = styled.div`
     text-align: center;
     padding: 10px;
 `
-
 
 
 export default function Calendar({agendaSlug}) {
@@ -67,9 +79,10 @@ export default function Calendar({agendaSlug}) {
             onClose={() => setShowModal(false)}
         >
             <StyledModalContent>
-            <p>Ouvrez votre application de calendrier (Google Calendar, Outlook, etc.), puis sélectionnez l’option « Ajouter », « S’abonner » ou « Importer un calendrier ».
-                Ensuite, copiez, collez ce lien :</p>
-            <ShareLink color="secondary" label="Copier" url={`${window.location}/icalendar.ics`} />
+                <p>Ouvrez votre application de calendrier (Google Calendar, Outlook, etc.), puis sélectionnez l’option «
+                    Ajouter », « S’abonner » ou « Importer un calendrier ».
+                    Ensuite, copiez, collez ce lien :</p>
+                <ShareLink color="secondary" label="Copier" url={`${window.location}/icalendar.ics`}/>
             </StyledModalContent>
         </ModalConfirmation>
         <StyledContainer>
@@ -78,10 +91,15 @@ export default function Calendar({agendaSlug}) {
                     <HeaderContainer>
                         <LayoutTitle>Agenda {agenda?.name}</LayoutTitle>
                         <div>
-                        <Button color="secondary" small onClick={() => setShowModal(true)}>Ajouter à mon calendrier</Button>
+                            <Button color="secondary" small onClick={() => setShowModal(true)}>Ajouter à mon
+                                calendrier</Button>
                         </div>
                     </HeaderContainer>
                     <p>{agenda?.description}</p>
+                    {agenda?.slug === "national" &&
+                        <AlertInfo>Si vous souhaitez organiser une réunion publique avec votre groupe d'action <a
+                            href="https://actionpopulaire.fr/formulaires/demande-intervenant-reunion-publique/">consultez
+                            la fiche pratique.</a></AlertInfo>}
                     <EventList events={events ?? []}/>
                 </>
             </NotFoundWrapper>
