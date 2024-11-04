@@ -213,7 +213,7 @@ const Agenda = () => {
               <Button
                   small
                   link
-                  route="groupUpcomingEvents"
+                  route="/agenda/national"
                   color="link"
               >
                   Agenda national
