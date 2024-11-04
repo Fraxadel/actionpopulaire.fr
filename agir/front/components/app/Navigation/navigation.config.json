@@ -10,7 +10,7 @@
       "secondaryLinks": [
         {
           "id": "nationalCalendar",
-          "route": "agenda/national",
+          "route": "/agenda/national",
           "label": "L'agenda national"
         }
       ]
