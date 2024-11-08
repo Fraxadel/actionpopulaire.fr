@@ -277,6 +277,19 @@ export const routeConfig = {
       },
     },
   }),
+  groupDetailsGestion: new RouteConfig({
+    id: "groupDetailsGestion",
+    path: "/groupes/:groupPk/gestion/:any?/",
+    exact: false,
+    neededAuthentication: AUTHENTICATION.NONE,
+    label: "Page gestion du groupe",
+    Component: RouteComponents.GroupPage,
+    hideTopBar: true,
+    backLink: {
+      route: "groups",
+      isProtected: true,
+    },
+  }),
   groupDetails: new RouteConfig({
     id: "groupDetails",
     path: "/groupes/:groupPk/:activeTab?/",
