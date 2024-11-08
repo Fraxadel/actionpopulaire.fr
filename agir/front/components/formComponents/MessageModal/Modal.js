@@ -128,6 +128,7 @@ const StyledModalContent = styled.div`
         ? `8px solid ${(props) => props.theme.secondary500}`
         : `1px solid ${(props) => props.theme.text100};`};
     transition: border-bottom 250ms ease-in-out;
+    margin-top: 75px;
   }
   ${StyledModalBody},
   ${StyledModalFooter} {

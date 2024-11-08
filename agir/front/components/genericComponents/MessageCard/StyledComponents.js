@@ -227,7 +227,7 @@ export const StyledWrapper = styled.div`
 
   @media (max-width: ${(props) => props.theme.collapse}px) {
     scroll-margin-top: 120px;
-    padding: 1.5rem 1rem;
+    padding: 1rem 1rem;
     box-shadow: ${(props) => props.theme.elaborateShadow};
   }
 
