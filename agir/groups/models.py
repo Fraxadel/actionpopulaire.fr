@@ -752,7 +752,11 @@ class Membership(ExportModelOperationsMixin("membership"), TimeStampedModel):
 
     @property
     def is_finance_manager(self):
-        return self.is_manager and self.has_finance_managing_privilege
+        if self.supportgroup.type == SupportGroup.TYPE_LOCAL_GROUP:
+            return self.is_referent
+        elif self.supportgroup.type == SupportGroup.TYPE_BOUCLE_DEPARTEMENTALE:
+            return self.is_manager and self.has_finance_managing_privilege
+        return False
 
     @is_finance_manager.setter
     def is_finance_manager(self, value):
