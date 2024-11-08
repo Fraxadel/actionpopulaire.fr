@@ -15,6 +15,9 @@ const StyledPageHead = styled.div`
   top: 0;
   left: 0;
   z-index: ${(props) => props.theme.zindexTopBar};
+  @media (max-width: ${(props) => props.theme.collapse}px) {
+    z-index: 50 !important;
+  }
   width: 100%;
   background-color: ${(props) => props.theme.background0};
   isolation: isolate;
