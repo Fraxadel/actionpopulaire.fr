@@ -705,7 +705,7 @@ class Membership(ExportModelOperationsMixin("membership"), TimeStampedModel):
         help_text=_(
             "La valeur de ce champ indique si la personne aura le droit de gérer les finances du groupe "
             "et de créer/suivre/valider des demandes de dépense. N.B. Cette propriété est valable uniquement "
-            "pour les gestionnaires et animateur·ices du groupe"
+            "pour les gestionnaires dans les boucles départementales et seulement pour les animateur·ices de groupe local"
         ),
     )
 
