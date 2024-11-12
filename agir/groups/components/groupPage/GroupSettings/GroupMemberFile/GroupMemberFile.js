@@ -11,7 +11,7 @@ import GroupMemberFacts from "./GroupMemberFacts";
 import GroupMemberActions from "./GroupMemberActions";
 
 const GroupMemberFile = (props) => {
-  const { member, onBack, onChangeMembershipType, isReferent, isGroupFull } =
+  const { member, onBack, onChangeMembershipType, isReferent, isGroupFull, removeMemberRequest } =
     props;
 
   return (
@@ -50,6 +50,7 @@ const GroupMemberFile = (props) => {
       <GroupMemberActions
         currentMembershipType={member?.membershipType}
         isReferent={isReferent}
+        removeMemberRequest={removeMemberRequest}
         onChangeMembershipType={onChangeMembershipType}
         isGroupFull={isGroupFull}
       />

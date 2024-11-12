@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 
 import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
+import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequest";
 
 const StyledWrapper = styled.div`
   padding: 0;
@@ -33,12 +34,17 @@ const StyledWrapper = styled.div`
   }
 `;
 
+const RemoveMemberAction = ({removeMemberRequest}) => {
+  return <p><Button onClick={removeMemberRequest} color="danger">Retirer du groupe</Button></p>
+}
+
 const GroupMemberActions = (props) => {
   const {
     isReferent,
     isGroupFull,
     onChangeMembershipType,
     currentMembershipType,
+    removeMemberRequest
   } = props;
 
   if (!onChangeMembershipType) {
@@ -66,6 +72,7 @@ const GroupMemberActions = (props) => {
             d'action
           </p>
         )}
+        <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
       </StyledWrapper>
     );
   }
@@ -86,6 +93,7 @@ const GroupMemberActions = (props) => {
             <Button onClick={setAsManager}>Passer en gestionnaire</Button>
           )}
         </p>
+        <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
       </StyledWrapper>
     );
   }
@@ -103,6 +111,7 @@ const GroupMemberActions = (props) => {
             Retirer le droit de gestionnaire
           </Button>
         </p>
+      <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
       </StyledWrapper>
     );
   }

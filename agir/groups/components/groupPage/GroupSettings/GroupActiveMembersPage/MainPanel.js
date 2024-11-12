@@ -38,7 +38,7 @@ const FullGroupWarning = () => (
 );
 
 const GroupMemberMainPanel = (props) => {
-  const { members, group, onClickMember, routes } = props;
+  const { members, group, onClickMember, removeMemberRequest, routes } = props;
 
   const activeMembers = useMemo(() => {
     if (!Array.isArray(members)) {
