@@ -1,6 +1,7 @@
 import querystring from "query-string";
 import axios from "@agir/lib/utils/axios";
 import { objectToFormData } from "@agir/lib/utils/forms";
+import useSWR from "swr";
 
 export const ENDPOINT = {
   getGroup: "/api/groupes/:groupPk/",
@@ -51,6 +52,27 @@ export const ENDPOINT = {
 
   getStatistics: "/api/groupes/:groupPk/stats/",
 };
+
+export const useRemoveMembershipRequestByGroupMember = (groupId, memberId) => {
+  return useSWR(`/api/groupes/${groupId}/member/${memberId}/request-membership-remove`)
+}
+
+export const createRemoveMembershipRequest = async (groupId, memberId, details, reason) => {
+  const result = {
+    data: null,
+    error: null,
+  };
+  const url = `/api/groupes/request-membership-remove/`;
+
+  try {
+    const response = await axios.post(url, {supportgroup: groupId, person: memberId, details, reasonType: reason});
+    result.data = response.data;
+  } catch (e) {
+    result.error = (e.response && e.response.data) || e.message;
+  }
+
+  return result;
+}
 
 export const getGroupEndpoint = (key, params, querystringParams) => {
   let endpoint = ENDPOINT[key] || "";

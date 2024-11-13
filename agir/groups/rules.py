@@ -229,3 +229,7 @@ rules.add_perm(
     "groups.manage_group_finance",
     is_authenticated_person & is_finance_manager,
 )
+rules.add_perm(
+    "groups.add_membership_remove_request",
+    is_authenticated_person & is_at_least_referent_for_group,
+)

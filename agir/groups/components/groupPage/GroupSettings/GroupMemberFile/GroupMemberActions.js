@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 
 import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
-import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequest";
+import {useRemoveMembershipRequestByGroupMember} from "@agir/groups/utils/api";
 
 const StyledWrapper = styled.div`
   padding: 0;
@@ -38,18 +38,16 @@ const RemoveMemberAction = ({removeMemberRequest}) => {
   return <p><Button onClick={removeMemberRequest} color="danger">Retirer du groupe</Button></p>
 }
 
-const GroupMemberActions = (props) => {
-  const {
-    isReferent,
-    isGroupFull,
-    onChangeMembershipType,
-    currentMembershipType,
-    removeMemberRequest
-  } = props;
-
+const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberRequest, group }) => {
   if (!onChangeMembershipType) {
     return null;
   }
+
+  const isReferent = group?.isReferent
+  const isGroupFull = !!group?.isFull
+  const currentMembershipType = member?.membershipType;
+
+  const removeRequest = useRemoveMembershipRequestByGroupMember(group?.id, member?.personId)
 
   if (currentMembershipType == MEMBERSHIP_TYPES.FOLLOWER) {
     const handleClick = () => {

@@ -41,6 +41,8 @@ from ...donations.allocations import (
 )
 from ...lib.admin.utils import admin_url
 
+from .membership_remove_request_panels import MembershipRemoveRequestAdmin
+
 
 @admin.register(models.SupportGroup)
 class SupportGroupAdmin(VersionAdmin, CenterOnFranceMixin, OSMGeoAdmin):

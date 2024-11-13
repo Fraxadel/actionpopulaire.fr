@@ -36,6 +36,7 @@ from agir.lib.search import PrefixSearchQuery
 
 __all__ = [
     "SupportGroup",
+    "SupportGroupQuerySet",
     "SupportGroupTag",
     "SupportGroupSubtype",
     "Membership",

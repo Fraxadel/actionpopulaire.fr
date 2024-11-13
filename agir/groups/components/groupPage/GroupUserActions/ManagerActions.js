@@ -177,6 +177,6 @@ ManagerActions.propTypes = {
   id: PropTypes.string.isRequired,
   routes: PropTypes.object,
   groupSettingsLinks: PropTypes.object,
-  isBoucleDepartementale: PropTypes.string,
+  isBoucleDepartementale: PropTypes.bool,
 };
 export default ManagerActions;

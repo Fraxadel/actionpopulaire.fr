@@ -532,6 +532,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class MemberPersonalInformationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
+    personId = serializers.UUIDField(source="person.id", read_only=True)
     displayName = serializers.CharField(source="person.display_name", read_only=True)
     firstName = serializers.CharField(source="person.first_name", read_only=True)
     lastName = serializers.CharField(source="person.last_name", read_only=True)
@@ -599,6 +600,7 @@ class MemberPersonalInformationSerializer(serializers.ModelSerializer):
         model = Membership
         fields = (
             "id",
+            "personId",
             "displayName",
             "firstName",
             "lastName",

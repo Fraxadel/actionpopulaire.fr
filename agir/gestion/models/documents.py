@@ -1,4 +1,3 @@
-import hashlib
 import re
 
 import dynamic_filenames

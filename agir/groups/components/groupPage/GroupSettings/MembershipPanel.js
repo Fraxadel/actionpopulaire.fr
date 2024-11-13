@@ -12,10 +12,10 @@ import GroupMemberFile from "@agir/groups/groupPage/GroupSettings/GroupMemberFil
 
 import { useToast } from "@agir/front/globalContext/hooks";
 import { useGroup } from "@agir/groups/groupPage/hooks/group";
-import { getGroupEndpoint, updateMember } from "@agir/groups/utils/api";
+import {getGroupEndpoint, updateMember, useRemoveMembershipRequestByGroup} from "@agir/groups/utils/api";
 import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequest";
 
-const slideInTransition = {
+export const slideInTransition = {
   from: { transform: "translateX(66%)" },
   enter: { transform: "translateX(0%)" },
   leave: { transform: "translateX(100%)" },
@@ -43,7 +43,7 @@ const StyledSkeleton = styled.div`
   }
 `;
 
-const SecondaryPanel = styled(animated.div)`
+export const SecondaryPanel = styled(animated.div)`
   position: absolute;
   top: 0;
   left: 0;
@@ -112,8 +112,7 @@ export const ReadOnlyMembershipPanel = (props) => {
             item && (
               <SecondaryPanel style={style}>
                 <GroupMemberFile
-                  isGroupFull={!!group.isFull}
-                  isReferent={group.isReferent}
+                  group={group}
                   member={selectedMemberData}
                   onBack={unselectMember}
                 />
@@ -218,8 +217,8 @@ const EditableMembershipPanel = (props) => {
     setSelectedMembershipType(null);
   }, []);
 
-  const removeMemberRequest = useCallback(() => {
-      setDisplayRemoveMemberStep(true)
+  const toggleRemoveMemberRequest = useCallback(() => {
+      setDisplayRemoveMemberStep((prev) => !prev)
   }, [])
 
   const memberFileTransition = useTransition(
@@ -247,28 +246,19 @@ const EditableMembershipPanel = (props) => {
           onClickMember={selectMember}
           isLoading={isLoading}
           updateMembershipType={updateMembershipType}
+          removeMemberRequest={toggleRemoveMemberRequest}
         />
       </PageFadeIn>
-        {
-            removeMemberRequestTransition(
-                (style, item) => item && (
-                    <SecondaryPanel style={style}>
-                        <GroupMemberRemoveRequest member={selectedMemberPersonalInformation} />
-                    </SecondaryPanel>
-                )
-            )
-        }
       {memberFileTransition(
         (style, item) =>
           item && (
             <SecondaryPanel style={style}>
               <GroupMemberFile
-                isGroupFull={!!group.isFull}
-                isReferent={group.isReferent}
+                group={group}
                 member={selectedMemberPersonalInformation}
                 onBack={unselectMember}
                 onChangeMembershipType={selectMembershipType}
-                removeMemberRequest={removeMemberRequest}
+                removeMemberRequest={toggleRemoveMemberRequest}
               />
             </SecondaryPanel>
           ),
@@ -287,6 +277,15 @@ const EditableMembershipPanel = (props) => {
               />
             </SecondaryPanel>
           ),
+      )}
+      {removeMemberRequestTransition(
+          (style, item) => item && <SecondaryPanel style={style}>
+                  <GroupMemberRemoveRequest
+                      onBack={toggleRemoveMemberRequest}
+                      member={selectedMemberPersonalInformation}
+                      group={group}
+                  />
+          </SecondaryPanel>
       )}
     </>
   );
