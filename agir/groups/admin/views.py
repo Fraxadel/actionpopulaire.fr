@@ -1,9 +1,11 @@
+import logging
 import re
 from io import BytesIO
 
 import pandas as pd
 from django.contrib import admin, messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import reverse
 from django.template.response import TemplateResponse
@@ -17,8 +19,10 @@ from agir.groups.admin import actions
 from .forms import AddMemberForm
 from ..actions.automatic_memberships import maj_boucles, update_memberships_from_segment
 from ..actions.export import pdf_group_attendance_list
-from ..models import SupportGroup
+from ..models import SupportGroup, Membership, MembershipRemoveRequest
 from ...lib.utils import front_url
+
+logger = logging.getLogger(__name__)
 
 
 def add_member(model_admin, request, pk):
@@ -330,3 +334,32 @@ def change_group_certification(model_admin, request, pk, certify=True):
         actions.uncertify_supportgroups(model_admin, request, qs)
 
     return response
+
+
+def delete_member_from_group(model_admin, request, pk, group_id, member_id):
+    if not model_admin.has_change_permission(request):
+        raise PermissionDenied
+
+    remove_request = model_admin.get_object(request, pk)
+    if request is None:
+        raise Http404("Aucune requête avec cet identifiant")
+
+    try:
+        membership = Membership.objects.get(
+            Q(supportgroup__id=group_id) & Q(person__id=member_id)
+        )
+        membership.delete()
+        remove_request.status = MembershipRemoveRequest.Status.DONE
+        remove_request.resolved_date = timezone.now()
+        remove_request.save()
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            "La personne a bien été supprimée du groupe, les animateurices ont reçus un mail.",
+        )
+    except ObjectDoesNotExist:
+        messages.add_message(request, messages.WARNING, "Une erreur est survenue.")
+
+    return HttpResponseRedirect(
+        reverse("admin:groups_membershipremoverequest_change", args=(pk,))
+    )

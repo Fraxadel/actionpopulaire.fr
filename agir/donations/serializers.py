@@ -780,7 +780,7 @@ class SpendingRequestSerializer(serializers.ModelSerializer):
                 return spending_request
 
             if (
-                spending_request.status == spending_request.Status.AWAITING_PEER_REVIEW
+                spending_request.status == spending_request.Status.AWAIT_PEER_REVIEW
                 and not spending_request.can_peer_review(user)
             ):
                 return spending_request

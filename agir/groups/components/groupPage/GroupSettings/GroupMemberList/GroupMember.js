@@ -1,259 +1,301 @@
 import PropTypes from "prop-types";
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import styled from "styled-components";
 
-import { GENDER, getGenderedWord } from "@agir/lib/utils/display";
+import {GENDER, getGenderedWord} from "@agir/lib/utils/display";
 import Avatar from "@agir/front/genericComponents/Avatar";
-import { RawFeatherIcon } from "@agir/front/genericComponents/FeatherIcon";
+import {RawFeatherIcon} from "@agir/front/genericComponents/FeatherIcon";
 import Spacer from "@agir/front/genericComponents/Spacer";
 
-import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
+import {MEMBERSHIP_TYPES} from "@agir/groups/utils/group";
+import {useSelector} from "@agir/front/globalContext/GlobalContext";
+import {getUser} from "@agir/front/globalContext/reducers";
+import Button from "@agir/front/genericComponents/Button";
 
 const StyledName = styled.p``;
 const StyledEmail = styled.p``;
 const StyledDescription = styled.p``;
 const StyledMembershipType = styled.p`
-  color: ${(props) => props.theme[props.$color] || props.theme.text1000};
+    color: ${(props) => props.theme[props.$color] || props.theme.text1000};
 `;
 
-const StyledMember = styled.div`
-  color: ${(props) => props.theme.text1000};
-  background-color: ${(props) => props.theme.background0};
-  padding: 0.75rem 1rem;
-  display: grid;
-  grid-template-columns: auto 1fr max-content auto;
-  grid-template-rows: auto auto auto;
-  align-items: center;
-  gap: 0 1rem;
-  width: 100%;
-  text-align: left;
-  cursor: ${(props) => (props.as === "button" ? "pointer" : "default")};
-
-  &[disabled] {
-    cursor: default;
-  }
-
-  & > * {
-    margin: 0;
-  }
-
-  ${Avatar} {
-    grid-column: 1/2;
-    grid-row: 1/3;
-    width: 2rem;
-    height: 2rem;
-
-    @media (max-width: ${(props) => props.theme.collapse}px) {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-
-    @media (max-width: 350px) {
-      display: none;
-    }
-  }
-
-  ${StyledName},
-  ${StyledEmail},
-  ${StyledDescription} {
-    margin: 0;
-    padding: 0;
-    min-width: 1px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:empty {
-      display: none;
-      min-width: 0;
-    }
-  }
-
-  ${StyledName} {
-    grid-column: 2/3;
-    grid-row: 1/2;
-    font-weight: 500;
-  }
-
-  ${StyledEmail} {
-    grid-column: 2/3;
-    grid-row: 2/3;
+const RemoveHelper = styled.div`
+    padding: 20px;
     color: ${(props) => props.theme.text500};
-    font-weight: 400;
-    font-size: 0.875rem;
-  }
-
-  ${StyledDescription} {
-    grid-column: 2/5;
-    grid-row: 3/4;
-    color: ${(props) => props.theme.text500};
-    font-weight: 400;
-    font-size: 0.75rem;
-
-    &::before {
-      content: "— ";
-
-      @media (max-width: 350px) {
-        display: none;
-      }
-    }
-  }
-
-  ${StyledMembershipType} {
-    grid-column: 3/4;
-    grid-row: 1/3;
-    text-align: right;
-    display: inline-flex;
-    flex-flow: row nowrap;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    min-width: 1px;
+    flex-direction: column;
 
-    @media (max-width: ${(props) => props.theme.collapse}px) {
-      font-size: 0.813rem;
+    span {
+        margin-right: 10px;
+    }
+
+    p {
+        margin: 0;
+    }
+`
+
+const StyledMember = styled.div`
+    color: ${(props) => props.theme.text1000};
+    background-color: ${(props) => props.theme.background0};
+    padding: 0.75rem 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr max-content auto;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    gap: 0 1rem;
+    width: 100%;
+    text-align: left;
+    cursor: ${(props) => (props.as === "button" ? "pointer" : "default")};
+
+    &[disabled] {
+        cursor: default;
     }
 
     & > * {
-      line-height: 1;
+        margin: 0;
     }
 
-    ${RawFeatherIcon} {
-      width: 1rem;
-      height: 1rem;
+    ${Avatar} {
+        grid-column: 1/2;
+        grid-row: 1/3;
+        width: 2rem;
+        height: 2rem;
 
-      @media (max-width: ${(props) => props.theme.collapse}px) {
-        width: 0.813rem;
-        height: 0.813rem;
-      }
+        @media (max-width: ${(props) => props.theme.collapse}px) {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        @media (max-width: 350px) {
+            display: none;
+        }
     }
-  }
 
-  ${StyledMembershipType} + * {
-    grid-column: 4/5;
-    grid-row: 1/3;
-    width: 2rem;
-    height: 2rem;
+    ${StyledName},
+    ${StyledEmail},
+    ${StyledDescription} {
+        margin: 0;
+        padding: 0;
+        min-width: 1px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
 
-    @media (max-width: 350px) {
-      display: none;
+        &:empty {
+            display: none;
+            min-width: 0;
+        }
     }
-  }
+
+    ${StyledName} {
+        grid-column: 2/3;
+        grid-row: 1/2;
+        font-weight: 500;
+    }
+
+    ${StyledEmail} {
+        grid-column: 2/3;
+        grid-row: 2/3;
+        color: ${(props) => props.theme.text500};
+        font-weight: 400;
+        font-size: 0.875rem;
+    }
+
+    ${StyledDescription} {
+        grid-column: 2/5;
+        grid-row: 3/4;
+        color: ${(props) => props.theme.text500};
+        font-weight: 400;
+        font-size: 0.75rem;
+
+        &::before {
+            content: "— ";
+
+            @media (max-width: 350px) {
+                display: none;
+            }
+        }
+    }
+
+    ${StyledMembershipType} {
+        grid-column: 3/4;
+        grid-row: 1/3;
+        text-align: right;
+        display: inline-flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        min-width: 1px;
+
+        @media (max-width: ${(props) => props.theme.collapse}px) {
+            font-size: 0.813rem;
+        }
+
+        & > * {
+            line-height: 1;
+        }
+
+        ${RawFeatherIcon} {
+            width: 1rem;
+            height: 1rem;
+
+            @media (max-width: ${(props) => props.theme.collapse}px) {
+                width: 0.813rem;
+                height: 0.813rem;
+            }
+        }
+    }
+
+    ${StyledMembershipType} + * {
+        grid-column: 4/5;
+        grid-row: 1/3;
+        width: 2rem;
+        height: 2rem;
+
+        @media (max-width: 350px) {
+            display: none;
+        }
+    }
 `;
 
 const MEMBERSHIP_TYPE_LABEL = {
-  [MEMBERSHIP_TYPES.FOLLOWER]: ["Abonné·e", "Abonnée", "Abonné"],
-  [MEMBERSHIP_TYPES.MEMBER]: "Membre actif",
-  [MEMBERSHIP_TYPES.MANAGER]: "Gestionnaire",
-  [MEMBERSHIP_TYPES.REFERENT]: ["Animateur·ice", "Animatrice", "Animateur"],
+    [MEMBERSHIP_TYPES.FOLLOWER]: ["Abonné·e", "Abonnée", "Abonné"],
+    [MEMBERSHIP_TYPES.MEMBER]: "Membre actif",
+    [MEMBERSHIP_TYPES.MANAGER]: "Gestionnaire",
+    [MEMBERSHIP_TYPES.REFERENT]: ["Animateur·ice", "Animatrice", "Animateur"],
 };
 
-const MembershipType = ({ gender, membershipType, hasGroupNotifications }) => {
-  const role = useMemo(() => {
-    const label = MEMBERSHIP_TYPE_LABEL[String(membershipType)];
-    if (!label) {
-      return "";
-    }
-    if (Array.isArray(label)) {
-      return getGenderedWord(gender, ...label);
-    }
-    return label;
-  }, [membershipType, gender]);
+const MembershipType = ({gender, membershipType, hasGroupNotifications}) => {
+    const role = useMemo(() => {
+        const label = MEMBERSHIP_TYPE_LABEL[String(membershipType)];
+        if (!label) {
+            return "";
+        }
+        if (Array.isArray(label)) {
+            return getGenderedWord(gender, ...label);
+        }
+        return label;
+    }, [membershipType, gender]);
 
-  switch (membershipType) {
-    case MEMBERSHIP_TYPES.FOLLOWER:
-      return hasGroupNotifications ? (
-        <StyledMembershipType $color="text500">
-          <RawFeatherIcon name="rss" />
-          &ensp;
-          <span>{role}</span>
-        </StyledMembershipType>
-      ) : null;
-    case MEMBERSHIP_TYPES.MANAGER:
-      return (
-        <StyledMembershipType $color="success500">
-          <RawFeatherIcon name="settings" />
-          &ensp;
-          <span>{role}</span>
-        </StyledMembershipType>
-      );
-    case MEMBERSHIP_TYPES.REFERENT:
-      return (
-        <StyledMembershipType $color="primary500">
-          <RawFeatherIcon name="lock" />
-          &ensp;
-          <span>{role}</span>
-        </StyledMembershipType>
-      );
-    default:
-      return <StyledMembershipType />;
-  }
+    switch (membershipType) {
+        case MEMBERSHIP_TYPES.FOLLOWER:
+            return hasGroupNotifications ? (
+                <StyledMembershipType $color="text500">
+                    <RawFeatherIcon name="rss"/>
+                    &ensp;
+                    <span>{role}</span>
+                </StyledMembershipType>
+            ) : null;
+        case MEMBERSHIP_TYPES.MANAGER:
+            return (
+                <StyledMembershipType $color="success500">
+                    <RawFeatherIcon name="settings"/>
+                    &ensp;
+                    <span>{role}</span>
+                </StyledMembershipType>
+            );
+        case MEMBERSHIP_TYPES.REFERENT:
+            return (
+                <StyledMembershipType $color="primary500">
+                    <RawFeatherIcon name="lock"/>
+                    &ensp;
+                    <span>{role}</span>
+                </StyledMembershipType>
+            );
+        default:
+            return <StyledMembershipType/>;
+    }
 };
 
 MembershipType.propTypes = {
-  membershipType: PropTypes.oneOf(
-    Object.keys(MEMBERSHIP_TYPE_LABEL).map(Number),
-  ).isRequired,
-  gender: PropTypes.oneOf(["", ...Object.values(GENDER)]),
-  hasGroupNotifications: PropTypes.bool,
+    membershipType: PropTypes.oneOf(
+        Object.keys(MEMBERSHIP_TYPE_LABEL).map(Number),
+    ).isRequired,
+    gender: PropTypes.oneOf(["", ...Object.values(GENDER)]),
+    hasGroupNotifications: PropTypes.bool,
 };
+
 
 const GroupMember = (props) => {
-  const {
-    id,
-    displayName,
-    image = "",
-    description,
-    membershipType,
-    email,
-    gender,
-    hasGroupNotifications,
-    onClick,
-    isLoading,
-  } = props;
+    const {
+        id,
+        displayName,
+        image = "",
+        description,
+        membershipType,
+        email,
+        gender,
+        hasGroupNotifications,
+        onClick,
+        isLoading,
+        currentRemoveRequest,
+        openRemoveRequest
+    } = props;
 
-  const handleClick = () => {
-    onClick && onClick(id);
-  };
+    const handleClick = () => {
+        onClick && onClick(id);
+    };
 
-  return (
-    <StyledMember
-      onClick={handleClick}
-      disabled={isLoading}
-      type={typeof onClick === "function" ? "button" : undefined}
-      as={typeof onClick === "function" ? "button" : "div"}
-    >
-      <Avatar image={image} name={displayName} />
-      <StyledName>{displayName}</StyledName>
-      <StyledEmail>{email}</StyledEmail>
-      <StyledDescription>{description}</StyledDescription>
-      <MembershipType
-        gender={gender}
-        membershipType={membershipType}
-        hasGroupNotifications={hasGroupNotifications}
-      />
-      {typeof onClick === "function" ? (
-        <RawFeatherIcon name="arrow-right" />
-      ) : (
-        <Spacer size="2rem" />
-      )}
-    </StyledMember>
-  );
+    const user = useSelector(getUser);
+
+    return (
+        <>
+            <StyledMember
+                onClick={handleClick}
+                disabled={isLoading}
+                type={typeof onClick === "function" ? "button" : undefined}
+                as={typeof onClick === "function" ? "button" : "div"}
+            >
+                <Avatar image={image} name={displayName}/>
+                <StyledName>{displayName}</StyledName>
+                <StyledEmail>{email}</StyledEmail>
+                <StyledDescription>{description}</StyledDescription>
+                <MembershipType
+                    gender={gender}
+                    membershipType={membershipType}
+                    hasGroupNotifications={hasGroupNotifications}
+                />
+                {typeof onClick === "function" ? (
+                    <RawFeatherIcon name="arrow-right"/>
+                ) : (
+                    <Spacer size="2rem"/>
+                )}
+
+            </StyledMember>
+            {
+                currentRemoveRequest && <RemoveHelper>
+                    {
+                        user.id === currentRemoveRequest.created_by ?
+                        <p><span className="fa fa-trash"/>
+                            Une demande de suppression est en cours</p>
+                            : <>
+                            <p><span className="fa fa-trash"/>Une demande de suppression d’un·e membre du groupe est en cours.</p>
+                            <p><Button onClick={() => { handleClick(); openRemoveRequest() } } small color="secondary">Voir la demande</Button></p>
+                        </>
+                    }
+                </RemoveHelper>
+            }
+        </>
+    );
 };
 GroupMember.propTypes = {
-  id: PropTypes.number,
-  displayName: PropTypes.string,
-  image: PropTypes.string,
-  email: PropTypes.string,
-  description: PropTypes.string,
-  membershipType: PropTypes.oneOf([
-    MEMBERSHIP_TYPES.FOLLOWER,
-    MEMBERSHIP_TYPES.MEMBER,
-    MEMBERSHIP_TYPES.REFERENT,
-    MEMBERSHIP_TYPES.MANAGER,
-  ]).isRequired,
-  gender: PropTypes.oneOf(["", ...Object.values(GENDER)]),
-  onClick: PropTypes.func,
-  isLoading: PropTypes.bool,
-  hasGroupNotifications: PropTypes.bool,
+    id: PropTypes.number,
+    displayName: PropTypes.string,
+    image: PropTypes.string,
+    email: PropTypes.string,
+    personId: PropTypes.string,
+    description: PropTypes.string,
+    membershipType: PropTypes.oneOf([
+        MEMBERSHIP_TYPES.FOLLOWER,
+        MEMBERSHIP_TYPES.MEMBER,
+        MEMBERSHIP_TYPES.REFERENT,
+        MEMBERSHIP_TYPES.MANAGER,
+    ]).isRequired,
+    gender: PropTypes.oneOf(["", ...Object.values(GENDER)]),
+    onClick: PropTypes.func,
+    isLoading: PropTypes.bool,
+    hasGroupNotifications: PropTypes.bool,
 };
 
 export default GroupMember;

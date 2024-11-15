@@ -2,14 +2,11 @@ from functools import partial
 
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
-from django.db.models.functions import Coalesce
 
 from agir.activity.models import Activity
-from agir.groups.models import SupportGroup, Membership
+from agir.groups.models import Membership
 from agir.groups.tasks import (
-    GROUP_MEMBERSHIP_LIMIT_NOTIFICATION_STEPS,
     send_joined_notification_email,
-    send_alert_capacity_email,
     send_message_notification_email,
     send_comment_notification_email,
 )

@@ -57,6 +57,11 @@ api_urlpatterns = [
         name="api_group_subtypes",
     ),
     path(
+        "request-membership-remove/<uuid:pk>",
+        views.MembershipRemoveRequestUpdateAPIView.as_view(),
+        name="api_membership_remove_request_update",
+    ),
+    path(
         "request-membership-remove/",
         views.MembershipRemoveRequestCreateAPIView.as_view(),
         name="api_membership_remove_request_create",
@@ -67,8 +72,13 @@ api_urlpatterns = [
         name="api_group_view",
     ),
     path(
-        "<uuid:groupId>/member/<int:memberId>/request-membership-remove/",
+        "<uuid:pk>/member/<uuid:person>/request-membership-remove/",
         views.MembershipRemoveRequestDetailAPIView.as_view(),
+        name="api_membership_remove_request_detail",
+    ),
+    path(
+        "<uuid:pk>/request-membership-remove",
+        views.MembershipRemoveRequestListAPIView.as_view(),
         name="api_membership_remove_request_detail",
     ),
     path(

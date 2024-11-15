@@ -51,28 +51,21 @@ export const ENDPOINT = {
   geoSearchGroups: "/api/groupes/recherche/geo/",
 
   getStatistics: "/api/groupes/:groupPk/stats/",
+
 };
 
-export const useRemoveMembershipRequestByGroupMember = (groupId, memberId) => {
-  return useSWR(`/api/groupes/${groupId}/member/${memberId}/request-membership-remove`)
+export const useRemoveMembershipRequestByGroup = (groupId) => {
+  return useSWR(`/api/groupes/${groupId}/request-membership-remove`)
 }
 
-export const createRemoveMembershipRequest = async (groupId, memberId, details, reason) => {
-  const result = {
-    data: null,
-    error: null,
-  };
-  const url = `/api/groupes/request-membership-remove/`;
+export const createRemoveMembershipRequest = async (groupId, memberId, details, reason) => axios.post(`/api/groupes/request-membership-remove/`, {
+  supportgroup: groupId,
+  person: memberId,
+  details,
+  reason: reason
+})
 
-  try {
-    const response = await axios.post(url, {supportgroup: groupId, person: memberId, details, reasonType: reason});
-    result.data = response.data;
-  } catch (e) {
-    result.error = (e.response && e.response.data) || e.message;
-  }
-
-  return result;
-}
+export const usePatchMembershipRemoveRequest = (request) => axios.patch(`/api/groupes/request-membership-remove/${request.id}`, request)
 
 export const getGroupEndpoint = (key, params, querystringParams) => {
   let endpoint = ENDPOINT[key] || "";

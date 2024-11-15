@@ -81,6 +81,8 @@ const GroupMemberList = ({
   isLoading,
   sortable,
   searchable,
+  removeRequests,
+  openRemoveRequest,
 }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(SORTING_OPTIONS[0]);
@@ -138,6 +140,8 @@ const GroupMemberList = ({
           isLoading={isLoading}
           onClick={onClickMember}
           {...member}
+          currentRemoveRequest={removeRequests?.find((request) => request.person === member.personId)}
+          openRemoveRequest={openRemoveRequest}
         />
       ))}
       {onAdd && addButtonLabel && (

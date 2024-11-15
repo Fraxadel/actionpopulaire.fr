@@ -75,6 +75,7 @@ __all__ = [
     "IdentifiedGuest",
     "JitsiMeeting",
     "GroupAttendee",
+    "CustomDateTimeField",
 ]
 
 from agir.people.person_forms.models import PersonForm

@@ -371,8 +371,9 @@ const DangerButton = styled(BaseButton)`
   &[disabled]:hover,
   &[disabled]:focus,
   &[disabled]:active {
-    background-color: ${(props) => props.theme.error500 + "B7"};
-    border-color: ${(props) => props.theme.error500 + "B7"};
+    background-color: ${(props) => props.theme.text50 + "B7"};
+    border-color: ${(props) => props.theme.text50 + "B7"};
+    color: ${(props) => props.theme.text1000 + "4D"};
   }
 
   &:before {

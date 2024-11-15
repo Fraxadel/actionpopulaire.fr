@@ -288,6 +288,8 @@ MERGE_STRATEGIES = {
     "action_radius": None,
     "document": merge_reassign_related,
     "own_spending_request": merge_reassign_related,
+    "membershipremoverequest": merge_reassign_related,
+    "membership_remove_requests": merge_reassign_related,
 }
 
 

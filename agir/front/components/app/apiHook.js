@@ -1,27 +1,26 @@
 import React, { useState } from 'react'
 
-export const useCreate = (funcApi, onSuccess) => {
+export const useMutate = (funcApi, onSuccess) => {
     const [error, setError] = useState();
     const [data, setData] = useState()
     const [isLoading, setIsLoading] = useState(false);
 
 
-    async function create(...args) {
+    async function mutate(...args) {
         setIsLoading(true);
 
-        const result = await funcApi(...args);
-
-        setData(result.data);
-        setIsLoading(false);
-
-        if (result.error) {
-            setError(result.error)
-        } else {
+        try {
+            const response = await funcApi(...args);
+            setData(response.data);
             onSuccess?.()
+        } catch (e) {
+            setError(e.response && e.response.data) || e.message
+        } finally {
+            setIsLoading(false);
         }
 
     }
 
-    return { create, error, data, isLoading }
+    return { mutate, error, data, isLoading }
 
 }

@@ -14,6 +14,8 @@ import { useToast } from "@agir/front/globalContext/hooks";
 import { useGroup } from "@agir/groups/groupPage/hooks/group";
 import {getGroupEndpoint, updateMember, useRemoveMembershipRequestByGroup} from "@agir/groups/utils/api";
 import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequest";
+import GroupMemberRemoveRequestReferentValidation
+    from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequestReferentValidation";
 
 export const slideInTransition = {
   from: { transform: "translateX(66%)" },
@@ -146,6 +148,7 @@ const EditableMembershipPanel = (props) => {
   const { data: members, mutate: mutateMembers } = useSWR(
     getGroupEndpoint("getMembers", { groupPk }),
   );
+  const {data: removeRequests } = useRemoveMembershipRequestByGroup(groupPk);
 
   const [displayRemoveMemberStep, setDisplayRemoveMemberStep] = useState(false)
   const [selectedMembershipType, setSelectedMembershipType] = useState(null);
@@ -242,11 +245,12 @@ const EditableMembershipPanel = (props) => {
         <MainPanel
           group={group}
           members={members}
+          removeRequests={removeRequests ?? []}
           routes={group?.routes}
           onClickMember={selectMember}
           isLoading={isLoading}
           updateMembershipType={updateMembershipType}
-          removeMemberRequest={toggleRemoveMemberRequest}
+          openRemoveRequest={toggleRemoveMemberRequest}
         />
       </PageFadeIn>
       {memberFileTransition(
@@ -256,9 +260,12 @@ const EditableMembershipPanel = (props) => {
               <GroupMemberFile
                 group={group}
                 member={selectedMemberPersonalInformation}
+                currentRemoveRequest={removeRequests?.find((request) => request.person === selectedMemberPersonalInformation?.personId)}
                 onBack={unselectMember}
                 onChangeMembershipType={selectMembershipType}
-                removeMemberRequest={toggleRemoveMemberRequest}
+                onClickMember={selectMember}
+                isLoading={isLoading}
+                openRemoveRequest={toggleRemoveMemberRequest}
               />
             </SecondaryPanel>
           ),
@@ -284,6 +291,7 @@ const EditableMembershipPanel = (props) => {
                       onBack={toggleRemoveMemberRequest}
                       member={selectedMemberPersonalInformation}
                       group={group}
+                      removeRequest={removeRequests?.find((request) => request?.person === selectedMemberPersonalInformation?.personId)}
                   />
           </SecondaryPanel>
       )}

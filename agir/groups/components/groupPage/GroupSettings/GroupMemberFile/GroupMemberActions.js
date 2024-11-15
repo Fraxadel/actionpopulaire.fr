@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 
 import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
-import {useRemoveMembershipRequestByGroupMember} from "@agir/groups/utils/api";
+import {RawFeatherIcon} from "@agir/front/genericComponents/FeatherIcon";
 
 const StyledWrapper = styled.div`
   padding: 0;
@@ -22,8 +22,8 @@ const StyledWrapper = styled.div`
   p {
     margin: 0;
 
-    ${Button} {
-      margin: 0.5rem 0.5rem 0 0;
+    button {
+      margin: 0 0.5rem 0 0;
     }
   }
 
@@ -34,11 +34,39 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const RemoveMemberAction = ({removeMemberRequest}) => {
-  return <p><Button onClick={removeMemberRequest} color="danger">Retirer du groupe</Button></p>
+const StyledWarning = styled.div`
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    color: ${(props) => props.theme.votingProxyOrange};
+    font-size: 0.9rem;
+`
+
+const RequestElement = styled.div`
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+    
+    a {
+        font-weight: bold;
+    }
+`
+
+const RemoveMemberAction = ({openRemoveRequest, currentRemoveRequest}) => {
+    return <>
+        <p><Button disabled={currentRemoveRequest} onClick={openRemoveRequest} color="danger">Retirer du groupe</Button>
+        </p>
+        {currentRemoveRequest && <RequestElement>
+            <StyledWarning>
+            <RawFeatherIcon name="alert-triangle" />
+            Une demande de suppression est déjà en cours.
+        </StyledWarning>
+        <a onClick={openRemoveRequest}>Voir la demande</a></RequestElement>}
+    </>
 }
 
-const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberRequest, group }) => {
+const GroupMemberActions = ({onChangeMembershipType, member, openRemoveRequest, group, currentRemoveRequest }) => {
   if (!onChangeMembershipType) {
     return null;
   }
@@ -46,8 +74,6 @@ const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberReques
   const isReferent = group?.isReferent
   const isGroupFull = !!group?.isFull
   const currentMembershipType = member?.membershipType;
-
-  const removeRequest = useRemoveMembershipRequestByGroupMember(group?.id, member?.personId)
 
   if (currentMembershipType == MEMBERSHIP_TYPES.FOLLOWER) {
     const handleClick = () => {
@@ -70,7 +96,7 @@ const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberReques
             d'action
           </p>
         )}
-        <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
+        <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
       </StyledWrapper>
     );
   }
@@ -91,7 +117,7 @@ const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberReques
             <Button onClick={setAsManager}>Passer en gestionnaire</Button>
           )}
         </p>
-        <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
+        <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
       </StyledWrapper>
     );
   }
@@ -109,7 +135,7 @@ const GroupMemberActions = ({ onChangeMembershipType, member, removeMemberReques
             Retirer le droit de gestionnaire
           </Button>
         </p>
-      <RemoveMemberAction removeMemberRequest={removeMemberRequest} />
+      <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
       </StyledWrapper>
     );
   }

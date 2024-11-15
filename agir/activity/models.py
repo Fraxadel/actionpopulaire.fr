@@ -77,6 +77,7 @@ class Activity(TimeStampedModel):
     TYPE_TRANSFERRED_GROUP_MEMBER = "transferred-group-member"
     TYPE_NEW_MEMBERS_THROUGH_TRANSFER = "new-members-through-transfer"
     TYPE_UNCERTIFIABLE_GROUP_WARNING = "uncertifiable-group-warning"
+    TYPE_REQUEST_MEMBERSHIP_VALIDATION = "referent_must_validate_remove_request"
 
     # TODO
     TYPE_GROUP_COORGANIZATION_INFO = "group-coorganization-info"

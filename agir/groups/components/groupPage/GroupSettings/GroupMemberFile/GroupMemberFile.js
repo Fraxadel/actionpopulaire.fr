@@ -11,11 +11,8 @@ import GroupMemberFacts from "./GroupMemberFacts";
 import GroupMemberActions from "./GroupMemberActions";
 
 const GroupMemberFile = (props) => {
-  const { member, group, onBack, onChangeMembershipType, removeMemberRequest } =
+  const { member, group, onBack, onChangeMembershipType, openRemoveRequest, currentRemoveRequest } =
     props;
-
-  const isReferent = group.isReferent
-  const isGroupFull = !!group?.isFull
 
   return (
     <PageFadeIn
@@ -53,7 +50,8 @@ const GroupMemberFile = (props) => {
       <GroupMemberActions
         member={member}
         group={group}
-        removeMemberRequest={removeMemberRequest}
+        currentRemoveRequest={currentRemoveRequest}
+        openRemoveRequest={openRemoveRequest}
         onChangeMembershipType={onChangeMembershipType}
       />
       <Spacer size="1.5rem" />

@@ -1,6 +1,8 @@
+import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 import React from "react";
-import styled from "styled-components";
+import {useTransition} from "@react-spring/web";
+import {SecondaryPanel, slideInTransition} from "@agir/groups/groupPage/GroupSettings/MembershipPanel";
 
 const ValidationContent = styled.div`
     text-align: center;
@@ -28,11 +30,12 @@ const AlertValidation = styled.div`
     }
 `
 
-export default function GroupMemberRemoveRequestValidation({ onBack }) {
-    return <ValidationContent>
-        <AlertValidation><span className="fa-regular fa-check fa-xl"/>Votre demande a bien été enregistrée</AlertValidation>
-        <p>Après examen du pôle des groupes d'action, vous serez informé·e une fois qu'une décision aura été prise.</p>
-        <p>Merci encore pour votre vigilence</p>
+export default function RequestValidationMessage({ display, onBack, title, message, children }) {
+
+    const doneTransition = useTransition(display, slideInTransition)
+    return doneTransition((style, item) => item && <SecondaryPanel style={style}><ValidationContent>
+        <AlertValidation><span className="fa-regular fa-check fa-xl"/>{ title }</AlertValidation>
+        { message ? message : children }
         <Button onClick={onBack} color="primary">Terminer</Button>
-        </ValidationContent>
+    </ValidationContent></SecondaryPanel>)
 }

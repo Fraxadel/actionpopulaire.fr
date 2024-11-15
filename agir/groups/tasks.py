@@ -834,3 +834,24 @@ def send_uncertified_group_notifications(supportgroup_pk):
         bindings={"group": supportgroup},
         recipients=[*recipients, settings.EMAIL_SUPPORT],
     )
+
+
+@emailing_task()
+def send_notifications_remove_request_referent(person_pk, group_pk):
+    person = Person.objects.get(person_pk)
+    group = SupportGroup.objects.get(pk=group_pk)
+
+    Activity.objects.create(
+        type=Activity.TYPE_GROUP_CREATION_CONFIRMATION,
+        recipient=person,
+        supportgroup=group,
+        status=Activity.STATUS_UNDISPLAYED,
+    )
+
+    send_template_email(
+        template_name="groups/email/remove_request_validation_referent.html",
+        subject=_("Validation de suppression de membre"),
+        from_email=settings.EMAIL_FROM,
+        recipients=[person],
+        bindings={"group": group},
+    )

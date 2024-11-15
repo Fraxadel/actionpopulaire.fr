@@ -1,5 +1,7 @@
 from agir.lib.models import BaseAPIResource
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from agir.lib.utils import front_url
 
 __all__ = ["MembershipRemoveRequest"]
 
@@ -25,6 +27,19 @@ class MembershipRemoveRequest(BaseAPIResource):
         ),
     )
 
+    class Status(models.TextChoices):
+        AWAIT_PEER_REVIEW = "P", "En attente de vérification par une autre personne"
+        AWAIT_ADMIN_REVIEW = (
+            "A",
+            "En attente de vérification par le pôle des groupes d'action",
+        )
+        DONE = "D", "Terminé"
+        REFUSED = "R", "Cette demande a été refusée"
+
+        @property
+        def choice(self):
+            return self.value, self.label
+
     supportgroup = models.ForeignKey(
         "SupportGroup",
         on_delete=models.CASCADE,
@@ -36,6 +51,7 @@ class MembershipRemoveRequest(BaseAPIResource):
         related_name="membership_remove_requests",
         editable=False,
         on_delete=models.CASCADE,
+        verbose_name="Personne à supprimer",
     )
     created_by = models.ForeignKey(
         "people.Person",
@@ -53,7 +69,25 @@ class MembershipRemoveRequest(BaseAPIResource):
         blank=False,
         default=REASON_DEMANDE_SUPPRESSION_GROUPE,
     )
-    solved = models.BooleanField(verbose_name="Résolu", default=False)
+    status = models.CharField(
+        _("Status"),
+        max_length=1,
+        default=Status.AWAIT_PEER_REVIEW,
+        choices=Status.choices,
+        blank=False,
+        null=False,
+    )
+    resolved_date = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name="Date de résolution, quand la personne a été supprimée",
+    )
+
+    def front_url(self):
+        return front_url(
+            "view_group_settings_members", args=(self.supportgroup.id,), absolute=True
+        )
 
     class Meta:
         verbose_name = "Requête suppression de membre"
