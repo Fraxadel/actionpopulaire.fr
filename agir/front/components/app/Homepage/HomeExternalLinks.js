@@ -6,7 +6,7 @@ import Spacer from "@agir/front/genericComponents/Spacer";
 
 import lfiLogo from "@agir/front/genericComponents/logos/LOGO-LFI_3.png";
 import linsoumissionLogo from "@agir/front/genericComponents/logos/linsoumission.svg";
-import nfpLogo from "@agir/front/genericComponents/logos/nouveau-front-populaire.png";
+import programmeLogo from "@agir/front/genericComponents/logos/programme.svg"
 
 const StyledArticle = styled.article`
   padding: 0 1.5rem;
@@ -77,6 +77,23 @@ const StyledArticle = styled.article`
   }
 `;
 
+const Insoumission = styled.div`
+    width: 190px;
+    height: 48px;
+    mask: url(${linsoumissionLogo});
+    background-color: ${(props) => props.theme.background700};
+    mask-size: contain;
+    mask-repeat: no-repeat;
+`
+const Programme = styled.div`
+    width: 190px;
+    height: 48px;
+    mask: url(${programmeLogo});
+    background-color: ${(props) => props.theme.background700};
+    mask-size: contain;
+    mask-repeat: no-repeat; 
+`
+
 const HomeExternalLinks = () => {
   return (
     <StyledArticle>
@@ -98,22 +115,12 @@ const HomeExternalLinks = () => {
           />
         </a>
         <Spacer size="1rem" />
-        <a href="https://www.nouveaufrontpopulaire.fr/">
-          <img
-            src={nfpLogo}
-            alt="logo du Nouveau Front Populaire"
-            width="200"
-            height="67"
-          />
+        <a href="https://programme.lafranceinsoumise.fr/">
+            <Programme />
         </a>
         <Spacer size="1rem" />
         <a href="https://linsoumission.fr">
-          <img
-            src={linsoumissionLogo}
-            alt="logo de l'insoumission"
-            width="176"
-            height="48"
-          />
+            <Insoumission />
         </a>
       </nav>
     </StyledArticle>
