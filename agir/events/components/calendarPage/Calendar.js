@@ -98,7 +98,8 @@ export default function Calendar({agendaSlug}) {
                     <p>{agenda?.description}</p>
                     {agenda?.slug === "national" &&
                         <AlertInfo>Si vous souhaitez organiser une réunion publique avec votre groupe d'action <a
-                            href="https://actionpopulaire.fr/formulaires/demande-intervenant-reunion-publique/">consultez
+                            target="_blank"
+                            href="https://infos.actionpopulaire.fr/fiches/organiser-une-reunion-publique/">consultez
                             la fiche pratique.</a></AlertInfo>}
                     <EventList events={events ?? []}/>
                 </>
