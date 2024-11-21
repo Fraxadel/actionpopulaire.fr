@@ -52,6 +52,21 @@ class RSVPEventView(SoftLoginRequiredMixin, DetailView):
     )
     context_object_name = "event"
 
+    def dispatch(self, request, *args, **kwargs):
+        event = self.get_object()
+        if (
+            event.subscription_form is not None
+            and event.subscription_form.allow_anonymous
+            and not self.request.user.is_authenticated
+        ):
+            return HttpResponseRedirect(
+                reverse(
+                    "view_person_form",
+                    kwargs={"slug": event.subscription_form.slug},
+                )
+            )
+        return super().dispatch(request, *args, **kwargs)
+
     def get_form(self):
         if self.event.subscription_form is None:
             return None

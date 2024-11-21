@@ -76,6 +76,8 @@ __all__ = [
     "GroupAttendee",
 ]
 
+from agir.people.person_forms.models import PersonForm
+
 
 class EventQuerySet(models.QuerySet):
     def public(self):
@@ -969,6 +971,11 @@ class Event(
 
     def can_rsvp(self, person):
         if not person:
+            if (
+                self.subscription_form is not None
+                and self.subscription_form.allow_anonymous
+            ):
+                return True
             return False
 
         if not self.for_organizer_group_members_only():

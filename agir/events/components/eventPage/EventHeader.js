@@ -223,7 +223,7 @@ const Actions = (props) => {
     );
   }
 
-  if (!logged) {
+  if (!logged && !canRSVP) {
     return (
       <StyledActions>
         <Button color="secondary" disabled>
@@ -361,7 +361,7 @@ const AdditionalMessage = (props) => {
 
   const location = useLocation();
 
-  if (!logged) {
+  if (!logged && !canRSVP) {
     return (
       <div>
         <ActionLink
