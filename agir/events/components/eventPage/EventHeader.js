@@ -255,7 +255,7 @@ const Actions = (props) => {
             disabled={disabled || isLoading}
             onClick={handleRSVP}
           >
-            Participer
+              {logged ? "Participer" : "S'inscrire"}
           </Button>
         )}
         {rsvped && canCancelRSVP && (
@@ -409,8 +409,8 @@ const AdditionalMessage = (props) => {
   if (!isOrganizer && !rsvped) {
     return (
       <SmallText>
-        Les adresses e-mail des participant·es seront communiquées aux
-        organisateur·ices
+          {logged ? "Les adresses e-mail des participant·es seront communiquées aux organisateur·ices." :
+              "Les informations transmises pendant l'inscription seront communiquées aux organisateur·ices."}
       </SmallText>
     );
   }
