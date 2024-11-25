@@ -51,7 +51,9 @@ if settings.ENABLE_FRONT:
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+import debug_toolbar
+
 if settings.ENABLE_DEBUG_TOOLBAR:
-    urlpatterns = [path("__debug__/", include("debug_toolbar.urls"))] + urlpatterns
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
 
 urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]

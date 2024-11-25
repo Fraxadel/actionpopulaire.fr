@@ -62,6 +62,7 @@ const GroupManagementPage = (props) => {
           members={members || []}
           isLoading={isLoading}
           routes={routes}
+          group={group}
         />
       ) : (
         <ManagerMainPanel group={group} />

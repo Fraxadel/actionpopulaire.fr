@@ -13,9 +13,9 @@ import GroupMemberFile from "@agir/groups/groupPage/GroupSettings/GroupMemberFil
 import { useToast } from "@agir/front/globalContext/hooks";
 import { useGroup } from "@agir/groups/groupPage/hooks/group";
 import {getGroupEndpoint, updateMember, useRemoveMembershipRequestByGroup} from "@agir/groups/utils/api";
-import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequest";
+import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
 import GroupMemberRemoveRequestReferentValidation
-    from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequestReferentValidation";
+    from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequestReferentValidation";
 
 export const slideInTransition = {
   from: { transform: "translateX(66%)" },
@@ -150,7 +150,6 @@ const EditableMembershipPanel = (props) => {
   );
   const {data: removeRequests } = useRemoveMembershipRequestByGroup(groupPk);
 
-  const [displayRemoveMemberStep, setDisplayRemoveMemberStep] = useState(false)
   const [selectedMembershipType, setSelectedMembershipType] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -220,9 +219,7 @@ const EditableMembershipPanel = (props) => {
     setSelectedMembershipType(null);
   }, []);
 
-  const toggleRemoveMemberRequest = useCallback(() => {
-      setDisplayRemoveMemberStep((prev) => !prev)
-  }, [])
+
 
   const memberFileTransition = useTransition(
     !!selectedMemberPersonalInformation,
@@ -232,11 +229,6 @@ const EditableMembershipPanel = (props) => {
     selectedMembershipType,
     slideInTransition,
   );
-
-  const removeMemberRequestTransition = useTransition(
-      displayRemoveMemberStep,
-      slideInTransition,
-  )
 
   return (
     <>
@@ -250,7 +242,6 @@ const EditableMembershipPanel = (props) => {
           onClickMember={selectMember}
           isLoading={isLoading}
           updateMembershipType={updateMembershipType}
-          openRemoveRequest={toggleRemoveMemberRequest}
         />
       </PageFadeIn>
       {memberFileTransition(
@@ -265,7 +256,6 @@ const EditableMembershipPanel = (props) => {
                 onChangeMembershipType={selectMembershipType}
                 onClickMember={selectMember}
                 isLoading={isLoading}
-                openRemoveRequest={toggleRemoveMemberRequest}
               />
             </SecondaryPanel>
           ),
@@ -284,16 +274,6 @@ const EditableMembershipPanel = (props) => {
               />
             </SecondaryPanel>
           ),
-      )}
-      {removeMemberRequestTransition(
-          (style, item) => item && <SecondaryPanel style={style}>
-                  <GroupMemberRemoveRequest
-                      onBack={toggleRemoveMemberRequest}
-                      member={selectedMemberPersonalInformation}
-                      group={group}
-                      removeRequest={removeRequests?.find((request) => request?.person === selectedMemberPersonalInformation?.personId)}
-                  />
-          </SecondaryPanel>
       )}
     </>
   );

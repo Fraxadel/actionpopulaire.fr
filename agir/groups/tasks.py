@@ -836,13 +836,20 @@ def send_uncertified_group_notifications(supportgroup_pk):
     )
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 @emailing_task()
 def send_notifications_remove_request_referent(person_pk, group_pk):
+    logger.error("send notification remove requeets HHHH")
+
     person = Person.objects.get(person_pk)
     group = SupportGroup.objects.get(pk=group_pk)
 
     Activity.objects.create(
-        type=Activity.TYPE_GROUP_CREATION_CONFIRMATION,
+        type=Activity.TYPE_REQUEST_MEMBERSHIP_VALIDATION,
         recipient=person,
         supportgroup=group,
         status=Activity.STATUS_UNDISPLAYED,

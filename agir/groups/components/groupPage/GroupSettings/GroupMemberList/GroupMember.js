@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, {useMemo} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import styled from "styled-components";
 
 import {GENDER, getGenderedWord} from "@agir/lib/utils/display";
@@ -11,6 +11,10 @@ import {MEMBERSHIP_TYPES} from "@agir/groups/utils/group";
 import {useSelector} from "@agir/front/globalContext/GlobalContext";
 import {getUser} from "@agir/front/globalContext/reducers";
 import Button from "@agir/front/genericComponents/Button";
+import {useTransition} from "@react-spring/web";
+import {SecondaryPanel, slideInTransition} from "@agir/groups/groupPage/GroupSettings/MembershipPanel";
+import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
+import {useHistory} from "react-router-dom";
 
 const StyledName = styled.p``;
 const StyledEmail = styled.p``;
@@ -19,22 +23,7 @@ const StyledMembershipType = styled.p`
     color: ${(props) => props.theme[props.$color] || props.theme.text1000};
 `;
 
-const RemoveHelper = styled.div`
-    padding: 20px;
-    color: ${(props) => props.theme.text500};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    span {
-        margin-right: 10px;
-    }
-
-    p {
-        margin: 0;
-    }
-`
+const RemoveHelper = styled.div``
 
 const StyledMember = styled.div`
     color: ${(props) => props.theme.text1000};
@@ -71,6 +60,12 @@ const StyledMember = styled.div`
         @media (max-width: 350px) {
             display: none;
         }
+    }
+
+    ${RemoveHelper} {
+        grid-column: 3/4;
+        grid-row: 1/3;
+        text-align: right;
     }
 
     ${StyledName},
@@ -230,7 +225,7 @@ const GroupMember = (props) => {
         onClick,
         isLoading,
         currentRemoveRequest,
-        openRemoveRequest
+        group
     } = props;
 
     const handleClick = () => {
@@ -238,6 +233,7 @@ const GroupMember = (props) => {
     };
 
     const user = useSelector(getUser);
+    const history = useHistory();
 
     return (
         <>
@@ -251,31 +247,33 @@ const GroupMember = (props) => {
                 <StyledName>{displayName}</StyledName>
                 <StyledEmail>{email}</StyledEmail>
                 <StyledDescription>{description}</StyledDescription>
-                <MembershipType
-                    gender={gender}
-                    membershipType={membershipType}
-                    hasGroupNotifications={hasGroupNotifications}
-                />
-                {typeof onClick === "function" ? (
-                    <RawFeatherIcon name="arrow-right"/>
-                ) : (
-                    <Spacer size="2rem"/>
-                )}
-
-            </StyledMember>
-            {
-                currentRemoveRequest && <RemoveHelper>
-                    {
-                        user.id === currentRemoveRequest.created_by ?
-                        <p><span className="fa fa-trash"/>
-                            Une demande de suppression est en cours</p>
-                            : <>
-                            <p><span className="fa fa-trash"/>Une demande de suppression d’un·e membre du groupe est en cours.</p>
-                            <p><Button onClick={() => { handleClick(); openRemoveRequest() } } small color="secondary">Voir la demande</Button></p>
+                {
+                    currentRemoveRequest ? <RemoveHelper>
+                            <Button
+                                onClick={() => {
+                                    history.push({
+                                        pathname: 'remove-request',
+                                        state: { group, removeRequest: currentRemoveRequest, member: props },
+                                    });
+                                //handleClick();
+                            }} color="secondary">Voir la demande</Button>
+                        </RemoveHelper>
+                        :
+                        <>
+                            <MembershipType
+                                gender={gender}
+                                membershipType={membershipType}
+                                hasGroupNotifications={hasGroupNotifications}
+                            />
+                            {typeof onClick === "function" ? (
+                                <RawFeatherIcon name="arrow-right"/>
+                            ) : (
+                                <Spacer size="2rem"/>
+                            )}
                         </>
-                    }
-                </RemoveHelper>
-            }
+                }
+            </StyledMember>
+
         </>
     );
 };

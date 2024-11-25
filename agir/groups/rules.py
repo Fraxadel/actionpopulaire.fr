@@ -1,6 +1,7 @@
 import rules
 
 from agir.authentication.models import Role
+from agir.groups.models import MembershipRemoveRequest
 from agir.lib.rules import is_authenticated_person
 from .models import Membership, SupportGroup
 from ..msgs.models import SupportGroupMessage, SupportGroupMessageComment
@@ -58,6 +59,9 @@ def is_at_least_manager_for_group(role, obj=None):
     )
 
 
+import logging
+
+
 @rules.predicate
 def is_at_least_referent_for_group(role, obj=None):
     if obj is None:
@@ -70,6 +74,8 @@ def is_at_least_referent_for_group(role, obj=None):
     elif isinstance(obj, SupportGroupMessageComment):
         supportgroup = obj.message.supportgroup
     elif isinstance(obj, Membership):
+        supportgroup = obj.supportgroup
+    elif isinstance(obj, MembershipRemoveRequest):
         supportgroup = obj.supportgroup
     else:
         return False
@@ -231,5 +237,9 @@ rules.add_perm(
 )
 rules.add_perm(
     "groups.add_membership_remove_request",
+    is_authenticated_person & is_at_least_referent_for_group,
+)
+rules.add_perm(
+    "groups.validate_membership_remove_request",
     is_authenticated_person & is_at_least_referent_for_group,
 )

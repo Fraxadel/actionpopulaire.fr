@@ -1,4 +1,6 @@
+from agir.groups.admin import MembershipRemoveRequestAdmin
 from django.db.models import Q
+from django.http import HttpResponseForbidden
 from numpy.lib.utils import source
 from rest_framework.generics import (
     CreateAPIView,
@@ -30,6 +32,7 @@ __all__ = [
 
 
 class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
     supportgroup = serializers.PrimaryKeyRelatedField(
         label="Groupe d'action",
         queryset=SupportGroup.objects.active(),
@@ -52,7 +55,9 @@ class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MembershipRemoveRequest
+        partial = True
         fields = [
+            "id",
             "supportgroup",
             "person",
             "details",
@@ -63,25 +68,35 @@ class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
 
 
 class MembershipRemoveRequestCreatePermissions(GlobalOrObjectPermissions):
-    perms_map = {
-        "OPTIONS": [],
-        "POST": [],
-    }
+    perms_map = {"OPTIONS": [], "POST": [], "PATCH": []}
     object_perms_map = {
         "OPTIONS": [],
         "POST": ["groups.add_membership_remove_request"],
+        "PATCH": ["groups.validate_membership_remove_request"],
     }
 
 
 class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
-    def update(self, request, *args, **kwargs):
-        pass
+    queryset = MembershipRemoveRequest.objects.exclude(
+        status__exact=MembershipRemoveRequest.Status.DONE
+    )
+    model = MembershipRemoveRequest
+    permission_classes = (IsPersonPermission, MembershipRemoveRequestCreatePermissions)
+    serializer_class = MembershipRemoveRequestSerializer
 
     def patch(self, request, *args, **kwargs):
         # we only allow patch to validate the request from the other referent
-        if request.data.status != MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW:
-            return HttpResponseUnauthorized()
-        return super().patch(request, *args, **kwargs)
+        current_remove_request = self.get_object()
+        if request.user == current_remove_request.created_by:
+            return HttpResponseForbidden()
+
+        if (
+            current_remove_request.status
+            == MembershipRemoveRequest.Status.AWAIT_PEER_REVIEW
+        ):
+            request.data["status"] = MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW
+            return super().partial_update(request, *args, **kwargs)
+        return HttpResponseForbidden()
 
 
 class MembershipRemoveRequestCreateAPIView(CreateAPIView, UpdateAPIView):

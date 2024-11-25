@@ -57,7 +57,7 @@ api_urlpatterns = [
         name="api_group_subtypes",
     ),
     path(
-        "request-membership-remove/<uuid:pk>",
+        "request-membership-remove/<uuid:pk>/validate",
         views.MembershipRemoveRequestUpdateAPIView.as_view(),
         name="api_membership_remove_request_update",
     ),

@@ -12,6 +12,7 @@ import illustrationContact from "@agir/front/genericComponents/images/group_cont
 import illustrationLinks from "@agir/front/genericComponents/images/group_links.svg";
 import illustrationHelp from "@agir/front/genericComponents/images/group_help.svg";
 import illustrationStats from "@agir/front/genericComponents/images/group_stats.svg";
+import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
 
 const GroupSettingsReadOnlyMembers = lazy(
   () =>
@@ -103,6 +104,12 @@ const GroupSettingsStats = lazy(
       /* webpackChunkName: "r-groupsettingsstats" */ "@agir/groups/groupPage/GroupSettings/GroupStatisticsPage"
     ),
 );
+const GroupRemoveRequestMembershipPage = lazy(
+    () =>
+        import(
+            /* webpackChunkName: "r-groupremovemembershiprequest" */
+            "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequestPage"),
+)
 
 export const menuRoute = {
   id: "menu",
@@ -258,6 +265,13 @@ export const routeConfig = {
     isActive: true,
     menuGroup: 3,
   },
+  removeMemberShipRequest: {
+    id: "removeMemberShip",
+    path: "remove-request/",
+    exact: true,
+    label: "Requête de suppression de membre",
+    Component: GroupRemoveRequestMembershipPage,
+  }
 };
 
 export const getMenuRoute = (basePath) =>

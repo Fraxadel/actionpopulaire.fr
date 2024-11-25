@@ -8,7 +8,7 @@ import Spacer from "@agir/front/genericComponents/Spacer";
 import {createRemoveMembershipRequest} from "@agir/groups/utils/api";
 import {useMutate} from "@agir/front/app/apiHook";
 import GroupMemberRemoveRequestReferentValidation
-    from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/GroupMemberRemoveRequestReferentValidation";
+    from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequestReferentValidation";
 import RequestValidationMessage from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/ValidationMessage";
 
 const ButtonActions = styled.div`
@@ -82,7 +82,10 @@ export default function GroupMemberRemoveRequest({member, group, onBack, removeR
             }
             <ButtonActions>
                 <Button onClick={onBack}>Annuler</Button>
-                <Button loading={isLoading} onClick={submitRequest} disabled={disableSubmit} color="primary"
+                <Button loading={isLoading}
+                        onClick={submitRequest}
+                        disabled={disableSubmit}
+                        color="primary"
                         icon="send">Envoyer la demande</Button>
             </ButtonActions>
             {

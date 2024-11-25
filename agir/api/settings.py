@@ -241,7 +241,8 @@ MIDDLEWARE = [
 if ENABLE_DEBUG_TOOLBAR:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
-    INTERNAL_IPS = ["127.0.0.1", "192.168.33.1"]
+    INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
+    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: ENABLE_DEBUG_TOOLBAR}
 
 SILKY_INTERCEPT_FUNC = (
     lambda request: (

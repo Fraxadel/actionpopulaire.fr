@@ -279,7 +279,7 @@ export const routeConfig = {
   }),
   groupDetailsGestion: new RouteConfig({
     id: "groupDetailsGestion",
-    path: "/groupes/:groupPk/gestion/:any?/",
+    path: "/groupes/:groupPk/gestion/:any?/:action?",
     exact: false,
     neededAuthentication: AUTHENTICATION.NONE,
     label: "Page gestion du groupe",

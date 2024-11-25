@@ -65,7 +65,7 @@ export const createRemoveMembershipRequest = async (groupId, memberId, details, 
   reason: reason
 })
 
-export const usePatchMembershipRemoveRequest = (request) => axios.patch(`/api/groupes/request-membership-remove/${request.id}`, request)
+export const useMembershipRemoveRequestValidate = (requestId) => axios.patch(`/api/groupes/request-membership-remove/${requestId}/validate`)
 
 export const getGroupEndpoint = (key, params, querystringParams) => {
   let endpoint = ENDPOINT[key] || "";

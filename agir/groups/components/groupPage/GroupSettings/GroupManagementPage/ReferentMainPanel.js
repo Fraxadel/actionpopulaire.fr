@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useMemo } from "react";
+import React, {useCallback, useMemo, useState} from "react";
 
 import GroupMemberList from "@agir/groups/groupPage/GroupSettings/GroupMemberList";
 import { RawFeatherIcon as FeatherIcon } from "@agir/front/genericComponents/FeatherIcon";
@@ -8,10 +8,12 @@ import Spacer from "@agir/front/genericComponents/Spacer";
 import { StyledTitle } from "@agir/front/genericComponents/ObjectManagement/styledComponents";
 
 import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
+import {useRemoveMembershipRequestByGroup} from "@agir/groups/utils/api";
+import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
+import {SecondaryPanel, slideInTransition} from "@agir/groups/groupPage/GroupSettings/MembershipPanel";
+import {useTransition} from "@react-spring/web";
 
-export const ReferentMainPanel = (props) => {
-  const { routes, addManager, addReferent, isLoading, members, onClickMember } =
-    props;
+export const ReferentMainPanel = ({ routes, addManager, addReferent, isLoading, members, onClickMember, group }) => {
 
   const referents = useMemo(
     () =>
@@ -28,6 +30,10 @@ export const ReferentMainPanel = (props) => {
       ),
     [members],
   );
+
+  const { data: removeRequests } = useRemoveMembershipRequestByGroup(group.id);
+  const membersToDelete = members.filter((member) => removeRequests?.find((request) => request.person === member.personId))
+
 
   return (
     <>
@@ -122,19 +128,31 @@ export const ReferentMainPanel = (props) => {
         isLoading={isLoading}
         onClickMember={onClickMember}
       />
-      {routes?.deleteGroup && (
-        <>
-          <hr />
-          <a
-            href={routes.deleteGroup}
-            css={`
+
+      <div>
+          <Spacer size="1.5rem" />
+          <StyledTitle>Demande(s) de suppression</StyledTitle>
+          {
+              <GroupMemberList
+                  members={membersToDelete}
+                  isLoading={isLoading}
+                  removeRequests={removeRequests}
+              />
+          }
+      </div>
+        {routes?.deleteGroup && (
+            <>
+                <hr />
+                <a
+                    href={routes.deleteGroup}
+                    css={`
               color: ${(props) => props.theme.error500};
             `}
-          >
-            Supprimer le groupe
-          </a>
-        </>
-      )}
+                >
+                    Supprimer le groupe
+                </a>
+            </>
+        )}
     </>
   );
 };

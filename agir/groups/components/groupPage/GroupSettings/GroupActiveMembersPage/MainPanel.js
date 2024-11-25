@@ -38,7 +38,7 @@ const FullGroupWarning = () => (
 );
 
 const GroupMemberMainPanel = (props) => {
-  const { members, group, onClickMember, openRemoveRequest, removeRequests, routes } = props;
+  const { members, group, onClickMember, routes } = props;
 
   const activeMembers = useMemo(() => {
     if (!Array.isArray(members)) {
@@ -88,10 +88,8 @@ const GroupMemberMainPanel = (props) => {
       <GroupMemberList
         sortable
         searchable
-        removeRequests={removeRequests}
         members={activeMembers}
         onClickMember={onClickMember}
-        openRemoveRequest={openRemoveRequest}
       />
       <Spacer size="2.5rem" />
       <Link

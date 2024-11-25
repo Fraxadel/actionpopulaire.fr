@@ -223,6 +223,9 @@ const ACTIVITY_CONFIG = {
           }
         : null,
   },
+  "referent_must_validate_remove_request": {
+      icon: "user-x"
+  }
 };
 
 export default ACTIVITY_CONFIG;

@@ -55,7 +55,7 @@ const RequestElement = styled.div`
 
 const RemoveMemberAction = ({openRemoveRequest, currentRemoveRequest}) => {
     return <>
-        <p><Button disabled={currentRemoveRequest} onClick={openRemoveRequest} color="danger">Retirer du groupe</Button>
+        <p><Button disabled={!!currentRemoveRequest} onClick={openRemoveRequest} color="danger">Retirer du groupe</Button>
         </p>
         {currentRemoveRequest && <RequestElement>
             <StyledWarning>
