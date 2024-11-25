@@ -90,6 +90,7 @@ class PersonAdmin(DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin):
     )
     list_display_links = ("__str__",)
     form = PersonAdminForm
+    list_per_page = 40
 
     fieldsets = (
         (
