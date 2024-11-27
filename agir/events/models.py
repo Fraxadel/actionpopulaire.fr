@@ -929,7 +929,10 @@ class Event(
 
         if "free_pricing" in self.payment_parameters:
             field = self.payment_parameters["free_pricing"]
-            price += max(0, int(submission_data.get(field, 0) * 100))
+            current_value = submission_data.get(field, 0)
+            if current_value == "":
+                current_value = 0
+            price += max(0, int(int(current_value) * 100))
 
         return price
 
