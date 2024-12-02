@@ -5,9 +5,9 @@ import styled from "styled-components";
 import {RawFeatherIcon} from "@agir/front/genericComponents/FeatherIcon";
 import InfoBlock from "@agir/front/genericComponents/InfoBlock";
 import Spacer from "@agir/front/genericComponents/Spacer";
-import RequestValidationMessage from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/ValidationMessage";
+import RequestValidationMessage, {ALERT_STYLE} from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/ValidationMessage";
 import {useMutate} from "@agir/front/app/apiHook";
-import {useMembershipRemoveRequestValidate} from "@agir/groups/utils/api";
+import {useMembershipRemoveRequestValidate, useMembershipRemoveRequestRefuse} from "@agir/groups/utils/api";
 import {useSelector} from "@agir/front/globalContext/GlobalContext";
 import {getUser} from "@agir/front/globalContext/reducers";
 import {RemoveRequestStatus} from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/RemoveRequest.domain";
@@ -41,11 +41,21 @@ const Reason = styled.div`
 export default function GroupMemberRemoveRequestReferentValidation({removeRequest, member, onBack}) {
 
     const [approved, setApproved] = useState(false);
-    const {mutate: updateRequest, isLoading, error} = useMutate(useMembershipRemoveRequestValidate, onBack)
+    const [refused, setRefused] = useState(false);
+    const {mutate: validateRequest, isLoadingValidate, errorValidate} = useMutate(useMembershipRemoveRequestValidate)
+    const {mutate: refuseRequest, isLoadingRefuse, errorRefuse} = useMutate(useMembershipRemoveRequestRefuse)
+
     const user = useSelector(getUser);
+    const isLoading = isLoadingRefuse || isLoadingValidate
 
     function approve() {
-        updateRequest(removeRequest.id)
+        validateRequest(removeRequest.id)
+        setApproved(true)
+    }
+
+    function refuse() {
+        refuseRequest(removeRequest.id)
+        setRefused(true)
     }
 
     const coAnimMustValidateTheRequest = user.id !== removeRequest.creator && removeRequest.status === RemoveRequestStatus.AWAIT_PEER_REVIEW;
@@ -76,12 +86,16 @@ export default function GroupMemberRemoveRequestReferentValidation({removeReques
             </InfoBlock>
         }
         {coAnimMustValidateTheRequest && <ButtonActions>
-            <Button icon="x" color="danger">Refuser la demande</Button>
-            <Button onClick={approve} icon="check" color="success">Approuver la demande</Button>
+            <Button disable={isLoading} onClick={refuse} icon="x" color="danger">Refuser la demande</Button>
+            <Button disable={isLoading} onClick={approve} icon="check" color="success">Approuver la demande</Button>
         </ButtonActions>}
         <RequestValidationMessage display={approved} onBack={onBack} title="Vous avez approuvé la demande">
             <p>Le Pôle des groupes d'action va traiter la demande, vous serez informé­·e une fois que celle-ci aura été
                 effectuée.</p>
+            <p>Merci encore pour votre vigilance. À bientôt !</p>
+        </RequestValidationMessage>
+        <RequestValidationMessage style={ALERT_STYLE.DANGER} display={refused} onBack={onBack} title="Vous avez refusé la demande">
+            <p>Suite à votre refus, la demande va être supprimée de votre groupe.</p>
             <p>Merci encore pour votre vigilance. À bientôt !</p>
         </RequestValidationMessage>
     </Content>

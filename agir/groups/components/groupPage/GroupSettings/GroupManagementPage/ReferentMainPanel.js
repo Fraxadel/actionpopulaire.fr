@@ -32,7 +32,7 @@ export const ReferentMainPanel = ({ routes, addManager, addReferent, isLoading, 
   );
 
   const { data: removeRequests } = useRemoveMembershipRequestByGroup(group.id);
-  const membersToDelete = members.filter((member) => removeRequests?.find((request) => request.person === member.personId))
+  const membersToDelete = members.filter((member) => removeRequests?.find((request) => request.personId === member.personId))
 
 
   return (
@@ -131,13 +131,17 @@ export const ReferentMainPanel = ({ routes, addManager, addReferent, isLoading, 
 
       <div>
           <Spacer size="1.5rem" />
-          <StyledTitle>Demande(s) de suppression</StyledTitle>
           {
-              <GroupMemberList
-                  members={membersToDelete}
-                  isLoading={isLoading}
-                  removeRequests={removeRequests}
-              />
+              removeRequests && removeRequests.length > 1 && <>
+                <StyledTitle>Demande(s) de suppression</StyledTitle>
+                {
+                    <GroupMemberList
+                        members={membersToDelete}
+                        isLoading={isLoading}
+                        removeRequests={removeRequests}
+                    />
+                }
+                </>
           }
       </div>
         {routes?.deleteGroup && (

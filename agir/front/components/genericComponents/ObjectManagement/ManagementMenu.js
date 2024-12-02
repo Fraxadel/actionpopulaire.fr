@@ -205,8 +205,8 @@ const ManagementMenu = (props) => {
         items.reduce((o, item) => {
           if (item.menuGroup) {
             o[item.menuGroup] = o[item.menuGroup] || [];
+            o[item.menuGroup].push(item);
           }
-          o[item.menuGroup].push(item);
           return o;
         }, {}),
       ),

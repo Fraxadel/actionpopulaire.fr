@@ -251,7 +251,7 @@ const EditableMembershipPanel = (props) => {
               <GroupMemberFile
                 group={group}
                 member={selectedMemberPersonalInformation}
-                currentRemoveRequest={removeRequests?.find((request) => request.person === selectedMemberPersonalInformation?.personId)}
+                currentRemoveRequest={removeRequests?.find((request) => request.personId === selectedMemberPersonalInformation?.personId)}
                 onBack={unselectMember}
                 onChangeMembershipType={selectMembershipType}
                 onClickMember={selectMember}

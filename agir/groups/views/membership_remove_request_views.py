@@ -9,6 +9,7 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 from rest_framework import serializers
+from django.urls import resolve
 
 from agir.authentication.view_mixins import (
     HardLoginRequiredMixin,
@@ -33,12 +34,13 @@ __all__ = [
 
 class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
-    supportgroup = serializers.PrimaryKeyRelatedField(
+    supportgroupId = serializers.PrimaryKeyRelatedField(
+        source="supportgroup",
         label="Groupe d'action",
-        queryset=SupportGroup.objects.active(),
-        write_only=True,
+        queryset=SupportGroup.objects.all(),
     )
-    person = serializers.PrimaryKeyRelatedField(
+    personId = serializers.PrimaryKeyRelatedField(
+        source="person",
         label="Membre",
         queryset=Person.objects.all(),
     )
@@ -58,8 +60,8 @@ class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
         partial = True
         fields = [
             "id",
-            "supportgroup",
-            "person",
+            "supportgroupId",
+            "personId",
             "details",
             "reason",
             "status",
@@ -76,6 +78,11 @@ class MembershipRemoveRequestCreatePermissions(GlobalOrObjectPermissions):
     }
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
     queryset = MembershipRemoveRequest.objects.exclude(
         status__exact=MembershipRemoveRequest.Status.DONE
@@ -86,7 +93,10 @@ class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         # we only allow patch to validate the request from the other referent
+
+        current_url = resolve(request.path_info).url_name
         current_remove_request = self.get_object()
+
         if request.user == current_remove_request.created_by:
             return HttpResponseForbidden()
 
@@ -94,7 +104,12 @@ class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
             current_remove_request.status
             == MembershipRemoveRequest.Status.AWAIT_PEER_REVIEW
         ):
-            request.data["status"] = MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW
+            if current_url.endswith("validate"):
+                request.data["status"] = (
+                    MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW
+                )
+            elif current_url.endswith("refuse"):
+                request.data["status"] = MembershipRemoveRequest.Status.REFUSED
             return super().partial_update(request, *args, **kwargs)
         return HttpResponseForbidden()
 
@@ -128,7 +143,12 @@ class MembershipRemoveRequestListAPIView(ListAPIView, HardLoginRequiredMixin):
     def get_queryset(self):
         return MembershipRemoveRequest.objects.filter(
             supportgroup__id=self.kwargs.get("pk")
-        ).exclude(status__exact=MembershipRemoveRequest.Status.DONE)
+        ).exclude(
+            status__in=[
+                MembershipRemoveRequest.Status.DONE,
+                MembershipRemoveRequest.Status.REFUSED,
+            ]
+        )
 
 
 class MembershipRemoveRequestDetailAPIView(RetrieveAPIView, HardLoginRequiredMixin):

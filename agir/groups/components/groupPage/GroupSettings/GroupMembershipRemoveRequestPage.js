@@ -18,22 +18,35 @@ import Spacer from "@agir/front/genericComponents/Spacer";
 import FaIcon from "@agir/front/genericComponents/FaIcon";
 import GroupMemberRemoveRequest
     from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
+import {useLocation} from "react-router-dom";
+import {useHistory} from "react-router-dom";
+
+const StyledSkeleton = styled(Skeleton)`
+  &:nth-child(odd) {
+    height: 2rem;
+    max-width: 50%;
+    margin-bottom: 1rem;
+  }
+`;
 
 
 const GroupMembershipRemoveRequestPage = (props) => {
-    const { groups, onBack, member, removeRequest } = props;
+    const location = useLocation()
 
+    const member = location.state?.member
+    const removeRequest = location.state?.removeRequest
+
+    const history = useHistory();
 
     return (
         <div>
-            <PageFadeIn wait={<StyledSkeleton boxes={6} />}>
+            <PageFadeIn ready={member && removeRequest} wait={<StyledSkeleton boxes={6} />}>
                 <GroupMemberRemoveRequest
                     member={member}
-                    group={group}
+                    groupId={removeRequest.supportgroupId}
                     removeRequest={removeRequest}
+                    onBack={history.goBack}
                     />
-
-
             </PageFadeIn>
         </div>
     );

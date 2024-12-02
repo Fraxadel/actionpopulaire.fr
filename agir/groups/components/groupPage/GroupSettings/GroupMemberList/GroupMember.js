@@ -232,6 +232,7 @@ const GroupMember = (props) => {
         onClick && onClick(id);
     };
 
+    
     const user = useSelector(getUser);
     const history = useHistory();
 
@@ -251,10 +252,9 @@ const GroupMember = (props) => {
                     currentRemoveRequest ? <RemoveHelper>
                             <Button
                                 onClick={() => {
-                                    history.push({
-                                        pathname: 'remove-request',
-                                        state: { group, removeRequest: currentRemoveRequest, member: props },
-                                    });
+                                    history.push(`/groupes/${currentRemoveRequest.supportgroupId}/gestion/requete-suppression-membre/${currentRemoveRequest.id}`,
+                                        { removeRequest: currentRemoveRequest, member: props },
+                                    );
                                 //handleClick();
                             }} color="secondary">Voir la demande</Button>
                         </RemoveHelper>

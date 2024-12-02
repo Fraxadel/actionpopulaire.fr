@@ -266,11 +266,14 @@ export const routeConfig = {
     menuGroup: 3,
   },
   removeMemberShipRequest: {
-    id: "removeMemberShip",
-    path: "remove-request/",
+    id: "removeMembership",
+    path: "requete-suppression-membre/",
+    icon: "more-horizontal",
     exact: true,
+    isActive: true,
     label: "Requête de suppression de membre",
     Component: GroupRemoveRequestMembershipPage,
+    illustration: illustrationHelp,
   }
 };
 

@@ -35,7 +35,7 @@ export const RemoveOption = [
     }
 ]
 
-export default function GroupMemberRemoveRequest({member, group, onBack, removeRequest}) {
+export default function GroupMemberRemoveRequest({member, groupId, onBack, removeRequest}) {
     const [details, setDetails] = useState(removeRequest?.details ?? "")
     const [reason, setReason] = useState(removeRequest?.reason)
     const [displayDone, setDisplayDone] = useState(false);
@@ -46,13 +46,13 @@ export default function GroupMemberRemoveRequest({member, group, onBack, removeR
     const disableSubmit = details.length < 10 || reason === undefined
 
     async function submitRequest() {
-        await createRequest(group.id, member.personId, details, reason)
+        await createRequest(groupId, member.personId, details, reason)
     }
 
     return <>
         <BackButton onClick={onBack}/>
         <h3>Retirer <u>{member?.firstName} {member?.displayName}</u> des membres ?</h3>
-        {removeRequest && <GroupMemberRemoveRequestReferentValidation member={member} removeRequest={removeRequest}/>}
+        {removeRequest && <GroupMemberRemoveRequestReferentValidation onBack={onBack} member={member} removeRequest={removeRequest}/>}
         {!removeRequest && <>
             <p>Cette personne ne fera plus partie du groupe. Pour quelle raison souhaitez-vous la retirer ?</p>
             <fieldset>
