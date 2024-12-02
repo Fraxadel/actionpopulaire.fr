@@ -267,7 +267,7 @@ export const routeConfig = {
   },
   removeMemberShipRequest: {
     id: "removeMembership",
-    path: "requete-suppression-membre/",
+    path: "requete-suppression-membre/:requestId?",
     icon: "more-horizontal",
     exact: true,
     isActive: true,

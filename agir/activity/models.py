@@ -117,11 +117,13 @@ class Activity(TimeStampedModel):
         TYPE_NEW_MEMBERS_THROUGH_TRANSFER,
         TYPE_EVENT_SUGGESTION,
         TYPE_ANNOUNCEMENT,
+        TYPE_REQUEST_MEMBERSHIP_VALIDATION,
         # Old required action types :
         TYPE_WAITING_PAYMENT,
     )
 
     TYPE_CHOICES = (
+        (TYPE_REQUEST_MEMBERSHIP_VALIDATION, "Requête de suppression de membre"),
         (TYPE_WAITING_PAYMENT, "Paiement en attente"),
         (TYPE_NEW_EVENT_PARTICIPATION_MYGROUPS, "Le groupe participe à un événement"),
         (TYPE_GROUP_INVITATION, "Invitation à un groupe"),

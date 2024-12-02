@@ -6,6 +6,7 @@ import Button from "@agir/front/genericComponents/Button";
 
 import { MEMBERSHIP_TYPES } from "@agir/groups/utils/group";
 import {RawFeatherIcon} from "@agir/front/genericComponents/FeatherIcon";
+import {useHistory} from "react-router-dom";
 
 const StyledWrapper = styled.div`
   padding: 0;
@@ -53,7 +54,20 @@ const RequestElement = styled.div`
     }
 `
 
-const RemoveMemberAction = ({openRemoveRequest, currentRemoveRequest}) => {
+const RemoveMemberAction = ({currentRemoveRequest, member, groupId}) => {
+    const history = useHistory()
+
+
+    function openRemoveRequest() {
+        history.push(
+            `/groupes/${groupId}/gestion/requete-suppression-membre/${currentRemoveRequest?.id ?? ""}`,
+            {
+                removeRequest: currentRemoveRequest,
+                member,
+                groupId
+            })
+    }
+
     return <>
         <p><Button disabled={!!currentRemoveRequest} onClick={openRemoveRequest} color="danger">Retirer du groupe</Button>
         </p>
@@ -66,7 +80,7 @@ const RemoveMemberAction = ({openRemoveRequest, currentRemoveRequest}) => {
     </>
 }
 
-const GroupMemberActions = ({onChangeMembershipType, member, openRemoveRequest, group, currentRemoveRequest }) => {
+const GroupMemberActions = ({onChangeMembershipType, member, group, currentRemoveRequest }) => {
   if (!onChangeMembershipType) {
     return null;
   }
@@ -96,7 +110,7 @@ const GroupMemberActions = ({onChangeMembershipType, member, openRemoveRequest, 
             d'action
           </p>
         )}
-        <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
+        <RemoveMemberAction groupId={group.id} member={member} currentRemoveRequest={currentRemoveRequest}  />
       </StyledWrapper>
     );
   }
@@ -117,7 +131,7 @@ const GroupMemberActions = ({onChangeMembershipType, member, openRemoveRequest, 
             <Button onClick={setAsManager}>Passer en gestionnaire</Button>
           )}
         </p>
-        <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
+        <RemoveMemberAction groupId={group.id} member={member} currentRemoveRequest={currentRemoveRequest}  />
       </StyledWrapper>
     );
   }
@@ -135,7 +149,7 @@ const GroupMemberActions = ({onChangeMembershipType, member, openRemoveRequest, 
             Retirer le droit de gestionnaire
           </Button>
         </p>
-      <RemoveMemberAction currentRemoveRequest={currentRemoveRequest} openRemoveRequest={openRemoveRequest} />
+      <RemoveMemberAction groupId={group.id} member={member} currentRemoveRequest={currentRemoveRequest}  />
       </StyledWrapper>
     );
   }

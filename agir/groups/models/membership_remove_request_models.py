@@ -2,6 +2,8 @@ from agir.lib.models import BaseAPIResource
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from agir.lib.utils import front_url
+from django.urls import reverse
+from django.conf import settings
 
 __all__ = ["MembershipRemoveRequest"]
 
@@ -86,7 +88,13 @@ class MembershipRemoveRequest(BaseAPIResource):
 
     def front_url(self):
         return front_url(
-            "view_group_settings_members", args=(self.supportgroup.id,), absolute=True
+            "view_group_membership_remove_request",
+            args=(self.id,),
+        )
+
+    def admin_url(self):
+        return settings.API_DOMAIN + reverse(
+            "admin:groups_membershipremoverequest_change", args=[self.id]
         )
 
     class Meta:

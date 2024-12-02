@@ -255,7 +255,6 @@ const GroupMember = (props) => {
                                     history.push(`/groupes/${currentRemoveRequest.supportgroupId}/gestion/requete-suppression-membre/${currentRemoveRequest.id}`,
                                         { removeRequest: currentRemoveRequest, member: props },
                                     );
-                                //handleClick();
                             }} color="secondary">Voir la demande</Button>
                         </RemoveHelper>
                         :

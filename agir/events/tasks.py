@@ -178,7 +178,6 @@ logger = logging.getLogger(__name__)
 
 @emailing_task(post_save=True)
 def send_rsvp_notification(rsvp_pk):
-    logger.error("new send rsvp notification")
     rsvp = RSVP.objects.select_related(
         "person", "event", "event__volunteer_application_form"
     ).get(pk=rsvp_pk)

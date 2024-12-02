@@ -77,6 +77,11 @@ supportgroup_settings_patterns = [
         views.SupportGroupSettingsView.as_view(),
         name="view_group_settings_stats",
     ),
+    path(
+        "gestion/requete-suppression-membre/<uuid:pk>",
+        views.SupportGroupSettingsView.as_view(),
+        name="view_group_membership_remove_request",
+    ),
 ]
 
 supportgroup_patterns = [

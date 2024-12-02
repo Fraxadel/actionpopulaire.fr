@@ -49,7 +49,7 @@ export const ALERT_STYLE= {
     DANGER: 'danger'
 }
 
-export default function RequestValidationMessage({ display, onBack, title, message, style = ALERT_STYLE.SUCCESS, children }) {
+export default function RequestValidationMessage({ display, onBack, title, message, alertStyle = ALERT_STYLE.SUCCESS, children }) {
     const [currentDisplay, setCurrentDisplay] = useState(false)
 
     useEffect(() => {
@@ -61,11 +61,11 @@ export default function RequestValidationMessage({ display, onBack, title, messa
         onBack?.()
     }
 
-    const AlertComponent = style === ALERT_STYLE.SUCCESS ? AlertValidation : AlertDanger
+    const AlertComponent = alertStyle === ALERT_STYLE.SUCCESS ? AlertValidation : AlertDanger
 
     const doneTransition = useTransition(currentDisplay, slideInTransition)
     return doneTransition((style, item) => item && <SecondaryPanel style={style}><ValidationContent>
-        <AlertComponent><span className={`fa-regular fa-xl ${style === ALERT_STYLE.SUCCESS ? 'fa-check' : 'fa-xmark'}`}/>{ title }</AlertComponent>
+        <AlertComponent><span className={`fa-regular fa-xl ${alertStyle === ALERT_STYLE.SUCCESS ? 'fa-check' : 'fa-xmark'}`}/>{ title }</AlertComponent>
         { message ? message : children }
         <Button onClick={goBack} color="primary">Terminer</Button>
     </ValidationContent></SecondaryPanel>)

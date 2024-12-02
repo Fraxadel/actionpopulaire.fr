@@ -94,7 +94,7 @@ export default function GroupMemberRemoveRequestReferentValidation({removeReques
                 effectuée.</p>
             <p>Merci encore pour votre vigilance. À bientôt !</p>
         </RequestValidationMessage>
-        <RequestValidationMessage style={ALERT_STYLE.DANGER} display={refused} onBack={onBack} title="Vous avez refusé la demande">
+        <RequestValidationMessage alertStyle={ALERT_STYLE.DANGER} display={refused} onBack={onBack} title="Vous avez refusé la demande">
             <p>Suite à votre refus, la demande va être supprimée de votre groupe.</p>
             <p>Merci encore pour votre vigilance. À bientôt !</p>
         </RequestValidationMessage>

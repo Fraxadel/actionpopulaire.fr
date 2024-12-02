@@ -11,7 +11,7 @@ import GroupMemberFacts from "./GroupMemberFacts";
 import GroupMemberActions from "./GroupMemberActions";
 
 const GroupMemberFile = (props) => {
-  const { member, group, onBack, onChangeMembershipType, openRemoveRequest, currentRemoveRequest } =
+  const { member, group, onBack, onChangeMembershipType, currentRemoveRequest } =
     props;
 
   return (
@@ -51,7 +51,6 @@ const GroupMemberFile = (props) => {
         member={member}
         group={group}
         currentRemoveRequest={currentRemoveRequest}
-        openRemoveRequest={openRemoveRequest}
         onChangeMembershipType={onChangeMembershipType}
       />
       <Spacer size="1.5rem" />

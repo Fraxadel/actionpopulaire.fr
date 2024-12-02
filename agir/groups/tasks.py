@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from agir.activity.models import Activity
 from agir.events.models import Event, OrganizerConfig
 from agir.groups.display import genrer_membership
-from agir.groups.models import SupportGroup, Membership
+from agir.groups.models import SupportGroup, Membership, MembershipRemoveRequest
 from agir.lib.celery import (
     emailing_task,
     post_save_task,
@@ -28,6 +28,8 @@ from agir.msgs.models import SupportGroupMessage, SupportGroupMessageComment
 from agir.notifications.models import Subscription
 from agir.people.actions.subscription import make_subscription_token
 from agir.people.models import Person
+from silk.code_generation.django_test_client import template
+
 from .actions.invitation import make_abusive_invitation_report_link
 from .utils.certification import check_certification_criteria
 from ..msgs.actions import (
@@ -842,10 +844,9 @@ logger = logging.getLogger(__name__)
 
 
 @emailing_task()
-def send_notifications_remove_request_referent(person_pk, group_pk):
-    logger.error("send notification remove requeets HHHH")
+def send_notifications_remove_request_referent(person_pk, group_pk, request_pk):
 
-    person = Person.objects.get(person_pk)
+    person = Person.objects.get(pk=person_pk)
     group = SupportGroup.objects.get(pk=group_pk)
 
     Activity.objects.create(
@@ -853,12 +854,31 @@ def send_notifications_remove_request_referent(person_pk, group_pk):
         recipient=person,
         supportgroup=group,
         status=Activity.STATUS_UNDISPLAYED,
+        meta={
+            "requestId": request_pk,
+        },
     )
 
     send_template_email(
         template_name="groups/email/remove_request_validation_referent.html",
-        subject=_("Validation de suppression de membre"),
         from_email=settings.EMAIL_FROM,
         recipients=[person],
         bindings={"group": group},
+    )
+
+
+@emailing_task()
+def send_email_remove_request_ga(remove_request_pk):
+    logger.error("send email remove request GAA")
+    logger.error(remove_request_pk)
+    remove_request = MembershipRemoveRequest.objects.get(pk=remove_request_pk)
+
+    send_template_email(
+        template_name="groups/email/remove_request_ga_information.html",
+        from_email=settings.EMAIL_FROM,
+        recipients=[settings.EMAIL_GA],
+        bindings={
+            "group": remove_request.supportgroup,
+            "remove_request": remove_request,
+        },
     )

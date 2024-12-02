@@ -132,7 +132,7 @@ export const ReferentMainPanel = ({ routes, addManager, addReferent, isLoading, 
       <div>
           <Spacer size="1.5rem" />
           {
-              removeRequests && removeRequests.length > 1 && <>
+              removeRequests && removeRequests.length > 0 && <>
                 <StyledTitle>Demande(s) de suppression</StyledTitle>
                 {
                     <GroupMemberList

@@ -59,8 +59,8 @@ export const useRemoveMembershipRequestByGroup = (groupId) => {
 }
 
 export const createRemoveMembershipRequest = async (groupId, memberId, details, reason) => axios.post(`/api/groupes/request-membership-remove/`, {
-  supportgroup: groupId,
-  person: memberId,
+  supportgroupId: groupId,
+  personId: memberId,
   details,
   reason: reason
 })

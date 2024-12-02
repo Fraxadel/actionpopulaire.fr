@@ -242,7 +242,9 @@ if ENABLE_DEBUG_TOOLBAR:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
-    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: ENABLE_DEBUG_TOOLBAR}
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda request: ENABLE_DEBUG_TOOLBAR
+    }
 
 SILKY_INTERCEPT_FUNC = (
     lambda request: (
@@ -442,6 +444,7 @@ EMAIL_ILB = os.environ.get(
     "EMAIL_ILB", "Institut La Boétie <nepasrepondre@institutlaboetie.fr>"
 )
 EMAIL_SUPPORT = os.environ.get("EMAIL_SUPPORT", "support@actionpopulaire.fr")
+EMAIL_GA = os.environ.get("EMAIL_GA", "groupes@actionpopulaire.fr")
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

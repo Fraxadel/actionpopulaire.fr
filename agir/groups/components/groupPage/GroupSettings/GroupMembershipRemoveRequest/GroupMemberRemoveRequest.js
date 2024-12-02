@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import Button from "@agir/front/genericComponents/Button";
 import RadioField from "@agir/front/formComponents/RadioField";
 import TextField from "@agir/front/formComponents/TextField";
@@ -10,6 +10,7 @@ import {useMutate} from "@agir/front/app/apiHook";
 import GroupMemberRemoveRequestReferentValidation
     from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequestReferentValidation";
 import RequestValidationMessage from "@agir/groups/groupPage/GroupSettings/GroupMemberFile/ValidationMessage";
+import { useToast } from "@agir/front/globalContext/hooks";
 
 const ButtonActions = styled.div`
     display: flex;
@@ -42,12 +43,20 @@ export default function GroupMemberRemoveRequest({member, groupId, onBack, remov
     const {mutate: createRequest, isLoading, error} = useMutate(createRemoveMembershipRequest, () => {
         setDisplayDone(true)
     });
+    const sendToast = useToast()
 
     const disableSubmit = details.length < 10 || reason === undefined
 
     async function submitRequest() {
         await createRequest(groupId, member.personId, details, reason)
     }
+
+    useEffect(() => {
+        if (error) {
+            console.error('Submiting remove request', error)
+            sendToast("Une erreur s'est produite, merci de réessayer plus tard.", "ERROR", {autoClose: true})
+        }
+    }, [error]);
 
     return <>
         <BackButton onClick={onBack}/>
@@ -77,9 +86,6 @@ export default function GroupMemberRemoveRequest({member, groupId, onBack, remov
             </fieldset>
             <Spacer size="1.5rem"/>
             <p>Cette décision nécessite une validation du pôle des groupes d'Action.</p>
-            {
-                error && <p>{error}</p>
-            }
             <ButtonActions>
                 <Button onClick={onBack}>Annuler</Button>
                 <Button loading={isLoading}

@@ -16,7 +16,10 @@ from agir.authentication.view_mixins import (
 )
 from agir.groups.models import MembershipRemoveRequest
 from agir.groups.models import SupportGroup
-from agir.groups.tasks import send_notifications_remove_request_referent
+from agir.groups.tasks import (
+    send_notifications_remove_request_referent,
+    send_email_remove_request_ga,
+)
 from agir.lib.http import HttpResponseUnauthorized
 from agir.people.models import Person
 from agir.lib.rest_framework_permissions import (
@@ -108,6 +111,7 @@ class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
                 request.data["status"] = (
                     MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW
                 )
+                send_email_remove_request_ga.delay(current_remove_request.id)
             elif current_url.endswith("refuse"):
                 request.data["status"] = MembershipRemoveRequest.Status.REFUSED
             return super().partial_update(request, *args, **kwargs)
@@ -121,18 +125,20 @@ class MembershipRemoveRequestCreateAPIView(CreateAPIView, UpdateAPIView):
     serializer_class = MembershipRemoveRequestSerializer
 
     def perform_create(self, serializer):
-        super().perform_create(serializer)
-        if serializer["status"] == MembershipRemoveRequest.Status.AWAIT_PEER_REVIEW:
-            current_group = SupportGroup.objects.get(serializer["supportgroup"])
-            other_referent = list(
-                filter(
-                    lambda p: p.id != serializer["created_by"], current_group.referents
-                )
-            )[0]
-            send_notifications_remove_request_referent.delay(
-                other_referent.id,
-                current_group.id,
+        # super().perform_create(serializer)
+        instance = serializer.save()
+        current_group = SupportGroup.objects.get(
+            pk=self.request.data.get("supportgroupId")
+        )
+        other_referent = list(
+            filter(
+                lambda p: p.id != serializer.data.get("created_by"),
+                current_group.referents,
             )
+        )[0]
+        send_notifications_remove_request_referent.delay(
+            other_referent.id, current_group.id, instance.id
+        )
 
 
 class MembershipRemoveRequestListAPIView(ListAPIView, HardLoginRequiredMixin):
