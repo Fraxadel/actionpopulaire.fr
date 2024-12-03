@@ -1,29 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 import Spacer from "@agir/front/genericComponents/Spacer";
 import { Hide } from "@agir/front/genericComponents/grid";
 import { useIsDesktop } from "@agir/front/genericComponents/grid";
 
 const StyledCustomField = styled.div`
-  @media (min-width: ${(props) => props.theme.collapse}px) {
-    display: grid;
-    grid-template-columns: 10rem 30.25rem;
-    gap: 0.25rem;
-    align-items: center;
+  
+  ${({$required, theme}) => $required && css`
+    ${Hide}:after {
+        content: "*";
+        color: ${theme.LFIsecondary500};
+    `
   }
 `;
 
 const StyledDescription = styled.div`
-  margin-left: 10.5rem;
   font-size: 0.8125rem;
-
-  @media (max-width: ${(props) => props.theme.collapse}px) {
-    margin-bottom: 0.25rem;
-    margin-left: 0;
-    font-size: 0.875rem;
-  }
 `;
 
 const CustomField = ({
@@ -33,13 +27,14 @@ const CustomField = ({
   label,
   helpText,
   className,
+  required,
   ...rest
 }) => {
   const isDesktop = useIsDesktop();
 
   return (
     <div className={className}>
-      <StyledCustomField htmlFor={id}>
+      <StyledCustomField $required={required} htmlFor={id}>
         <Hide $under as="label">
           {label}
         </Hide>

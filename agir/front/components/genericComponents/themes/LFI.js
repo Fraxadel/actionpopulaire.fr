@@ -19,7 +19,7 @@ const theme = {
     primary100: light.LFIprimary100,
 
     Logo,
-    logoHeight: "5rem",
+    logoHeight: "6rem",
     illustration: {
       small: illustrationLFIBGM,
       large: illustrationLFIBGD,

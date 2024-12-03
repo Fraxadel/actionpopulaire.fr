@@ -1,7 +1,6 @@
 import validate from "@agir/lib/utils/validate";
 import {
   getAllocationDepartement,
-  parseAllocations,
 } from "./allocations.config";
 
 export const SINGLE_TIME_PAYMENT = "S";
@@ -170,7 +169,7 @@ export const DONATION_DATA_CONSTRAINTS = {
   paymentMode: {
     presence: {
       allowEmpty: false,
-      message: "Ce champ ne peut pas être vide.",
+      message: "Merci de séléctionner un mode de paiment.",
     },
   },
   amount: {
@@ -178,6 +177,11 @@ export const DONATION_DATA_CONSTRAINTS = {
       allowEmpty: false,
       message: "Ce champ ne peut pas être vide.",
     },
+    numericality: {
+      onlyInteger: true,
+      greaterThan: 0,
+      message: "Merci de séléctionner un montant valide."
+    }
   },
   paymentTiming: {
     presence: {
@@ -185,6 +189,15 @@ export const DONATION_DATA_CONSTRAINTS = {
       message: "Ce champ ne peut pas être vide.",
     },
   },
+  honorCertified: {
+    presence: {
+      allowEmpty: false,
+      message: "Certifier votre don."
+    },
+    bool: {
+      message: "Certifier votre don"
+    }
+  }
 };
 
 const NEW_DONATION_DATA_CONSTRAINTS = {

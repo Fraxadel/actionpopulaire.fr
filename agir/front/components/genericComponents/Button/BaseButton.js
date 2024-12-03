@@ -73,7 +73,7 @@ export const ButtonLoader = styled.i
 export const BaseButton = styled.button
   .withConfig({
     shouldForwardProp: (prop) =>
-      ["loading", "link", "small", "block", "wrap", "rightIcon"].includes(
+      ["loading", "link", "small", "block", "wrap", "rightIcon", "active"].includes(
         prop,
       ) === false,
   })
@@ -181,5 +181,6 @@ BaseButton.defaultProps = {
   loading: false,
   rightIcon: false,
 };
+
 
 export default BaseButton;

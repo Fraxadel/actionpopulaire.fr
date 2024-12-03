@@ -1,18 +1,101 @@
 import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 import { RawFeatherIcon as FeatherIcon } from "@agir/front/genericComponents/FeatherIcon";
 
 const StyledLabel = styled.span``;
 const StyledBox = styled.span``;
-const StyledToggle = styled.span``;
+
+const StyledToggle = styled.span`
+    display: grid;
+    grid-template-columns: 1.5rem 1.5rem;
+    align-items: center;
+    font-size: inherit;
+    line-height: inherit;
+    position: relative;
+    height: 1.7em;
+    margin-right: 0.5em;
+`;
+
+
+const StyledToggleMixin = css`
+    &::before,
+    &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        transition: opacity background 200ms;
+    }
+
+    &::before {
+        grid-column: span 2;
+        height: 1.2rem;
+        border-radius: 2.5rem;
+        border: 2px solid;
+        opacity: ${({$disabled}) => ($disabled ? 0.5 : 1)};
+        
+        ${(props) => {
+          if (props.$variant === "lfi") {
+              return css`
+              background: ${(props) => props.theme.primary100};
+              background-color: ${({$checked, theme}) =>
+                      $checked ? theme.LFIprimary500 : "transparent"};
+              border-color: ${({$checked, theme}) =>
+                      $checked ? theme.LFIprimary500 : theme.text200};
+              `
+          } else {
+              return css`
+                  background: ${(props) => props.theme.primary100};
+                  background-color: ${({$checked, theme}) =>
+                          $checked ? theme.primary100 : "transparent"};
+                  border-color: ${({$checked, theme}) =>
+                          $checked ? theme.primary100 : theme.text100};
+              `
+          }
+        }}
+    }
+
+    &::after {
+        position: absolute;
+        width: 1.7rem;
+        height: 1.7rem;
+        border-radius: 100%;
+        background: ${(props) => props.theme.primary500};
+        background-color: ${({$variant, $checked, $disabled, theme}) => {
+            if ($checked && $disabled) {
+                return theme.primary150;
+            }
+            if ($checked) {
+                return $variant === "lfi" ? theme.LFIprimary500 : theme.primary500;
+            }
+            if ($disabled) {
+                return theme.text100;
+            }
+
+            return theme.text200;
+        }};
+        ${({$checked, $variant, theme}) => {
+            if (!$checked) {
+                return css`
+                    border: 2px solid ${theme.white};
+                `
+            }
+            if ($checked && $variant === "lfi") {
+                return css`
+                    border: 2px solid ${theme.white};
+                `
+            }
+        }}
+        grid-column: ${({$checked}) => ($checked ? "2/3" : "1/2")};
+    }
+`
 
 const StyledField = styled.label`
   position: relative;
   display: flex;
   flex-flow: row nowrap;
-  align-items: flex-start;
+  align-items: center;
   font-size: ${(props) => (props.$small ? "0.875rem" : "1rem")};
   line-height: 1.5;
   cursor: ${({ $disabled }) => ($disabled ? "default" : "pointer")};
@@ -31,9 +114,18 @@ const StyledField = styled.label`
     flex: 0 0 auto;
     margin-top: 0.25em;
     margin-right: 0.5em;
-    width: ${(props) => (props.$small ? "0.875rem" : "1rem")};
-    height: ${(props) => (props.$small ? "0.875rem" : "1rem")};
-    border-radius: ${(props) => props.theme.softBorderRadius};
+
+    ${({$variant}) => $variant === "lfi" ?
+            css`
+                width: ${(props) => (props.$small ? "0.875rem" : "1.4rem")};
+                height: ${(props) => (props.$small ? "0.875rem" : "1.4rem")}; 
+            `
+            :
+            css`
+                width: ${(props) => (props.$small ? "0.875rem" : "1rem")};
+                height: ${(props) => (props.$small ? "0.875rem" : "1rem")};
+                border-radius: ${(props) => props.theme.softBorderRadius};
+            `}
     border-style: solid;
     border-width: ${({ $checked }) => ($checked ? 0 : 1)}px;
     border-color: ${({ $disabled, theme }) =>
@@ -63,57 +155,7 @@ const StyledField = styled.label`
   }
 
   ${StyledToggle} {
-    display: grid;
-    grid-template-columns: 1rem 1rem;
-    align-items: center;
-    font-size: inherit;
-    line-height: inherit;
-    position: relative;
-    height: 1.5em;
-    margin-right: 0.5em;
-
-    &::before,
-    &::after {
-      content: "";
-      display: block;
-      width: 100%;
-      transition: opacity background 200ms;
-    }
-
-    &::before {
-      grid-column: span 2;
-      height: 0.5rem;
-      border-radius: 2.5rem;
-      background: ${(props) => props.theme.primary100};
-      background-color: ${({ $checked, theme }) =>
-        $checked ? theme.primary100 : "transparent"};
-      border: 1px solid;
-      border-color: ${({ $checked, theme }) =>
-        $checked ? theme.primary100 : theme.text100};
-      opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
-    }
-
-    &::after {
-      position: absolute;
-      width: 1rem;
-      height: 1rem;
-      border-radius: 100%;
-      background: ${(props) => props.theme.primary500};
-      background-color: ${({ $checked, $disabled, theme }) => {
-        if ($checked && $disabled) {
-          return theme.primary150;
-        }
-        if ($checked) {
-          return theme.primary500;
-        }
-        if ($disabled) {
-          return theme.text100;
-        }
-
-        return theme.text200;
-      }};
-      grid-column: ${({ $checked }) => ($checked ? "2/3" : "1/2")};
-    }
+      ${StyledToggleMixin}
   }
 
   input:focus + ${StyledToggle}::after {
@@ -145,6 +187,7 @@ const CheckboxField = (props) => {
     className,
     style,
     small,
+    variant,
     toggle = false,
     ...rest
   } = props;
@@ -157,6 +200,7 @@ const CheckboxField = (props) => {
       $checked={!!value}
       $disabled={rest.disabled}
       $small={small}
+      $variant={variant}
     >
       <input
         {...rest}
@@ -167,7 +211,7 @@ const CheckboxField = (props) => {
         value={inputValue}
       />
       {toggle ? (
-        <StyledToggle aria-hidden />
+        <StyledToggle {...rest} aria-hidden />
       ) : (
         <StyledBox aria-hidden>
           {!!value && (

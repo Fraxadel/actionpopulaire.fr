@@ -12,27 +12,6 @@ export const TYPE_LABEL = {
     "aux activités de votre département (ou circonscription législative pour les français·es de l'étranger)",
 };
 
-export const formatAllocations = (data) =>
-  data?.allocations &&
-  data.allocations
-    .filter(
-      (allocation) => allocation.type !== TYPE_NATIONAL && allocation.value,
-    )
-    .map((allocation) => {
-      const formattedAllocation = {
-        type: allocation.type || TYPE_GROUP,
-        amount: allocation.value || 0,
-      };
-      if (formattedAllocation.type === TYPE_GROUP) {
-        formattedAllocation.group = allocation.group?.id || allocation.group;
-      }
-      if (formattedAllocation.type === TYPE_DEPARTMENT) {
-        formattedAllocation.departement =
-          allocation?.departement?.id || data.departement;
-      }
-      return formattedAllocation;
-    });
-
 export const parseAllocations = (data) => {
   let parsedAllocations = [];
   let nonRenewableGroupAllocation = null;

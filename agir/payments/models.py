@@ -197,10 +197,7 @@ class Payment(ExportModelOperationsMixin("payment"), TimeStampedModel, LocationM
         )
 
     def is_check(self):
-        return (
-            self.mode in PAYMENT_MODES
-            and isinstance(PAYMENT_MODES[self.mode], AbstractCheckPaymentMode),
-        )
+        return self.mode in PAYMENT_MODES and isinstance(PAYMENT_MODES[self.mode], AbstractCheckPaymentMode)
 
     def html_full_address(self):
         return display_address(self)

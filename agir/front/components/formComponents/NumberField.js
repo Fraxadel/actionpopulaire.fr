@@ -1,18 +1,24 @@
 import PropTypes from "prop-types";
-import React, { forwardRef, useCallback, useState } from "react";
+import React, {forwardRef, useCallback, useEffect, useState} from "react";
 
 import TextField from "./TextField";
+
+export function computeValueNumberField(value, currency) {
+    return String(
+        typeof value !== "number" || isNaN(value) || !currency
+            ? value || ""
+            : (value / 100).toFixed(2)
+    ).replace(".", ",")
+}
 
 const NumberField = forwardRef((props, ref) => {
   const { value, onChange, currency = false, ...rest } = props;
 
-  const [currentValue, setCurrentValue] = useState(
-    String(
-      typeof value !== "number" || isNaN(value) || !currency
-        ? value || ""
-        : (value / 100).toFixed(2),
-    ).replace(".", ","),
-  );
+  const [currentValue, setCurrentValue] = useState(computeValueNumberField(value, currency));
+
+  useEffect(() => {
+      setCurrentValue(computeValueNumberField(value, currency))
+  }, [value, currency]);
 
   const handleChange = useCallback(
     (e) => {

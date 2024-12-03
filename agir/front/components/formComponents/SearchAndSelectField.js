@@ -2,7 +2,7 @@ import Async from "react-select/async";
 import { components } from "react-select";
 import PropTypes from "prop-types";
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 import { debounce } from "@agir/lib/utils/promises";
 
@@ -65,9 +65,24 @@ const StyledField = styled.label`
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
+  
+  ${StyledHelpText} {
+    ${({theme, $variant}) => {
+      if ($variant === "lfi") {
+        return css`color: ${theme.text500};`
+      }
+    }}
+  }
 
   ${StyledLabel} {
     font-weight: 600;
+
+    ${({$required, theme}) => $required && css`
+    &:after {
+        content: "*";
+        color: ${theme.LFIsecondary500};
+    `
+    }
   }
 
   .select-search-container {
@@ -85,7 +100,7 @@ const StyledField = styled.label`
   .select-search__control {
     background-color: ${(props) => props.theme.background0};
     color: ${(props) => props.theme.text1000};
-    border-radius: ${(props) => props.theme.softBorderRadius};
+    border-radius: ${({theme, $variant}) => $variant === "lfi" ? 0 : theme.softBorderRadius };
     border: 1px solid;
     max-width: 100%;
     height: 40px;
@@ -289,6 +304,8 @@ const SearchAndSelectField = (props) => {
     minSearchTermLength = 3,
     searchIcon = true,
     className = "",
+    variant,
+    required,
     ...rest
   } = props;
 
@@ -309,6 +326,8 @@ const SearchAndSelectField = (props) => {
       $valid={!error}
       $invalid={!!error}
       $empty={!!value}
+      $variant={variant}
+      $required={!!required}
     >
       {label && <StyledLabel>{label}</StyledLabel>}
       {helpText && <StyledHelpText>{helpText}</StyledHelpText>}

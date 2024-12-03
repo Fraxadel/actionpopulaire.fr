@@ -87,6 +87,30 @@ export const scrollToElement = (
     });
 };
 
+export function getFirstElementFromError(errors) {
+  const keys = Object.entries(errors)
+      .filter(([_, v]) => !!v)
+      .map(([k]) => k);
+
+  let errorElement = null;
+  for (let i = 0; i < keys.length; i += 1) {
+    let elt = document.querySelector(
+        `[data-scroll="${keys[i]}"], [name="${keys[i]}"]`,
+    );
+    if (!elt) {
+      continue;
+    }
+    if (!errorElement) {
+      errorElement = elt;
+      continue;
+    }
+    if (elt.getBoundingClientRect().top < errorElement.getBoundingClientRect().top) {
+      errorElement = elt;
+    }
+  }
+  return errorElement
+}
+
 export const scrollToError = (errors, scrollerElement, marginTop = 30) => {
   if (!errors) {
     return;
@@ -96,28 +120,7 @@ export const scrollToError = (errors, scrollerElement, marginTop = 30) => {
     return;
   }
 
-  const keys = Object.entries(errors)
-    .filter(([_, v]) => !!v)
-    .map(([k]) => k);
-
-  let errorElement = null;
-  for (let i = 0; i < keys.length; i += 1) {
-    let elt = document.querySelector(
-      `[data-scroll="${keys[i]}"], [name="${keys[i]}"]`,
-    );
-    if (!elt) {
-      continue;
-    }
-    if (!errorElement) {
-      errorElement = elt;
-      continue;
-    }
-    if (elt.offsetTop < errorElement.offsetTop) {
-      errorElement = elt;
-    }
-  }
-
-  scrollToElement(errorElement, scrollerElement, marginTop);
+  scrollToElement(getFirstElementFromError(errors), scrollerElement, marginTop);
 };
 
 export const useCurrentLocation = () => {

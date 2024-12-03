@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useCallback } from "react";
 import Select, { components, createFilter } from "react-select";
-import styled, { keyframes, useTheme } from "styled-components";
+import styled, { keyframes, useTheme, css } from "styled-components";
 
 import { useResponsiveMemo } from "@agir/front/genericComponents/grid";
 
@@ -58,6 +58,11 @@ const StyledField = styled.label`
 
   ${StyledHelpText} {
     line-height: 1.5;
+    ${({theme, $variant}) => {
+      if ($variant === "lfi") {
+        return css`color: ${theme.text500};`
+      }
+    }}
   }
 
   .select__indicator-separator {
@@ -69,7 +74,7 @@ const StyledField = styled.label`
   }
 
   .select__control {
-    border-radius: ${(props) => props.theme.softBorderRadius};
+    border-radius: ${({theme, $variant}) => $variant === "lfi" ? 0 : theme.softBorderRadius };
     border: 1px solid;
     max-width: 100%;
     min-height: 2.5rem;
@@ -287,6 +292,7 @@ const SelectField = (props) => {
     isSearchable,
     small,
     noWrapOptions,
+    variant,
     ...rest
   } = props;
 
@@ -315,6 +321,7 @@ const SelectField = (props) => {
       $searchable={!!isSearchable}
       $small={small}
       $noWrapOptions={noWrapOptions}
+      $variant={variant}
     >
       {label && <StyledLabel>{label}</StyledLabel>}
       {helpText && <StyledHelpText>{helpText}</StyledHelpText>}

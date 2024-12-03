@@ -3,6 +3,7 @@
 $background0: #111112;
 $background25: #2d2d2d;
 $background50: #4a4a4a;
+$background75: #4c4b52;
 $background100: #707070;
 $background200: #959595;
 $backgroun500: #dfdfdf;
@@ -35,12 +36,12 @@ $error100: #751D2B;
 $vermillon: #ff5e35;
 
 $LFI-primary600: #D198F6;
-$LFI-primary500:#B374ED;
+$LFI-primary500: #c763ff;
 $LFI-primary150: #763F9E;
 $LFI-primary100:#542B7D;
 
 $LFI-secondary600: #FFBBA8;
-$LFI-secondary500:#FF5E55;
+$LFI-secondary500: #f91616;
 $LFI-secondary150: #794747;
 $LFI-secondary100:#660000;
 
@@ -64,6 +65,7 @@ $map_filter: invert(90%) hue-rotate(180deg) brightness(1.5);
   background0: $background0;
   background25: $background25;
   background50: $background50;
+  background75: $background75;
   background100: $background100;
   background200: $background200;
   backgroun500: $backgroun500;

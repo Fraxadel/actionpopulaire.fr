@@ -500,6 +500,11 @@ urlpatterns = [
         name="create_contact_success",
     ),
     # DONATION VIEWS
+    path(
+        "paiement/cheque/<int:pk>/",
+        views.BaseAppCachedView.as_view(),
+        name="payment_check_page",
+    ),
     path("financer/", views.BaseAppCachedView.as_view(), name="donation_landing_page"),
     path("n/dons/", include(donation_patterns)),
     path("dons/", include(donation_patterns)),

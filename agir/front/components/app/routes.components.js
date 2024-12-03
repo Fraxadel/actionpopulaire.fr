@@ -157,12 +157,6 @@ const Routes = {
         /* webpackChunkName: "r-donationlandingpage" */ "@agir/donations/DonationLandingPage"
       ),
   ),
-  DonationPage: lazy(
-    () =>
-      import(
-        /* webpackChunkName: "r-donationpage" */ "@agir/donations/donationPage/DonationPage"
-      ),
-  ),
   ExternalDonationPage: lazy(
     () =>
       import(
@@ -172,19 +166,19 @@ const Routes = {
   DonationSuccessPage: lazy(
     () =>
       import(
-        /* webpackChunkName: "r-donationSuccessPage" */ "@agir/donations/donationSuccessPage/DonationSuccessPage"
+        /* webpackChunkName: "r-donationSuccessPage" */ "@agir/donations/DonationSuccessPage"
       ),
   ),
-  ContributionPage: lazy(
-    () =>
-      import(
-        /* webpackChunkName: "r-contributionpage" */ "@agir/donations/contributionPage/ContributionPage"
-      ),
+  ChequeValidationPage: lazy(
+      () => import(
+          /* webpackChunkName: "r-chequeValidationPage" */
+          "@agir/donations/validation/ChequeValidation"
+      )
   ),
   ContributionSuccessPage: lazy(
     () =>
       import(
-        /* webpackChunkName: "r-contributionSuccessPage" */ "@agir/donations/contributionSuccessPage/ContributionSuccessPage"
+        /* webpackChunkName: "r-contributionSuccessPage" */ "@agir/donations/ContributionSuccessPage"
       ),
   ),
   ContributionRenewalPage: lazy(

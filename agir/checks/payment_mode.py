@@ -1,7 +1,15 @@
 from django.utils.functional import cached_property
+from django.views.generic import RedirectView
 
 from agir.checks.views import CheckView
 from ..payments.abstract_payment_mode import AbstractPaymentMode
+from agir.lib.utils import front_url
+
+
+class PaymentCheckView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        id = getattr(self.kwargs["payment"], "id")
+        return front_url("payment_check_page", kwargs={"pk": id})
 
 
 class AbstractCheckPaymentMode(AbstractPaymentMode):
@@ -31,7 +39,7 @@ class AbstractCheckPaymentMode(AbstractPaymentMode):
 
     @cached_property
     def payment_view(self):
-        return self.view
+        return PaymentCheckView.as_view()
 
     @cached_property
     def retry_payment_view(self):

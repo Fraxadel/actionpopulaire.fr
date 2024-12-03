@@ -25,6 +25,8 @@ import { element } from "./utils";
 
 const ARROW_SIZE = 20;
 
+const attributions = `<a href="https://jawg.io?utm_medium=map&utm_source=attribution" title="Tiles Courtesy of Jawg Maps" target="_blank" class="jawg-attrib" >&copy; <b>Jawg</b>Maps</a> | <a href="https://www.openstreetmap.org/copyright" title="OpenStreetMap is open data licensed under ODbL" target="_blank" class="osm-attrib">&copy; OSM contributors</a>`;
+
 export function setUpMap(elementId, layers) {
   const view = new View({
     center: fromLonLat([2, 47]),
@@ -33,14 +35,12 @@ export function setUpMap(elementId, layers) {
   });
   return new Map({
     target: elementId,
+    controls: [new Attribution({collapsible: false, attributions})],
     layers: [
       new TileLayer({
         source: new XYZ({
           url: "https://tile.jawg.io/jawg-streets/{z}/{x}/{y}.png?access-token=mGYrqYC5XjG6lXEoz0e5ejl1wSS0GovRMqBw8LEuhFfz2PYILpp8YFzx6TnKxAHe",
-          attributions: [
-            '&#169; les contributeurs <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | ',
-            '<a href="https://jawg.io?utm_medium=map&utm_source=attribution" title="Tuiles fournies par Jawg Maps" target="_blank" class="jawg-attrib" >&copy; <b>Jawg</b>Maps</a>',
-          ],
+          attributions: [attributions],
         }),
       }),
       ...layers,
@@ -166,8 +166,7 @@ export function createMap(
   const tile = new TileLayer({
     source: new XYZ({
       url: "https://tile.jawg.io/jawg-streets/{z}/{x}/{y}.png?access-token=mGYrqYC5XjG6lXEoz0e5ejl1wSS0GovRMqBw8LEuhFfz2PYILpp8YFzx6TnKxAHe",
-      attributions:
-        '&copy; Contributeurs <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
+      attributions: [attributions],
     }),
   });
   tile.on("prerender", (evt) => {

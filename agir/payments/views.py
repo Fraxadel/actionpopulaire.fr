@@ -5,6 +5,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import DetailView
+from rest_framework.generics import RetrieveAPIView
 
 from agir.authentication.view_mixins import HardLoginRequiredMixin
 from agir.payments.actions.subscriptions import terminate_subscription
@@ -14,15 +15,30 @@ from .actions.payments import (
 )
 from .models import Payment, Subscription
 from .payment_modes import PAYMENT_MODES
+from .serializers import PaymentSerializer
 from .types import PAYMENT_TYPES, SUBSCRIPTION_TYPES
 
 PAYMENT_ID_SESSION_KEY = "_payment_id"
-
 
 def payment_view(
     request,
 ):
     pass
+
+class PaymentViewAPIRetrieve(RetrieveAPIView):
+    queryset = Payment.objects.exclude(
+        status__in=[Payment.STATUS_COMPLETED, Payment.STATUS_REFUND]
+    )
+    serializer_class = PaymentSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        payment_mode = PAYMENT_MODES.get(self.object.mode)
+
+        if payment_mode is None:
+            return HttpResponseServerError()
+
+        return super().get(request, *args, **kwargs)
 
 
 @method_decorator(never_cache, name="get")

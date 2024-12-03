@@ -47,6 +47,12 @@ validate.validators.phone = (value, { message }) => {
   }
 };
 
+validate.validators.bool = (value, { message }) => {
+  if (!value) {
+    return message;
+  }
+}
+
 validate.validators.optionalUrl = function (
   value,
   options,

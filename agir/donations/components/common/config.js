@@ -5,7 +5,9 @@ import themeLFI from "@agir/front/genericComponents/themes/LFI";
 import { MONTHLY_PAYMENT, SINGLE_TIME_PAYMENT } from "./form.config";
 import * as api from "./api";
 
-const don = {
+import ILBLogoImage from "@agir/front/genericComponents/logos/ilb.png";
+
+export const don = {
   type: "don",
   maxAmount: 750000,
   maxAmountWarning: (
@@ -54,6 +56,15 @@ const n = {
   hasAllocations: false,
 };
 
+const ILBLogo = () => <img alt="Logo Institut la Boétie" src={ILBLogoImage}/>
+const don_ilb = {
+    ...don,
+    type: "don_ilb",
+    title: "Faire un don - Institut La Boétie",
+    beneficiary: "Institut La Boétie",
+    theme: {...themeLFI, ...{light: {Logo: ILBLogo, logoHeight: "7rem",}, dark: { Logo: ILBLogo, logoHeight: "7rem",}}}
+}
+
 const contribution = {
   ...don,
   // Contribution ends in december :
@@ -79,6 +90,7 @@ const CONFIG = {
   n,
   contribution,
   default: don,
+  don_ilb: don_ilb
 };
 
 export default CONFIG;

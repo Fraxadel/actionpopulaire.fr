@@ -114,6 +114,7 @@ export const Row = styled.div.withConfig({
   flex-wrap: wrap;
   align-items: ${({ align }) => align || "stretch"};
   justify-content: ${({ justify }) => justify || "start"};
+  gap: ${(props) => props.gap}px;
 
   & > ${Column} {
     padding-left: ${(props) =>

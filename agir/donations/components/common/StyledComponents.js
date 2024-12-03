@@ -191,7 +191,6 @@ export const StyledPage = styled.div`
       flex: 1 1 auto;
       min-height: 100%;
       overflow: auto;
-      padding: 4rem 0 0;
     }
   }
 `;
@@ -200,64 +199,18 @@ export const StyledMain = styled.main`
   margin: 0 auto;
   padding: 0 1.5rem;
 
+  span {
+    width: 100%;
+  }
+
   @media (min-width: ${(props) => props.theme.collapse}px) {
-    max-width: 39.375rem;
+    max-width: 1200px;
+    justify-content: center;
+  }
+  @media (max-width: ${(props) => props.theme.collapse}px) {
+    padding: 0;
   }
 
-  h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  h4 {
-    font-weight: 500;
-    font-size: 1rem;
-    margin: 0 0 1rem;
-    line-height: 1.4;
-  }
-
-  hr {
-    display: block;
-    max-width: 36.375rem;
-    margin: 1.5rem auto;
-    color: ${(props) => props.theme.text50};
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-
-  p + p {
-    margin-top: 0.5rem;
-  }
-
-  form {
-    ${StepButton} {
-      margin: 0 auto;
-      max-width: 25rem;
-      height: 5rem;
-      padding: 0 4.5rem;
-
-      & > span {
-        font-weight: 400;
-        font-size: 0.875rem;
-
-        strong {
-          font-weight: 600;
-          font-size: 1.25rem;
-        }
-      }
-
-      ${RawFeatherIcon} {
-        position: absolute;
-        right: 1.5rem;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-    }
-  }
 `;
 
 const Logo = (props) => {
@@ -273,24 +226,14 @@ const Logo = (props) => {
 };
 
 export const StyledLogo = styled(Logo)`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: ${(props) => props.theme.logoHeight};
-  justify-items: stretch;
-  width: calc(100% + 3rem);
-  padding: 1rem 1.5rem;
-  margin: -1rem -1.5rem 0;
-
-  @media (max-width: ${(props) => props.theme.collapse}px) {
-    margin: 0 -1.5rem 1rem;
-    padding: 1rem;
-    border-bottom: 0.0625rem solid ${(props) => props.theme.text100};
-  }
-
+  display: flex;
+  justify-content: center;
+  height: ${(props) => props.theme.logoHeight};
+  width: 100%;
+  padding: 1rem 1rem;
+  
   &::before,
-  svg {
-    grid-column: 1/2;
-    grid-row: 1/2;
+  svg, img {
     height: 100%;
     max-width: 100%;
   }
@@ -303,6 +246,10 @@ export const StyledLogo = styled(Logo)`
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
+  }
+
+  @media (max-width: ${(props) => props.theme.collapse}px) {
+    border-bottom: 0.0625rem solid ${(props) => props.theme.text100};
   }
 `;
 

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import React, { forwardRef, useLayoutEffect, useRef } from "react";
-import styled from "styled-components";
+import React, {forwardRef, useCallback, useLayoutEffect, useRef} from "react";
+import styled, {css} from "styled-components";
 
 import { mergeRefs } from "@agir/lib/utils/react";
 
@@ -18,6 +18,19 @@ const StyledCounter = styled.span`
 `;
 const StyledError = styled.span``;
 
+export const FieldRequiredLabelMixin = css`
+  ${({ $required, theme }) => {
+    if ($required) {
+      return css`
+          &::after {
+            color: ${theme.LFIsecondary500};
+            content: "*";
+          }
+        `
+    }
+  }}
+`
+
 const StyledField = styled.label`
   display: grid;
   grid-template-columns: 1fr auto;
@@ -33,6 +46,8 @@ const StyledField = styled.label`
     grid-row: 1;
     grid-column: 1/3;
     font-weight: 600;
+    
+    ${FieldRequiredLabelMixin}
   }
   ${StyledHelpText} {
     grid-row: 2;
@@ -42,7 +57,7 @@ const StyledField = styled.label`
 
   ${StyledIcon} {
     grid-row: 3;
-    grid-column: 1/1;
+    grid-column: ${({ $iconRight }) => $iconRight ? '2' : '1/1'};
     width: 3rem;
     font-size: ${({ $large }) => ($large ? "2rem" : "1rem")};
     justify-content: center;
@@ -54,15 +69,15 @@ const StyledField = styled.label`
   ${StyledInput}, ${StyledTextArea} {
     grid-row: 3;
     grid-column: 1/3;
-    border-radius: ${(props) => props.theme.softBorderRadius};
+    border-radius: ${({theme, $variant}) => $variant === "lfi" ? 0 : theme.softBorderRadius };
     border: 1px solid;
     border-color: ${({ $invalid, theme }) =>
       $invalid ? theme.error500 : theme.text100};
     max-width: 100%;
     padding: 0.5rem;
-    padding-left: ${({ $icon, $large }) =>
-      $icon ? "3rem" : $large ? "0.75rem" : "0.5rem"};
-    padding-right: ${({ $invalid }) => ($invalid ? "3rem" : "0.5rem")};
+    padding-left: ${({ $icon, $iconRight, $large }) =>
+      $icon ? ($iconRight ? "1rem" : "3rem") : $large ? "0.75rem" : "0.5rem"};
+    padding-right: ${({ $invalid, $iconRight }) => ($invalid && !$iconRight ? "3rem" : $iconRight ? "2.1rem" : "0.5rem")};
     background-color: ${({ $dark, theme }) =>
       $dark ? theme.text50 : "transparent"};
     -moz-appearance: textfield;
@@ -94,7 +109,7 @@ const StyledField = styled.label`
     line-height: 1.5;
   }
   ${StyledErrorIcon} {
-    display: ${({ $invalid }) => ($invalid ? "flex" : "none")};
+    display: ${({ $invalid, $iconRight }) => ($invalid && !$iconRight  ? "flex" : "none")};
     grid-row: 3;
     grid-column: 2/3;
     align-items: ${({ $large }) => ($large ? "center" : "start")};
@@ -136,7 +151,10 @@ const TextField = forwardRef((props, ref) => {
     large,
     dark,
     icon,
+    iconRight,
+    required,
     className,
+    variant,
     ...rest
   } = props;
 
@@ -153,6 +171,15 @@ const TextField = forwardRef((props, ref) => {
     };
   }, [value]);
 
+  const _onChange = useCallback((e) => {
+    try {
+      onChange(e)
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
+  }, [onChange])
+
   return (
     <StyledField
       className={className}
@@ -165,6 +192,9 @@ const TextField = forwardRef((props, ref) => {
       $large={!textArea && !!large}
       $dark={!!dark}
       $icon={!!icon}
+      $iconRight={!!iconRight}
+      $required={!!required}
+      $variant={variant}
     >
       {label && <StyledLabel>{label}</StyledLabel>}
       {helpText && <StyledHelpText>{helpText}</StyledHelpText>}
@@ -175,7 +205,7 @@ const TextField = forwardRef((props, ref) => {
           ref={mergeRefs(ref, textAreaRef)}
           id={id}
           type={type}
-          onChange={onChange}
+          onChange={_onChange}
           value={value}
           rows={rows || 1}
         />
@@ -185,7 +215,7 @@ const TextField = forwardRef((props, ref) => {
           ref={ref}
           id={id}
           type={type}
-          onChange={onChange}
+          onChange={_onChange}
           value={value}
           autoComplete={autoComplete}
         />
@@ -210,7 +240,7 @@ TextField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.node,
   helpText: PropTypes.node,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.bool]),
   maxLength: PropTypes.number,
   textArea: PropTypes.bool,
   rows: PropTypes.number,

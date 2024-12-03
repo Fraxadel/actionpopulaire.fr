@@ -1,6 +1,6 @@
 import axios from "@agir/lib/utils/axios";
 
-import { formatAllocations } from "./allocations.config";
+import useSWRImmutable from "swr/immutable";
 export const ENDPOINT = {
   createDonation: "/api/dons/",
   getActiveContribution: "/api/dons/ma-contribution/",
@@ -16,6 +16,10 @@ export const getDonationEndpoint = (key, params) => {
   return endpoint;
 };
 
+export const usePayment = (paymentId) => useSWRImmutable(`/api/paiement/${paymentId}`)
+
+export const useActiveContributionAPI = () => useSWRImmutable(ENDPOINT.getActiveContribution)
+
 export const createDonation = async (data) => {
   const result = {
     data: null,
@@ -24,7 +28,6 @@ export const createDonation = async (data) => {
   const url = getDonationEndpoint("createDonation");
   const body = {
     ...data,
-    allocations: formatAllocations(data),
   };
   try {
     const response = await axios.post(url, body);

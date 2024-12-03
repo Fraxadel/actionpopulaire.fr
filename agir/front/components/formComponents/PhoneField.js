@@ -1,11 +1,12 @@
 import Cleave from "cleave.js/react";
 import PropTypes from "prop-types";
 import React, { forwardRef } from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 import FeatherIcon from "@agir/front/genericComponents/FeatherIcon";
 
 import "cleave.js/dist/addons/cleave-phone.fr";
+import {FieldRequiredLabelMixin} from "@agir/front/formComponents/TextField";
 
 const StyledLabel = styled.span``;
 const StyledHelpText = styled.span``;
@@ -28,11 +29,22 @@ const StyledField = styled.label`
     grid-row: 1;
     grid-column: 1/3;
     font-weight: 600;
+
+    ${FieldRequiredLabelMixin}
   }
   ${StyledHelpText} {
     grid-row: 2;
     grid-column: 1/3;
     line-height: 1.5;
+
+    ${({theme, $variant}) => {
+      if ($variant === "lfi") {
+        return css`
+          color: ${theme.text500};
+          grid-row: 4;
+        `
+      }
+    }}
   }
 
   ${StyledInput} {
@@ -41,7 +53,7 @@ const StyledField = styled.label`
 
     input {
       display: block;
-      border-radius: ${(props) => props.theme.softBorderRadius};
+      border-radius: ${({theme, $variant}) => $variant === "lfi" ? 0 : theme.softBorderRadius };
       border: 1px solid;
       border-color: ${({ $invalid, theme }) =>
         $invalid ? theme.error500 : theme.text100};
@@ -75,7 +87,7 @@ const StyledField = styled.label`
 `;
 
 const PhoneField = forwardRef((props, ref) => {
-  const { id, onChange, value = "", error, label, helpText, ...rest } = props;
+  const { id, onChange, value = "", error, label, helpText, required, variant, ...rest } = props;
 
   return (
     <StyledField
@@ -83,6 +95,8 @@ const PhoneField = forwardRef((props, ref) => {
       $valid={!error}
       $invalid={!!error}
       $empty={!!value}
+      $required={!!required}
+      $variant={variant}
     >
       {label && <StyledLabel>{label}</StyledLabel>}
       {helpText && <StyledHelpText>{helpText}</StyledHelpText>}
