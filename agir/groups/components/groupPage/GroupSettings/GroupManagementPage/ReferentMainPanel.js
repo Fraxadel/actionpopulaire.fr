@@ -32,7 +32,7 @@ export const ReferentMainPanel = ({ routes, addManager, addReferent, isLoading, 
   );
 
   const { data: removeRequests } = useRemoveMembershipRequestByGroup(group.id);
-  const membersToDelete = members.filter((member) => removeRequests?.find((request) => request.personId === member.personId))
+  const membersToDelete = members.filter((member) => removeRequests?.find((request) => request.person.id === member.personId))
 
 
   return (

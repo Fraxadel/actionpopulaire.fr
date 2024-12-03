@@ -11,6 +11,9 @@ import useCopyToClipboard from "@agir/front/genericComponents/useCopyToClipboard
 import Link from "@agir/front/app/Link";
 import GenericCardContainer from "./GenericCardContainer";
 
+import Button from "@agir/front/genericComponents/Button";
+import {useHistory} from "react-router-dom";
+
 const GenericCard = (props) => {
   const { type, meta, event, group, individual } = props;
   const [_, copyEmail] = useCopyToClipboard(
@@ -18,6 +21,7 @@ const GenericCard = (props) => {
     2000,
     "L'adresse e-mail a été copié.",
   );
+  const history = useHistory()
 
   const { Event, SupportGroup, Individual } = useMemo(
     () => ({
@@ -297,6 +301,17 @@ const GenericCard = (props) => {
           animateur·ice·s.
         </GenericCardContainer>
       );
+    }
+    case "referent_must_validate_remove_request": {
+        return <><GenericCardContainer {...props}>
+            <p>Une demande de suppression a été effectuée dans votre groupe <b>{meta?.groupName}</b>
+            </p>
+            </GenericCardContainer>
+            <Button onClick={() => {
+                history.push(`/groupes/${meta?.groupId}/gestion/requete-suppression-membre/${meta?.requestId}`)
+
+            }} color="primary" icon="arrow-right">Voir la demande</Button>
+        </>
     }
     default:
       return null;

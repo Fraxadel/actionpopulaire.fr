@@ -22,6 +22,7 @@ class Subscription(UUIDIdentified, TimeStampedModel):
         Activity.TYPE_REMINDER_DOCS_EVENT_NEXTDAY,
         Activity.TYPE_REMINDER_REPORT_FORM_FOR_EVENT,
         # GROUP
+        Activity.TYPE_REQUEST_MEMBERSHIP_REMOVE_VALIDATION,
         Activity.TYPE_TRANSFERRED_GROUP_MEMBER,
         Activity.TYPE_GROUP_INVITATION,
         Activity.TYPE_GROUP_MEMBERSHIP_LIMIT_REMINDER,

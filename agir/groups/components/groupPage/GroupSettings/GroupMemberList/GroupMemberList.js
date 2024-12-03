@@ -140,7 +140,7 @@ const GroupMemberList = ({
           isLoading={isLoading}
           onClick={onClickMember}
           {...member}
-          currentRemoveRequest={removeRequests?.find((request) => request.personId === member.personId)}
+          currentRemoveRequest={removeRequests?.find((request) => request.person.id === member.personId)}
           openRemoveRequest={openRemoveRequest}
         />
       ))}

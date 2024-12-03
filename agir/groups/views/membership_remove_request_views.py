@@ -34,6 +34,8 @@ __all__ = [
     "MembershipRemoveRequestUpdateAPIView",
 ]
 
+from weasyprint.css.validation.properties import other_colors
+
 
 class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
@@ -43,16 +45,23 @@ class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
         queryset=SupportGroup.objects.all(),
     )
     personId = serializers.PrimaryKeyRelatedField(
-        source="person",
-        label="Membre",
-        queryset=Person.objects.all(),
+        source="person", label="Membre", queryset=Person.objects.all(), write_only=True
     )
+    person = serializers.SerializerMethodField(read_only=True)
     reason = serializers.CharField(
         source="reason_type", label="Raison", allow_null=False, allow_blank=False
     )
     creator = serializers.CharField(
         source="created_by.id", label="Createur.ice", read_only=True
     )
+
+    def get_person(self, instance):
+        if instance.person is not None:
+            return {
+                "id": instance.person.id,
+                "displayName": instance.person.display_name,
+                "firstName": instance.person.first_name,
+            }
 
     def create(self, validated_data):
         validated_data["created_by"] = self.context["request"].user.person
@@ -66,32 +75,28 @@ class MembershipRemoveRequestSerializer(serializers.ModelSerializer):
             "supportgroupId",
             "personId",
             "details",
+            "person",
             "reason",
             "status",
             "creator",
         ]
 
 
-class MembershipRemoveRequestCreatePermissions(GlobalOrObjectPermissions):
-    perms_map = {"OPTIONS": [], "POST": [], "PATCH": []}
+class MembershipRemoveRequestPermissions(GlobalOrObjectPermissions):
+    perms_map = {"OPTIONS": [], "GET": [], "POST": [], "PATCH": []}
     object_perms_map = {
         "OPTIONS": [],
+        "GET": ["groups.view_membership_remove_request"],
         "POST": ["groups.add_membership_remove_request"],
         "PATCH": ["groups.validate_membership_remove_request"],
     }
-
-
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
     queryset = MembershipRemoveRequest.objects.exclude(
         status__exact=MembershipRemoveRequest.Status.DONE
     )
     model = MembershipRemoveRequest
-    permission_classes = (IsPersonPermission, MembershipRemoveRequestCreatePermissions)
+    permission_classes = (IsPersonPermission, MembershipRemoveRequestPermissions)
     serializer_class = MembershipRemoveRequestSerializer
 
     def patch(self, request, *args, **kwargs):
@@ -119,32 +124,30 @@ class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
 
 
 class MembershipRemoveRequestCreateAPIView(CreateAPIView, UpdateAPIView):
-    permission_classes = (IsPersonPermission, MembershipRemoveRequestCreatePermissions)
+    permission_classes = (IsPersonPermission, MembershipRemoveRequestPermissions)
     queryset = MembershipRemoveRequest.objects.all()
     model = MembershipRemoveRequest
     serializer_class = MembershipRemoveRequestSerializer
 
     def perform_create(self, serializer):
-        # super().perform_create(serializer)
         instance = serializer.save()
         current_group = SupportGroup.objects.get(
             pk=self.request.data.get("supportgroupId")
         )
-        other_referent = list(
-            filter(
-                lambda p: p.id != serializer.data.get("created_by"),
-                current_group.referents,
+        other_referent = [
+            p for p in current_group.referents if p != instance.created_by
+        ]
+        if len(other_referent) > 0:
+            send_notifications_remove_request_referent.delay(
+                other_referent[0].id, current_group.id, instance.id
             )
-        )[0]
-        send_notifications_remove_request_referent.delay(
-            other_referent.id, current_group.id, instance.id
-        )
 
 
 class MembershipRemoveRequestListAPIView(ListAPIView, HardLoginRequiredMixin):
     permission_classes = (IsPersonPermission,)
     model = MembershipRemoveRequest
     serializer_class = MembershipRemoveRequestSerializer
+    permission_classes = (IsPersonPermission, MembershipRemoveRequestPermissions)
 
     def get_queryset(self):
         return MembershipRemoveRequest.objects.filter(
@@ -161,9 +164,12 @@ class MembershipRemoveRequestDetailAPIView(RetrieveAPIView, HardLoginRequiredMix
     queryset = MembershipRemoveRequest.objects.all()
     model = MembershipRemoveRequest
     serializer_class = MembershipRemoveRequestSerializer
+    permission_classes = (IsPersonPermission, MembershipRemoveRequestPermissions)
 
     def get_queryset(self):
-        return MembershipRemoveRequest.objects.filter(
-            Q(supportgroup__id=self.kwargs.get("pk"))
-            & Q(person__id=self.kwargs.get("person"))
+        return MembershipRemoveRequest.objects.select_related("person").exclude(
+            status__in=[
+                MembershipRemoveRequest.Status.DONE,
+                MembershipRemoveRequest.Status.REFUSED,
+            ]
         )

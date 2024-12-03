@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import useSWRImmutable from "swr/immutable";
 
-import { getGroupEndpoint } from "@agir/groups/utils/api";
+import {getGroupEndpoint, useMembershipRemoveRequestById} from "@agir/groups/utils/api";
 
 import SelectField from "@agir/front/formComponents/SelectField";
 import HeaderPanel from "@agir/front/genericComponents/ObjectManagement/HeaderPanel";
@@ -33,20 +33,25 @@ const StyledSkeleton = styled(Skeleton)`
 const GroupMembershipRemoveRequestPage = (props) => {
     const location = useLocation()
     const history = useHistory();
+    const params = useParams();
+    console.log('params', params)
 
-    const member = location.state?.member
     const removeRequest = location.state?.removeRequest
+    const { data: removeRequestFetched } = useMembershipRemoveRequestById(removeRequest ? null : params?.requestId)
+
+    const member = location.state?.member ?? removeRequestFetched?.person;
     const groupId = removeRequest?.supportgroupId ?? location.state?.groupId
 
-    console.log('goback', history.goBack)
 
     return (
         <div>
-            <PageFadeIn ready={member} wait={<StyledSkeleton boxes={6} />}>
+            <PageFadeIn
+                ready={member}
+                wait={<StyledSkeleton boxes={6} />}>
                 <GroupMemberRemoveRequest
                     member={member}
                     groupId={groupId}
-                    removeRequest={removeRequest}
+                    removeRequest={removeRequest ?? removeRequestFetched}
                     onBack={history.goBack}
                     />
             </PageFadeIn>

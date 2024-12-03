@@ -54,6 +54,8 @@ export const ENDPOINT = {
 
 };
 
+export const useMembershipRemoveRequestById = (requestId) => useSWR(requestId ? `/api/groupes/request-membership-remove/${requestId}` : null)
+
 export const useRemoveMembershipRequestByGroup = (groupId) => {
   return useSWR(`/api/groupes/${groupId}/request-membership-remove`)
 }
