@@ -91,6 +91,7 @@ class MembershipRemoveRequestPermissions(GlobalOrObjectPermissions):
         "PATCH": ["groups.validate_membership_remove_request"],
     }
 
+
 class MembershipRemoveRequestUpdateAPIView(UpdateAPIView):
     queryset = MembershipRemoveRequest.objects.exclude(
         status__exact=MembershipRemoveRequest.Status.DONE

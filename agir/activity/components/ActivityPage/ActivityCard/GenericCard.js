@@ -303,28 +303,23 @@ const GenericCard = (props) => {
       );
     }
     case "referent_must_validate_remove_request": {
-        return <><GenericCardContainer {...props}>
+        return <GenericCardContainer {...props}>
             <p>Une demande de suppression a été effectuée dans votre groupe <b>{meta?.groupName}</b>
             </p>
-            </GenericCardContainer>
-            <Button onClick={() => {
-                history.push(`/groupes/${meta?.groupId}/gestion/requete-suppression-membre/${meta?.requestId}`)
-
-            }} color="primary" icon="arrow-right">Voir la demande</Button>
-        </>
+        </GenericCardContainer>
     }
-    default:
-      return null;
+      default:
+          return null;
   }
 };
 GenericCard.propTypes = {
-  type: PropTypes.string,
-  event: PropTypes.object,
-  group: PropTypes.object,
-  individual: PropTypes.object,
-  routes: PropTypes.object,
-  meta: PropTypes.object,
-  announcement: PropTypes.object,
+    type: PropTypes.string,
+    event: PropTypes.object,
+    group: PropTypes.object,
+    individual: PropTypes.object,
+    routes: PropTypes.object,
+    meta: PropTypes.object,
+    announcement: PropTypes.object,
 };
 
 export default GenericCard;

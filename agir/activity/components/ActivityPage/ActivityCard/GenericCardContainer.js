@@ -107,7 +107,7 @@ const ActivityCardAction = (props) => {
 
   if (typeof action.onClick === "function") {
     return (
-      <Button small color="primary" onClick={action.onClick}>
+      <Button small icon={action?.icon} color="primary" onClick={action.onClick}>
         {action?.label}
       </Button>
     );
@@ -115,6 +115,7 @@ const ActivityCardAction = (props) => {
 
   return (
     <Button
+      icon={action?.icon}
       small
       color="primary"
       link

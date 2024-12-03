@@ -225,6 +225,15 @@ const ACTIVITY_CONFIG = {
   },
   "referent_must_validate_remove_request": {
       icon: "user-x",
+      action: ({ meta }) => {
+          return meta
+              ? {
+                  icon: "arrow-right",
+                  label: "Voir la demande",
+                  to: `/groupes/${meta?.groupId}/gestion/requete-suppression-membre/${meta?.requestId}`
+              }
+              : null;
+      },
   }
 };
 
