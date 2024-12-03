@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import useSWRImmutable from "swr/immutable";
 
@@ -20,6 +20,7 @@ import GroupMemberRemoveRequest
     from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
 import {useLocation, useHistory} from "react-router-dom";
 import { useParams } from "react-router"
+import {useToast} from "@agir/front/globalContext/hooks";
 
 const StyledSkeleton = styled(Skeleton)`
   &:nth-child(odd) {
@@ -33,15 +34,23 @@ const StyledSkeleton = styled(Skeleton)`
 const GroupMembershipRemoveRequestPage = (props) => {
     const location = useLocation()
     const history = useHistory();
+    const sendToast = useToast();
     const params = useParams();
-    console.log('params', params)
 
     const removeRequest = location.state?.removeRequest
-    const { data: removeRequestFetched } = useMembershipRemoveRequestById(removeRequest ? null : params?.requestId)
+    const { data: removeRequestFetched, error } = useMembershipRemoveRequestById(removeRequest ? null : params?.requestId)
 
     const member = location.state?.member ?? removeRequestFetched?.person;
     const groupId = removeRequest?.supportgroupId ?? location.state?.groupId
 
+    useEffect(() => {
+        if ([403, 404].includes(error?.response?.status)) {
+            sendToast("Demande introuvable.", "ERROR", {
+                autoClose: true,
+            });
+            history.goBack()
+        }
+    }, [removeRequest, removeRequestFetched, error]);
 
     return (
         <div>
