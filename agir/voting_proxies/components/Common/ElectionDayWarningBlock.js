@@ -1,17 +1,21 @@
 import React from "react";
 
 import { WarningBlock } from "@agir/elections/Common/StyledComponents";
+import {useTheme} from "styled-components";
 
-const ElectionDayWarningBlock = () => (
-  <WarningBlock icon="alert-triangle" background="#ffe8d7" iconColor="#ff8c37">
+const ElectionDayWarningBlock = () => {
+
+    const theme = useTheme();
+
+  return <WarningBlock icon="alert-triangle" background={theme.background50} iconColor="#ff8c37">
     Pour que la procuration de vote puisse être validée et transmise au bureau
     de vote dans les temps,{" "}
     <strong>
-      faites votre demande avant le 27 juin pour le premier tour et le 4 juillet
+      faites votre demande avant le 9 janvier pour le premier tour et le 16 janvier
       pour le second
     </strong>
      !
   </WarningBlock>
-);
+}
 
 export default ElectionDayWarningBlock;

@@ -60,6 +60,14 @@ class AbstractVoter(BaseAPIResource):
             "française et les Français·es de l'étranger résidant sur le continent américain) — 2nd tour des "
             "législatives",
         ),
+        (
+            datetime(2025, 1, 12, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            "Dimanche 12 Janvier 2025 - 1er tour des législatives partielles",
+        ),
+        (
+            datetime(2025, 1, 19, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            "Dimanche 19 Janvier 2025 - 2nd tour des législatives partielles",
+        ),
     )
 
     first_name = models.CharField(

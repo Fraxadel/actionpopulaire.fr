@@ -14,7 +14,7 @@ const NewVotingProxyRequestIntro = () => (
     <p>
       Vous souhaitez voter pour un·e candidate de la France insoumise aux
       élections législatives mais vous serez absent ou dans l'impossibilité de
-      vous rendre au bureau de vote les dimanches 30 juin et/ou 7 juillet ?  
+      vous rendre au bureau de vote les dimanches 12 janvier et/ou 19 janvier ?  
       <strong>Faites une procuration !</strong>
     </p>
     <Spacer size="1rem" />
@@ -44,7 +44,7 @@ const NewVotingProxyRequestIntro = () => (
       Si personne de votre entourage ne peut prendre votre procuration,
       remplissez ce formulaire{" "}
       <strong style={{ boxShadow: "inset 0 -3px 0 0 currentcolor" }}>
-        avant le 27 juin pour le premier tour et le 4 juillet pour le second
+        avant le 12 janvier pour le premier tour et le 19 janvier pour le second
       </strong>{" "}
       et nous vous mettrons en relation avec une personne disponible pour aller
       voter à votre place avec votre procuration.

@@ -149,6 +149,7 @@ export const StyledPage = styled.div`
 
     @media (max-width: ${(props) => props.theme.collapse}px) {
       content: url(${(props) => props.theme.illustration.small});
+      background-image: none;
       width: 100%;
       height: auto;
     }

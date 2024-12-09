@@ -623,7 +623,6 @@ export const routeConfig = {
     Component: RouteComponents.FaIcons,
     hideFeedbackButton: true,
   }),
-  /*
   newVotingProxyRequest: new RouteConfig({
     id: "newVotingProxyRequest",
     path: "/procuration/donner-ma-procuration/",
@@ -736,7 +735,6 @@ export const routeConfig = {
     hideFooter: true,
     appOnlyTopBar: true,
   }),
-  */
 };
 
 export const getRouteByPathname = (pathname) => {

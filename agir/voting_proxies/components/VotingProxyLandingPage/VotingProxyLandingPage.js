@@ -10,8 +10,8 @@ import StyledPageContainer from "@agir/elections/Common/StyledPageContainer";
 // import ElectionDayWarningBlock from "@agir/voting_proxies/Common/ElectionDayWarningBlock";
 import SecurityWarning from "@agir/voting_proxies/Common/SecurityWarning";
 
-import votingProxyRequestIcon from "@agir/voting_proxies/Common/images/vpr_icon.png";
-import votingProxyIcon from "@agir/voting_proxies/Common/images/vp_icon.png";
+import votingProxyRequestIcon from "@agir/voting_proxies/Common/images/vpr_icon.svg";
+import votingProxyIcon from "@agir/voting_proxies/Common/images/vp_icon.svg";
 
 const StyledLink = styled(Card).attrs({ bordered: true })`
   display: flex;
@@ -75,7 +75,7 @@ const VotingProxyLandingPage = () => {
       <StyledLink>
         <img src={votingProxyRequestIcon} width="143" height="132" />
         <p>
-          <strong>Je serai absent·e le 30 juin et/ou le 7 juillet</strong>
+          <strong>Je serai absent·e le 12 janvier et/ou le 19 Janvier</strong>
           <Button
             link
             wrap
