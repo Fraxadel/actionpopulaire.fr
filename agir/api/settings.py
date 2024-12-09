@@ -998,6 +998,7 @@ NUNTIUS_MOSAICO_TEMPLATES = [
     ("/static/mosaico_templates/versafix-nsp/template.html", "Template NSP"),
     ("/static/mosaico_templates/versafix-jlm2022/template.html", "Template JLM2022"),
     ("/static/mosaico_templates/versafix-fi2023/template.html", "Template LFI 2023"),
+    ("/static/mosaico_templates/versafix-fi2024/template.html", "Template LFI 2024"),
 ]
 
 NUNTIUS_MAX_SENDING_RATE = int(os.environ.get("NUNTIUS_MAX_SENDING_RATE", 80))
