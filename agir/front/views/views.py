@@ -515,24 +515,21 @@ class SpendingRequestUpdateView(SpendingRequestDetailsView):
 
 class VotingProxyView(BaseAppCachedView):
     meta_title = "Se porter volontaire pour voter par procuration - Action Populaire"
-    meta_description = "Prenez une procuration près de chez vous, pour voter aux élections législatives du 30 juin et 7 juillet 2024."
+    meta_description = "Prenez une procuration près de chez vous, pour voter aux élections législatives."
     meta_type = "website"
     meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_vp.png"))
 
 
 class ReplyToSingleVotingProxyRequestView(BaseAppCachedView):
     meta_title = "Se porter volontaire pour voter par procuration - Action Populaire"
-    meta_description = "Prenez une procuration près de chez vous, pour voter aux élections législatives du 30 juin et 7 juillet 2024."
+    meta_description = "Prenez une procuration près de chez vous, pour voter aux élections législatives."
     meta_type = "website"
     meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_vp.png"))
 
 
 class VotingProxyRequestView(BaseAppCachedView):
     meta_title = "Voter par procuration — Action Populaire"
-    meta_description = (
-        "Faites la demande qu'un·e volontaire de votre ville vote à votre place aux élections législatives du 30 juin "
-        "et 7 juillet 2024."
-    )
+    meta_description = "Faites la demande qu'un·e volontaire de votre ville vote à votre place aux élections législatives."
     meta_type = "website"
     meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_vpr.png"))
 
