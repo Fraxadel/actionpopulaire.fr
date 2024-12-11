@@ -6,6 +6,7 @@ from datetime import timedelta
 from secrets import token_urlsafe
 from urllib.parse import urljoin
 
+import numpy as np
 import ics
 import pytz
 from django import forms
@@ -928,11 +929,18 @@ class Event(
             price += d[tuple(values)]
 
         if "free_pricing" in self.payment_parameters:
-            field = self.payment_parameters["free_pricing"]
-            current_value = submission_data.get(field, 0)
-            if current_value == "":
-                current_value = 0
-            price += max(0, int(int(current_value) * 100))
+            if isinstance(self.payment_parameters.get("free_pricing"), str):
+                field = self.payment_parameters["free_pricing"]
+                current_value = submission_data.get(field, 0)
+                if current_value == "":
+                    current_value = 0
+                price += max(0, int(int(current_value) * 100))
+            else:
+                for field_name in self.payment_parameters.get("free_pricing", []):
+                    current_value = submission_data.get(field_name, 0)
+                    if current_value == "":
+                        current_value = 0
+                    price += max(0, int(int(current_value) * 100))
 
         return price
 
