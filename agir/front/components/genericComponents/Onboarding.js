@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 import { useResponsiveMemo } from "@agir/front/genericComponents/grid";
 
-import onboardingEventImage from "./images/onboarding__event.jpg";
+import onboardingEventImage from "./images/onboarding__event.png";
 import onboardingActionImage from "./images/onboarding__action.jpg";
 
 const ONBOARDING_TYPE = {
