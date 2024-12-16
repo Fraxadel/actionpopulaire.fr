@@ -3,6 +3,10 @@ import styled from "styled-components";
 
 const DonationMention = styled.p`
     color: ${(props) => props.theme.text500};
+
+    @media (max-width: ${(props) => props.theme.collapse}px) {
+        padding: 0 1rem 0 1rem;
+    }
 `
 
 export default function DonationLegalMention() {
