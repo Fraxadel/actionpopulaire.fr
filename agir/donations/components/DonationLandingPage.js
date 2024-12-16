@@ -25,6 +25,7 @@ import DonationPresentation from "@agir/front/genericComponents/donation/Donatio
 import DonationValidation from "@agir/donations/form/DonationValidation";
 import {DonationContent, DonationShow} from "@agir/donations/Common.style";
 import {useIsDesktop} from "@agir/front/genericComponents/grid";
+import DonationLegalMention from "@agir/donations/form/DonationLegaMention";
 
 const DonTitle = styled.h1`
   font-weight: bold;
@@ -74,6 +75,7 @@ const DonationLandingPage = () => {
                     <DonationChoices />
                     <DonationPersonInformation />
                     <DonationPayment />
+                    <DonationLegalMention />
                     <DonationValidation />
                   </DonationColumn>
                   <DonationShow>

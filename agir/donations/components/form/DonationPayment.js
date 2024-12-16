@@ -57,7 +57,7 @@ export default function DonationPayment() {
     const {update, paymentMode, errors} = useDonationContext()
 
     return <FormContainer>
-        <h3>Paiment</h3>
+        <h3>Paiement</h3>
         <PaymentButtons name="paymentMode">
             <Button
                 active={paymentMode === PAYMENT_MODE.SYSTEM_PAY}
