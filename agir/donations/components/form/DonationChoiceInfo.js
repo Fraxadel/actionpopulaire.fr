@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import {ALLOCATION_DESCRIPTION_MAPPING, ALLOCATION_TITLE_MAPPING} from "@agir/donations/Donation.domain";
+import {TYPE_CNS, TYPE_DEPARTMENT, TYPE_NATIONAL} from "@agir/donations/common/allocations.config";
 
 const ModalInfoChoice = styled.div`
     background-color: ${(props) => props.theme.background25};
@@ -30,21 +32,22 @@ const InfoChoice = styled.div`
 `
 
 export default function DonationChoiceInfo() {
-    const [isHover, setIsHover] = useState(false)
+    const [display, setDisplay] = useState(false)
 
     return <InfoChoice
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
+        onMouseEnter={() => setDisplay(true)}
+        onMouseLeave={() => setDisplay(false)}
+        onClick={() => setDisplay((old) => !old)}
     >
         <span className="fa-light fa-circle-info"/><p>À quoi sert chaque caisse ?</p>
 
-        {isHover && <ModalInfoChoice>
-            <h4>Caisse nationale de solidarité financière (20%)</h4>
-            <p>Caisse de compensation qui réduit les écarts de ressources entre les départements. Elle est entièrement redistribuée aux caisses départementales, permettant à tous les départements de financer leurs actions.</p>
-            <h4>Activités nationales</h4>
-            <p>Actions et campagnes nationales, ainsi qu'aux outils mis à la disposition des insoumis⋅es (comme Action populaire)</p>
-            <h4>Caissé départementale</h4>
-            <p>Activités de votre département  (ou circonscription législative pour les français·es de l'étranger)</p>
+        {display && <ModalInfoChoice>
+            <h4>{ALLOCATION_TITLE_MAPPING[TYPE_CNS]}</h4>
+            <p>{ALLOCATION_DESCRIPTION_MAPPING[TYPE_CNS]}</p>
+            <h4>{ALLOCATION_TITLE_MAPPING[TYPE_NATIONAL]}</h4>
+            <p>{ALLOCATION_DESCRIPTION_MAPPING[TYPE_NATIONAL]}</p>
+            <h4>{ALLOCATION_TITLE_MAPPING[TYPE_DEPARTMENT]}</h4>
+            <p>{ALLOCATION_DESCRIPTION_MAPPING[TYPE_DEPARTMENT]}</p>
         </ModalInfoChoice>
         }
 

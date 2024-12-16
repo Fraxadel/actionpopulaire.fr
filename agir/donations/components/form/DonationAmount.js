@@ -3,13 +3,15 @@ import {useDonationContext} from "@agir/donations/DonationContext";
 import Button from "@agir/front/genericComponents/Button";
 import styled from "styled-components";
 import Spacer from "@agir/front/genericComponents/Spacer";
-import {countRepartition, DON_TYPE, PAYMENT_TIMING} from "@agir/donations/Donation.domain";
+import {countRepartition, DON_TYPE, MAX_AMOUNT_DON, PAYMENT_TIMING} from "@agir/donations/Donation.domain";
 import NumberField from "@agir/front/formComponents/NumberField";
 import {useActiveContributionAPI} from "@agir/donations/common/api";
 import DonationExisting from "@agir/donations/form/DonationExisting";
 import {ErrorMessage, FormContainer} from "@agir/donations/Common.style";
 import {useLocation} from "react-router-dom";
 import { routeConfig } from "@agir/front/app/routes.config";
+import DonationSubscriptionRenewWarning from "@agir/donations/form/DonationSubscriptionRenewWarning";
+import CurrencyField from "@agir/front/formComponents/CurrencyField";
 
 const DonationAmountContainer = styled.div`
     text-align: center;
@@ -46,7 +48,7 @@ const AmountAfterImpot = styled.span`
     display: block;
     color: ${(props) => props.theme.success500};
     font-weight: bold;
-    font-size: 2.35rem;
+    font-size: 2.2rem;
 `
 
 const Container = styled.div``
@@ -55,7 +57,7 @@ const ButtonTiming = styled.div``
 export default function DonationAmount() {
     const location = useLocation()
 
-    const { currentGroup, amount, paymentTiming, update, errors } = useDonationContext()
+    const { currentGroup, currentDonation, amount, paymentTiming, update, errors, updateExistingSubscription } = useDonationContext()
     const [customAmount, setCustomAmount] = useState(false)
 
     const { data: existingDonation, isLoading: isLoadingExistingDonation } = useActiveContributionAPI()
@@ -75,7 +77,7 @@ export default function DonationAmount() {
             setCustomAmount(false)
             updateAmount(value);
         }} color="lfi">{value / 100} €</Button>;
-    }, [amount])
+    }, [amount, paymentTiming])
 
     function updatePaymentTiming(timing) {
         update({
@@ -84,6 +86,12 @@ export default function DonationAmount() {
             ...countRepartition(amount, timing, currentGroup !== null)
         });
     }
+
+    useEffect(() => {
+        if (existingDonation && !currentDonation) {
+            update({currentDonation: existingDonation})
+        }
+    }, [existingDonation]);
 
     useEffect(() => {
         const onContribution = routeConfig.contributions.match(location.pathname)
@@ -105,9 +113,14 @@ export default function DonationAmount() {
         </ButtonTiming>
 
         <FormContainer>
-            <ErrorMessage message={errors?.amount} display={errors?.amount} />
-            {existingDonation && existingDonation.paymentTiming === PAYMENT_TIMING.MONTHLY && paymentTiming === PAYMENT_TIMING.MONTHLY ? <DonationExisting /> :
+            {updateExistingSubscription && paymentTiming === PAYMENT_TIMING.MONTHLY && <DonationSubscriptionRenewWarning subscription={existingDonation} />}
+            {(existingDonation &&
+                existingDonation.renewable &&
+                existingDonation.paymentTiming === PAYMENT_TIMING.MONTHLY &&
+                !updateExistingSubscription &&
+                paymentTiming === PAYMENT_TIMING.MONTHLY) ? <DonationExisting subscription={existingDonation} /> :
             <DonationAmountContainer>
+                <ErrorMessage message={errors?.amount} display={errors?.amount} />
                 <AmountChoices>
                     <AmountButton value={500}/>
                     <AmountButton value={1000}/>
@@ -115,14 +128,12 @@ export default function DonationAmount() {
                     <AmountButton value={3000}/>
                     <AmountButton value={5000}/>
                     <AmountButton value={10000}/>
-                    {customAmount ? <NumberField
-                            currency
-                            error=""
-                            id="field"
-                            iconRight
+                    {customAmount ?
+                        <CurrencyField
                             onChange={(value) => updateAmount(value)}
-                            value={10000}
-                        /> :
+                            amount={amount / 100}
+                            />
+                        :
                         <Button
                             onClick={() => {
                                 updateAmount(10000)

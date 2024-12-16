@@ -7,6 +7,8 @@ import * as api from "@agir/donations/common/api";
 import CONFIG from "@agir/donations/common/config";
 import {TYPE_CNS, TYPE_DEPARTMENT, TYPE_NATIONAL} from "@agir/donations/common/allocations.config";
 import {getFirstElementFromError, scrollToError} from "@agir/front/app/utils";
+import {DateTime} from "luxon";
+import {PAYMENT_TIMING} from "@agir/donations/Donation.domain";
 
 function mapContextToDonation(context) {
 
@@ -35,10 +37,21 @@ function mapContextToDonation(context) {
             })
     }
 
+    let endDate = undefined
+    let effectDate = undefined;
+    if (context.paymentTiming === PAYMENT_TIMING.MONTHLY) {
+        endDate = context.currentDonation?.endDate ?? (typeof config.getEndDate === "function" ? config.getEndDate() : null)
+        if (context.currentDonation) {
+            // renew contribution
+            effectDate = DateTime.fromISO(endDate).plus({days: 1}).toFormat('yyyy-MM-dd');
+            endDate = DateTime.fromISO(endDate).plus({years: 1}).toISO()
+        }
+    }
 
     return {
         ...context,
-        endDate: typeof config.getEndDate === "function" ? config.getEndDate() : null,
+        effectDate,
+        endDate,
         allocations
     }
 }

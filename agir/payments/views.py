@@ -20,10 +20,12 @@ from .types import PAYMENT_TYPES, SUBSCRIPTION_TYPES
 
 PAYMENT_ID_SESSION_KEY = "_payment_id"
 
+
 def payment_view(
     request,
 ):
     pass
+
 
 class PaymentViewAPIRetrieve(RetrieveAPIView):
     queryset = Payment.objects.exclude(

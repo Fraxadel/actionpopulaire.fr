@@ -409,7 +409,12 @@ class RSVPTestCase(TestCase):
         )
 
         payment = Payment.objects.get()
-        self.assertRedirects(response, front_url("payment_page", args=(payment.pk,)))
+        self.assertRedirects(
+            response,
+            front_url("payment_page", args=(payment.pk,)),
+            status_code=302,
+            target_status_code=302,
+        )
 
         # fake payment confirmation
         complete_payment(payment)
@@ -455,7 +460,12 @@ class RSVPTestCase(TestCase):
         )
 
         payment = Payment.objects.get()
-        self.assertRedirects(response, front_url("payment_page", args=(payment.pk,)))
+        self.assertRedirects(
+            response,
+            front_url("payment_page", args=(payment.pk,)),
+            status_code=302,
+            target_status_code=302,
+        )
 
         complete_payment(payment)
         event_notification_listener(payment)
@@ -505,7 +515,12 @@ class RSVPTestCase(TestCase):
         )
 
         payment = Payment.objects.get()
-        self.assertRedirects(response, front_url("payment_page", args=(payment.pk,)))
+        self.assertRedirects(
+            response,
+            front_url("payment_page", args=(payment.pk,)),
+            status_code=302,
+            target_status_code=302,
+        )
 
         # fake payment confirmation
         complete_payment(payment)
@@ -566,7 +581,12 @@ class RSVPTestCase(TestCase):
         )
 
         payment = Payment.objects.get()
-        self.assertRedirects(response, front_url("payment_page", args=(payment.pk,)))
+        self.assertRedirects(
+            response,
+            front_url("payment_page", args=(payment.pk,)),
+            status_code=302,
+            target_status_code=302,
+        )
 
         complete_payment(payment)
         event_notification_listener(payment)

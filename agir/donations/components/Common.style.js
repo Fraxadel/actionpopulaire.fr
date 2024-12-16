@@ -97,6 +97,7 @@ export const AlertWarning = styled.p`
     background-color: ${(props) => `${props.theme.LFIsecondary500}20`};
     color: ${(props) => props.theme.text1000};
     padding: 1.2rem;
+    text-align: center;
     
     span {
         margin-right: 0.2rem;

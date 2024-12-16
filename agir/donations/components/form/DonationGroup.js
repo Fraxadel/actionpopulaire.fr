@@ -14,6 +14,7 @@ export default function DonationGroup() {
     const { search } = useLocation();
     const urlParams = new URLSearchParams(search);
     const {currentGroup, hasSelectedGroup, update} = useDonationContext()
+    const [selectedGroup, setSelectedGroup] = useState(false)
 
     const groupId = urlParams.get("group")
     const { group, groups } = useGroupDonation(
@@ -31,21 +32,32 @@ export default function DonationGroup() {
         [groups],
     );
 
+    function setupSelectedGroup(fromGroup) {
+        const newGroup = groupChoices.find((g) => g.id === fromGroup.id)
+        if (newGroup) {
+            update({currentGroup: newGroup, hasSelectedGroup: true})
+            setSelectedGroup(newGroup)
+        } else {
+            update({hasSelectedGroup: false})
+        }
+    }
+
     useEffect(() => {
         if (group && !currentGroup) {
-            const selectedGroup = groupChoices.find((g) => g.id === group.id)
-            if (selectedGroup) {
-                update({currentGroup: selectedGroup, hasSelectedGroup: true})
-            } else {
-                update({hasSelectedGroup: false})
-            }
+            setupSelectedGroup(group)
         }
     }, [group]);
+
+    useEffect(() => {
+        if (currentGroup && hasSelectedGroup && !open) {
+            setOpen(true)
+            setupSelectedGroup(currentGroup)
+        }
+    }, [currentGroup, hasSelectedGroup, open]);
 
     const ready =  ((groupId !== null && currentGroup !== null) || groupId === null)
 
     return <FormContainer>
-
         <Row gutter={0} justify="space-between" gap={10}>
             <h3>Donner à un groupe en particulier</h3>
             <CheckboxField
@@ -68,7 +80,7 @@ export default function DonationGroup() {
                 helpText=""
                 name="group"
                 placeholder="Selectionnez un groupe d'action certifié"
-                value={currentGroup}
+                value={selectedGroup}
                 options={groupChoices}
                 onChange={(group) => update({currentGroup: group})}
                 small

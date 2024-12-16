@@ -2,6 +2,7 @@ import validate from "@agir/lib/utils/validate";
 import {
   getAllocationDepartement,
 } from "./allocations.config";
+import {MAX_AMOUNT_DON} from "@agir/donations/Donation.domain";
 
 export const SINGLE_TIME_PAYMENT = "S";
 export const MONTHLY_PAYMENT = "M";
@@ -180,7 +181,8 @@ export const DONATION_DATA_CONSTRAINTS = {
     numericality: {
       onlyInteger: true,
       greaterThan: 0,
-      message: "Merci de séléctionner un montant valide."
+      lessThan: MAX_AMOUNT_DON + 1,
+      message: "Merci de séléctionner un montant entre 1 et 7500 €."
     }
   },
   paymentTiming: {

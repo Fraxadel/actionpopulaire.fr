@@ -7,11 +7,16 @@ from .views import (
     SubscriptionView,
     TerminateSubscriptionView,
     subscription_return_view,
-    TerminateCheckPaymentView, PaymentViewAPIRetrieve,
+    TerminateCheckPaymentView,
+    PaymentViewAPIRetrieve,
 )
 
 urlpatterns = [
-    path("api/paiement/<int:pk>/", PaymentViewAPIRetrieve.as_view(), name="api_payment_page"),
+    path(
+        "api/paiement/<int:pk>/",
+        PaymentViewAPIRetrieve.as_view(),
+        name="api_payment_page",
+    ),
     path("paiement/<int:pk>/", PaymentView.as_view(), name="payment_page"),
     path(
         "paiement/<int:pk>/reessayer/", RetryPaymentView.as_view(), name="payment_retry"

@@ -9,10 +9,12 @@ from agir.people.models import Person
 _payment_classes = [import_string(name) for name in settings.PAYMENT_MODES]
 
 import logging
+
 logger = logging.getLogger(__name__)
 
+
 class PaymentSerializer(serializers.Serializer):
-    person = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all()),
+    person = (serializers.PrimaryKeyRelatedField(queryset=Person.objects.all()),)
     email = serializers.CharField()
     first_name = serializers.CharField()
     created = serializers.DateTimeField(read_only=True)
@@ -26,13 +28,14 @@ class PaymentSerializer(serializers.Serializer):
     def get_details(self, obj):
         current_mode = next(filter(lambda m: m.id == obj.mode, _payment_classes), None)
 
-        if current_mode is not None and isinstance(current_mode(), AbstractCheckPaymentMode):
+        if current_mode is not None and isinstance(
+            current_mode(), AbstractCheckPaymentMode
+        ):
             return {
                 "order": current_mode.order,
                 "address": current_mode.address,
-                "information": current_mode.additional_information
+                "information": current_mode.additional_information,
             }
-
 
     class Meta:
         model = Payment
@@ -46,5 +49,5 @@ class PaymentSerializer(serializers.Serializer):
             "mode",
             "status",
             "price",
-            "meta"
+            "meta",
         )

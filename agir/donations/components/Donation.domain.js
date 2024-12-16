@@ -22,8 +22,9 @@ export const ALLOCATION_DESCRIPTION_MAPPING = {
     [TYPE_NATIONAL]: "Actions et campagnes nationales, ainsi qu'aux outils mis à la disposition des insoumis⋅es (comme Action populaire)",
     [TYPE_CNS]: "Caisse de compensation qui réduit les écarts de ressources entre les départements. Elle est entièrement redistribuée aux caisses départementales, permettant à tous les départements de financer leurs actions.",
     [TYPE_DEPARTMENT]: "Activités de votre département  (ou circonscription législative pour les français·es de l'étranger)"
-
 }
+
+export const MAX_AMOUNT_DON = 750000;
 
 
 export function countRepartition(totalAmount, paymentTiming, withGroup) {

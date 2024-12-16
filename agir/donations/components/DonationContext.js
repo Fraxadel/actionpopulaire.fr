@@ -17,10 +17,10 @@ export const DEFAULT_CONTEXT = {
     hasSelectedGroup: false,
     honorCertified: false,
     to: DON_TYPE.SINGLE_TIME_DONATION_TYPE,
+    updateExistingSubscription: false
 }
 
 export default function DonationContextProvider({ children }) {
-
     const [context, setContext] = useState(DEFAULT_CONTEXT);
 
     const update = useCallback((ctx) => {

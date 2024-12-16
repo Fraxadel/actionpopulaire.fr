@@ -4,10 +4,10 @@ import CheckboxField from "@agir/front/formComponents/CheckboxField";
 import {Row} from "@agir/front/genericComponents/grid";
 import styled from "styled-components";
 import {PAYMENT_TIMING} from "@agir/donations/Donation.domain";
-import TextField from "@agir/front/formComponents/TextField";
 import {FormContainer} from "@agir/donations/Common.style";
 import Button from "@agir/front/genericComponents/Button";
 import DonationChoiceInfo from "@agir/donations/form/DonationChoiceInfo";
+import CurrencyField from "@agir/front/formComponents/CurrencyField";
 
 const DonationChoiceContainer = styled.div`
     display: flex;
@@ -35,37 +35,17 @@ const DonationChoiceContainer = styled.div`
 `
 
 function DonationChoice({title, message, amount, onChange, mandatory, error}) {
-
-    const [currentValue, setCurrentValue] = useState(amount)
-    const amountRef = useRef()
-
-    function _onChange(e) {
-        let value = e.target.value?.trim().replace(/[^0-9,.]/g, "").replace(",", ".")
-        value = isNaN(value) || value === "" ? 0 : value
-        setCurrentValue(value)
-        amountRef.current = value
-        onChange(Math.floor( parseFloat(value) * 100))
-    }
-
-    useEffect(() => {
-        if (amount !== amountRef) {
-            setCurrentValue(amount)
-        }
-    }, [amount]);
-
     return <DonationChoiceContainer>
         <div>
             <h4>{title}</h4>
             <p>{message}</p>
         </div>
         <span>
-            <TextField
+            <CurrencyField
+                amount={amount}
                 readOnly={mandatory}
-                icon="euro-sign"
-                onChange={_onChange}
+                onChange={onChange}
                 error={error}
-                iconRight
-                value={currentValue}
                 />
         </span>
     </DonationChoiceContainer>

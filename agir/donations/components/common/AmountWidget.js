@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { displayPrice } from "@agir/lib/utils/display";
 import { MONTHLY_PAYMENT } from "./form.config";
 
-import PaymentTimingWidget from "@agir/donations/common/PaymentTimingWidget";
 import { RawFeatherIcon } from "@agir/front/genericComponents/FeatherIcon";
 import {
   Button,
@@ -176,12 +175,6 @@ const AmountWidget = (props) => {
           unit={unit}
         />
       )}
-      <PaymentTimingWidget
-        value={paymentTiming}
-        onChange={onChangePaymentTiming}
-        disabled={disabled}
-        allowedPaymentTimings={allowedPaymentTimings}
-      />
     </StyledAmountWidget>
   );
 };
