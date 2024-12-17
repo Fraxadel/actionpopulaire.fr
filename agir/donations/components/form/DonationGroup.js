@@ -82,7 +82,10 @@ export default function DonationGroup() {
                 placeholder="Selectionnez un groupe d'action certifié"
                 value={selectedGroup}
                 options={groupChoices}
-                onChange={(group) => update({currentGroup: group})}
+                onChange={(_group) => {
+                    setSelectedGroup(_group);
+                    update({currentGroup: _group});
+                }}
                 small
             />
         </div>
