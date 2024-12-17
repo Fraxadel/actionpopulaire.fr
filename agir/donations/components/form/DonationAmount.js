@@ -115,7 +115,6 @@ export default function DonationAmount() {
         <FormContainer>
             {updateExistingSubscription && paymentTiming === PAYMENT_TIMING.MONTHLY && <DonationSubscriptionRenewWarning subscription={existingDonation} />}
             {(existingDonation &&
-                existingDonation.renewable &&
                 existingDonation.paymentTiming === PAYMENT_TIMING.MONTHLY &&
                 !updateExistingSubscription &&
                 paymentTiming === PAYMENT_TIMING.MONTHLY) ? <DonationExisting subscription={existingDonation} /> :

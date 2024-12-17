@@ -42,8 +42,11 @@ export default function DonationExisting({subscription}) {
                     <p>Vous avez déjà un don mensuel en cours !</p>
                     <p>Vous pouvez le modifier sur la page <Link route="personalPayments">« Dons et paiments »</Link> de votre espace personnel.</p>
                 </DonationExistingInfo>
+                {
+                    subscription.renewable &&
                 <Button onClick={setupCurrentSubscription}
                         color="lfiPrimary">MODIFIER MON DON MENSUEL</Button>
+                }
             </>
         }
     </>
