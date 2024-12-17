@@ -7,6 +7,7 @@ import {RawFeatherIcon} from "@agir/front/genericComponents/FeatherIcon";
 import acceptedPaymentMethods from "@agir/donations/common/images/accepted-payment-methods.svg";
 import {useDonationContext} from "@agir/donations/DonationContext";
 import {FormContainer, PaymentError} from "@agir/donations/Common.style";
+import CONFIG from "@agir/donations/common/config";
 
 const WithinButton = styled.div`
     display: flex;
@@ -55,27 +56,36 @@ const PAYMENT_MODE = {
 export default function DonationPayment() {
 
     const {update, paymentMode, errors} = useDonationContext()
+    const { to, paymentTiming } = useDonationContext()
+    const config =  CONFIG[to] ?? CONFIG.default.type;
+    const currentPaymentModes = config.allowedPaymentModes[paymentTiming];
+    const systemPayMode = currentPaymentModes.find((val) => val.includes("system"))
+    const checkMode = currentPaymentModes.find((val) => val.includes("check"))
 
     return <FormContainer>
         <h3>Paiement</h3>
         <PaymentButtons name="paymentMode">
-            <Button
-                active={paymentMode === PAYMENT_MODE.SYSTEM_PAY}
-                onClick={() => update({paymentMode: PAYMENT_MODE.SYSTEM_PAY})}
-                color="lfi">
-                <WithinButton>
-                    <CreditCard width="5rem"/>
-                    <p>Payer par carte<br/>bancaire</p>
-                </WithinButton>
-            </Button>
-            <Button active={paymentMode === PAYMENT_MODE.CHECK}
-                    onClick={() => update({paymentMode: PAYMENT_MODE.CHECK})}
+            {systemPayMode &&
+                <Button
+                    active={paymentMode === systemPayMode}
+                    onClick={() => update({paymentMode: systemPayMode})}
                     color="lfi">
-                <WithinButton>
-                    <PenField width="5rem"/>
-                    <p>Payer par chèque</p>
-                </WithinButton>
-            </Button>
+                    <WithinButton>
+                        <CreditCard width="5rem"/>
+                        <p>Payer par carte<br/>bancaire</p>
+                    </WithinButton>
+                </Button>
+            }
+            {checkMode &&
+                <Button active={paymentMode === checkMode}
+                        onClick={() => update({paymentMode: checkMode})}
+                        color="lfi">
+                    <WithinButton>
+                        <PenField width="5rem"/>
+                        <p>Payer par chèque</p>
+                    </WithinButton>
+                </Button>
+            }
         </PaymentButtons>
         <div>
             <PaymentParagraph>

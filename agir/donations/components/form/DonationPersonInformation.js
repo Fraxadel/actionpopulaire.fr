@@ -16,7 +16,6 @@ import DepartementField from "@agir/front/formComponents/DepartementField";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import SearchAndSelectField, {useRemoteSearch} from "@agir/front/formComponents/SearchAndSelectField";
 import {debounce} from "@agir/lib/utils/promises";
-import Link from "@agir/front/app/Link";
 
 const Civilite = styled.div`
     display: flex;

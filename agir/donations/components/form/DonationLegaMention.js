@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import {useDonationContext} from "@agir/donations/DonationContext";
+import CONFIG from "@agir/donations/common/config";
 
 const DonationMention = styled.p`
     color: ${(props) => props.theme.text500};
@@ -10,5 +12,8 @@ const DonationMention = styled.p`
 `
 
 export default function DonationLegalMention() {
-    return <DonationMention>Les dons seront versés à L'Association de financement de La France insoumise (AFLFI). Premier alinéa de l’article 11-4 de la loi 88-227 du 11 mars 1988 modifiée : une personne physique peut verser un don à un parti ou groupement politique si elle est de nationalité française ou si elle réside en France.</DonationMention>
+    const { to } = useDonationContext()
+    const config =  CONFIG[to] ?? CONFIG.default.type;
+
+    return <DonationMention>{ config.legalParagraph }</DonationMention>
 }
