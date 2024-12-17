@@ -8,6 +8,11 @@ import {useDonationContext} from "@agir/donations/DonationContext";
 import {FormContainer} from "@agir/donations/Common.style";
 import PageFadeIn from "@agir/front/genericComponents/PageFadeIn";
 import Skeleton from "@agir/front/genericComponents/Skeleton";
+import styled from "styled-components";
+
+const TitleDonationGroup = styled.h3`
+    cursor: pointer;
+`
 
 export default function DonationGroup() {
 
@@ -57,17 +62,19 @@ export default function DonationGroup() {
 
     const ready =  ((groupId !== null && currentGroup !== null) || groupId === null)
 
+    function toggleOpen() {
+        update({ hasSelectedGroup: !open})
+        setOpen((old) => !old);
+    }
+
     return <FormContainer>
         <Row gutter={0} justify="space-between" gap={10}>
-            <h3>Donner à un groupe en particulier</h3>
+            <TitleDonationGroup onClick={toggleOpen}>Donner à un groupe en particulier</TitleDonationGroup>
             <CheckboxField
                 id="group"
                 name="group"
                 value={open}
-                onChange={() => {
-                    update({ hasSelectedGroup: !open})
-                    setOpen((old) => !old);
-                }}
+                onChange={toggleOpen}
                 toggle
                 variant="lfi"
             />

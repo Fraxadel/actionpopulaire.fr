@@ -34,11 +34,14 @@ const DonationChoiceContainer = styled.div`
     }
 `
 
+const TitleDonationChoices = styled.h3`
+    cursor: pointer;
+`
+
 function DonationChoice({title, message, amount, onChange, mandatory, error}) {
     return <DonationChoiceContainer>
         <div>
-            <h4>{title}</h4>
-            <p>{message}</p>
+            <h4>{title} {message && ` - ${message}`}</h4>
         </div>
         <span>
             <CurrencyField
@@ -101,14 +104,18 @@ export default function DonationChoices() {
 
     const excessAmount = (cnsAmount + nationalAmount + departmentAmount + groupAmount) - amount
 
+    function toggleOpen() {
+        setOpen((old) => !old)
+    }
+
     return <FormContainer>
         <Row gutter={0} justify="space-between" gap={7}>
-            <h3>Choisir la répartition du don</h3>
+            <TitleDonationChoices onClick={toggleOpen}>Choisir la répartition du don</TitleDonationChoices>
             <CheckboxField
                 id="repartition-don"
                 name="repartition-don"
                 value={open}
-                onChange={() => setOpen((old) => !old)}
+                onChange={toggleOpen}
                 toggle
                 variant="lfi"
             />
