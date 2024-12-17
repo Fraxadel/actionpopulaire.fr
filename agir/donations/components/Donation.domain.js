@@ -30,6 +30,7 @@ export const MAX_AMOUNT_DON = 750000;
 export function countRepartition(totalAmount, paymentTiming, withGroup) {
     if (paymentTiming === PAYMENT_TIMING.SINGLE_TIME) {
         return {
+            cnsAmount: 0,
             amount: totalAmount,
             nationalAmount: totalAmount,
             departmentAmount: 0,

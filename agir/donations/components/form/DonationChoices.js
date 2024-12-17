@@ -68,7 +68,7 @@ function RemainsAmount({excessAmount}) {
     const fixed = excessAmount === 0
     return <RemainsAmountContainer $error={!fixed}>
         <p>
-            {fixed ? "Dons répartis" : "Reste à répartrir :"}
+            {fixed ? "Dons répartis" : "Reste à répartir :"}
         </p>
         <p>
             {fixed && <span className="fa fa-check"/>}
@@ -147,7 +147,7 @@ export default function DonationChoices() {
                     {excessAmount !== 0 && <Button
                         color="lfiPrimary"
                         onClick={resetRepartition}
-                    >RÉPARTITION AUTOMATIQUEMENT</Button> }
+                    >RÉPARTIR AUTOMATIQUEMENT</Button> }
                 </>
             }
         </div>}
