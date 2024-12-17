@@ -266,6 +266,7 @@ class DonationView(BaseAppCachedView):
         "Pour financer les dépenses liées à l’organisation d’événements, à l’achat de matériel, au"
         "fonctionnement du site, etc., nous avons besoin du soutien financier de chacun.e d’entre vous !"
     )
+    meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_don.png"))
 
 
 class AlreadyContributorRedirectView(RedirectView):
@@ -312,13 +313,12 @@ class AlreadyContributorRedirectView(RedirectView):
 
 class ContributionView(BaseAppCachedView):
     meta_title = "Devenir financeur·euse de la France insoumise"
-    meta_image = urljoin(
-        settings.FRONT_DOMAIN, static("front/og-image/contributions.png")
-    )
+    meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_don.png"))
     meta_description = (
         "Pour financer les dépenses liées à l’organisation d’événements, à l’achat de matériel, au"
         "fonctionnement du site, etc., nous avons besoin du soutien financier de chacun.e d’entre vous !"
     )
+    meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_don.png"))
 
     restricted = True
 
@@ -337,9 +337,7 @@ class ContributionView(BaseAppCachedView):
 
 class ContributionRenewalView(BaseAppHardAuthView):
     meta_title = "renouveler le financement à la France insoumise"
-    meta_image = urljoin(
-        settings.FRONT_DOMAIN, static("front/og-image/contributions.png")
-    )
+    meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_don.png"))
     meta_description = (
         "Pour financer les dépenses liées à l’organisation d’événements, à l’achat de matériel, au"
         "fonctionnement du site, etc., nous avons besoin du soutien financier de chacun.e d’entre vous !"
@@ -549,6 +547,13 @@ class EventSpeakerView(SoftLoginRequiredMixin, ReactBaseView):
         reverse_lazy("api_event_speaker_retrieve_update"),
         reverse_lazy("api_event_speaker_event_list"),
     ]
+
+
+class FinancerView(BaseAppCachedView):
+    meta_title = "Faire un don - Action Populaire"
+    meta_description = "Chaque don nous aide à l'organisation d'événements, à l'achat de matériel, au fonctionnement de nos sites, au fonctionnement de notre mouvement."
+    meta_type = "website"
+    meta_image = urljoin(settings.FRONT_DOMAIN, static("front/assets/og_image_don.png"))
 
 
 ## REDIRECT / EXTERNAL VIEWS

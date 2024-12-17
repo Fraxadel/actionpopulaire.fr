@@ -121,7 +121,6 @@ export default function ChequeValidation() {
                                 <FormContainer>
                                     <h3>À savoir</h3>
                                     <p>{ payment?.details?.information }</p>
-                                    <p>Pour régler plusieurs transactions avec un seul chèque : transmettez le chèque unique en indiquant bien tous les numéros de commande au dos du chèque.</p>
                                 </FormContainer>
                                 <Button link route={externalLinkRoute} color="lfiPrimary">TERMINER</Button>
                             </DonationColumn>

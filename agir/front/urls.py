@@ -505,7 +505,7 @@ urlpatterns = [
         views.BaseAppCachedView.as_view(),
         name="payment_check_page",
     ),
-    path("financer/", views.BaseAppCachedView.as_view(), name="donation_landing_page"),
+    path("financer/", views.FinancerView.as_view(), name="donation_landing_page"),
     path("n/dons/", include(donation_patterns)),
     path("dons/", include(donation_patterns)),
     path("contributions/", include(contribution_patterns)),
