@@ -230,7 +230,7 @@ export const useContributionRenewal = (type = CONFIG.contribution.type) => {
       allocations,
     };
 
-    let validationErrors = validateContributionRenewal(newContribution);
+    let validationErrors = validateContributionRenewal(newContribution, config);
 
     if (getReminder(newContribution?.allocations, newContribution.amount)) {
       validationErrors = {

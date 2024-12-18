@@ -13,7 +13,7 @@ const DonationMention = styled.p`
 
 export default function DonationLegalMention() {
     const { to } = useDonationContext()
-    const config =  CONFIG[to] ?? CONFIG.default.type;
+    const config =  CONFIG[to] ?? CONFIG.default;
 
     return <DonationMention>{ config.legalParagraph }</DonationMention>
 }

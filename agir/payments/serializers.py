@@ -2,15 +2,11 @@ from django.conf import settings
 from django.utils.module_loading import import_string
 from rest_framework import serializers
 
-from agir.checks import DonationCheckPaymentMode, AbstractCheckPaymentMode
+from agir.checks import AbstractCheckPaymentMode
 from agir.payments.models import Payment
 from agir.people.models import Person
 
 _payment_classes = [import_string(name) for name in settings.PAYMENT_MODES]
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class PaymentSerializer(serializers.Serializer):

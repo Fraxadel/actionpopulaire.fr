@@ -2,7 +2,6 @@ import validate from "@agir/lib/utils/validate";
 import {
   getAllocationDepartement,
 } from "./allocations.config";
-import {MAX_AMOUNT_DON} from "@agir/donations/Donation.domain";
 
 export const SINGLE_TIME_PAYMENT = "S";
 export const MONTHLY_PAYMENT = "M";
@@ -86,7 +85,7 @@ export const setFormDataFromExistingDonation = (existingDonation) => (data) => {
   return newData;
 };
 
-export const DONATION_DATA_CONSTRAINTS = {
+export const DONATION_DATA_CONSTRAINTS = (config) => ({
   email: {
     presence: {
       allowEmpty: false,
@@ -117,6 +116,15 @@ export const DONATION_DATA_CONSTRAINTS = {
       tooLong:
         "La valeur de ce champ ne peut pas dépasser les %{count} caractères",
     },
+  },
+  dateOfBirth: {
+    presence: {
+      allowEmpty: false,
+      message: "Ce champ ne peut pas être vide."
+    },
+    dateOfBirth: {
+      message: "Vous devez avoir la majorité pour donner un don."
+    }
   },
   contactPhone: {
     presence: {
@@ -181,8 +189,8 @@ export const DONATION_DATA_CONSTRAINTS = {
     numericality: {
       onlyInteger: true,
       greaterThan: 0,
-      lessThan: MAX_AMOUNT_DON + 1,
-      message: "Merci de séléctionner un montant entre 1 et 7500 €."
+      lessThan: (config?.maxAmount ?? 0) + 1,
+      message: "Merci de séléctionner un montant entre 5 et 7500 €."
     }
   },
   paymentTiming: {
@@ -200,10 +208,10 @@ export const DONATION_DATA_CONSTRAINTS = {
       message: "Certifier votre don"
     }
   }
-};
+});
 
-const NEW_DONATION_DATA_CONSTRAINTS = {
-  ...DONATION_DATA_CONSTRAINTS,
+const NEW_DONATION_DATA_CONSTRAINTS = (config) => ({
+  ...DONATION_DATA_CONSTRAINTS(config),
   departement: {
     presence: {
       allowEmpty: false,
@@ -223,16 +231,16 @@ const NEW_DONATION_DATA_CONSTRAINTS = {
       message: "Vous devez cocher la case précédente pour continuer",
     },
   },
-};
+});
 
-export const validateDonationData = (data) =>
-  validate(data, NEW_DONATION_DATA_CONSTRAINTS, {
+export const validateDonationData = (data, config) =>
+  validate(data, NEW_DONATION_DATA_CONSTRAINTS(config), {
     format: "cleanMessage",
     fullMessages: false,
   });
 
-export const validateContributionRenewal = (data) =>
-  validate(data, DONATION_DATA_CONSTRAINTS, {
+export const validateContributionRenewal = (data, config) =>
+  validate(data, DONATION_DATA_CONSTRAINTS(config), {
     format: "cleanMessage",
     fullMessages: false,
   });

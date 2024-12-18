@@ -606,6 +606,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "EXCEPTION_HANDLER": "agir.api.handlers.exception_handler",
+    "DATE_FORMAT": "%Y-%m-%d",
 }
 
 DRF_NESTED_MULTIPART_PARSER = {"querydict": False}

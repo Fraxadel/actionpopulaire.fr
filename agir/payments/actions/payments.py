@@ -40,6 +40,8 @@ def create_payment(*, person=None, type, price, mode=DEFAULT_MODE, meta=None, **
     """
     if meta is None:
         meta = {}
+    if meta["date_of_birth"]:
+        meta["date_of_birth"] = str(meta["date_of_birth"])
 
     person_fields = [
         "first_name",

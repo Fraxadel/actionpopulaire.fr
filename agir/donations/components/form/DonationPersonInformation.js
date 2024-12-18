@@ -16,6 +16,8 @@ import DepartementField from "@agir/front/formComponents/DepartementField";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import SearchAndSelectField, {useRemoteSearch} from "@agir/front/formComponents/SearchAndSelectField";
 import {debounce} from "@agir/lib/utils/promises";
+import DateTimeField from "@agir/front/formComponents/DateTimeField";
+import {DateTime} from "luxon";
 
 const Civilite = styled.div`
     display: flex;
@@ -52,6 +54,7 @@ export default function DonationPersonInformation() {
         firstName,
         email,
         lastName,
+        dateOfBirth,
         gender,
         nationality,
         departement,
@@ -72,6 +75,7 @@ export default function DonationPersonInformation() {
                 gender: user.gender,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                dateOfBirth: user.dateOfBirth,
                 email: user.email,
                 contactPhone: user.contactPhone,
                 locationAddress1: user.address1,
@@ -121,6 +125,8 @@ export default function DonationPersonInformation() {
         }, 700);
     }
 
+    const currentDate = new Date()
+
     return <FormContainer>
         <h3>Mes informations</h3>
 
@@ -151,6 +157,20 @@ export default function DonationPersonInformation() {
                 name="lastName"
                 error={errors?.lastName}
                 required
+            />
+            <DateTimeField
+                required
+                type="date"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                value={dateOfBirth}
+                onChange={(val) => update({dateOfBirth: val})}
+                error={errors?.dateOfBirth}
+                label="Date de naissance"
+                dateFieldProps={{
+                    initialViewDate: currentDate.setFullYear(currentDate.getFullYear() - 18)
+                }}
+                placeHolder="19/08/1951"
             />
             <CustomField
                 variant="lfi"

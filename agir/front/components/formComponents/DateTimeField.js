@@ -158,12 +158,13 @@ const DateTimeField = (props) => {
     helpText,
     dateFieldProps,
     timeFieldProps,
+    defaultValue,
     ...rest
   } = props;
-  const parsedValue = useMemo(() => parseDatetime(value), [value]);
+  const parsedValue = useMemo(() => value ? parseDatetime(value) : null, [value]);
 
-  const [time, setTime] = useState(parsedValue.time);
-  const [date, setDate] = useState(parsedValue.date);
+  const [time, setTime] = useState(parsedValue?.time);
+  const [date, setDate] = useState(parsedValue?.date);
   const [cursorPosition, setCursorPosition] = useState(0);
 
   const dateInputElement = useRef(null);
@@ -194,9 +195,7 @@ const DateTimeField = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!value) {
-      onChange && onChange(stringifyDatetime(parseDatetime(value)));
-    } else {
+    if (value && onChange) {
       const newValue = parseDatetime(value);
       setDate(newValue.date);
       setTime(newValue.time);
@@ -220,6 +219,8 @@ const DateTimeField = (props) => {
         cursorPosition,
       );
   }, [time, cursorPosition]);
+
+  const currentDate = new Date()
 
   return (
     <StyledField $valid={!error} $invalid={!!error} $empty={!!value}>

@@ -1,5 +1,6 @@
 import parsePhoneNumber from "libphonenumber-js";
 import { validate } from "validate.js";
+import {DateTime} from "luxon";
 
 validate.formatters.cleanMessage = (errors) => {
   const result = {};
@@ -46,6 +47,18 @@ validate.validators.phone = (value, { message }) => {
     return message;
   }
 };
+
+validate.validators.dateOfBirth = (value, { message}) => {
+  if (!value) {
+    return message
+  }
+  const selectedDate = DateTime.fromISO(value)
+  const diff = selectedDate.diffNow(["years"])
+
+  if (diff?.values?.years > -18) {
+    return message
+  }
+}
 
 validate.validators.bool = (value, { message }) => {
   if (!value) {

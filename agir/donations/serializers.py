@@ -99,6 +99,7 @@ class DonationSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(max_length=255, source="first_name")
     lastName = serializers.CharField(max_length=255, source="last_name")
     gender = serializers.CharField()
+    dateOfBirth = serializers.DateField(source="date_of_birth", format="%d/%b/%Y")
     locationAddress1 = serializers.CharField(max_length=100, source="location_address1")
     locationAddress2 = serializers.CharField(
         max_length=100, source="location_address2", required=False, allow_blank=True
@@ -281,6 +282,7 @@ class DonationSerializer(serializers.ModelSerializer):
             "paymentMode",
             "paymentTiming",
             "allocations",
+            "dateOfBirth",
         )
 
 

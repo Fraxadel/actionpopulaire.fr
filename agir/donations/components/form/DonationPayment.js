@@ -57,7 +57,7 @@ export default function DonationPayment() {
 
     const {update, paymentMode, errors} = useDonationContext()
     const { to, paymentTiming } = useDonationContext()
-    const config =  CONFIG[to] ?? CONFIG.default.type;
+    const config =  CONFIG[to] ?? CONFIG.default;
     const currentPaymentModes = config.allowedPaymentModes[paymentTiming];
     const systemPayMode = currentPaymentModes.find((val) => val.includes("system"))
     const checkMode = currentPaymentModes.find((val) => val.includes("check"))

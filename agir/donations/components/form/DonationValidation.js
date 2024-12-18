@@ -16,6 +16,10 @@ function mapContextToDonation(context) {
     const config = CONFIG[type] || CONFIG.default;
 
     const allocations = []
+    if (context.dateOfBirth) {
+        context.dateOfBirth = DateTime.fromISO(context.dateOfBirth).toISODate()
+    }
+
     if (context.currentGroup && context.groupAmount) {
         allocations.push({
             type: "group",
@@ -61,13 +65,14 @@ export default function DonationValidation() {
     const {errors, update, ...context} = useDonationContext()
 
     async function validate(){
-        const results = validateDonationData(context)
+        const config = CONFIG[context?.to] ?? CONFIG.default;
+        const results = validateDonationData(context, config)
         update({errors: results})
         if (!results) {
             const { data, error } = await api.createDonation(mapContextToDonation(context));
 
             if (error) {
-                update({errors})
+                update({errors: error})
                 return;
             }
 
