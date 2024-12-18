@@ -1,7 +1,7 @@
 import React from "react"
 import PageFadeIn from "@agir/front/genericComponents/PageFadeIn";
 import {Link, StyledBody, StyledLogo, StyledMain, StyledPage, Theme} from "@agir/donations/common/StyledComponents";
-import {DonationContent, DonationShow} from "@agir/donations/Common.style";
+import {AlertInformation, DonationContent, DonationShow} from "@agir/donations/Common.style";
 import Cochon from "@agir/front/genericComponents/donation/Cochon";
 import Button from "@agir/front/genericComponents/Button";
 import CONFIG from "@agir/donations/common/config";
@@ -56,7 +56,12 @@ export default function DonationSuccessPage() {
                                     l'onglet « Dons et paiements »</Link> de votre espace personnel sur <Link
                                     href="/agir/donations/static">actionpopulaire.fr</Link>.
                                </p>
-                                <Button color="lfiPrimary">TERMINER</Button>
+
+                                <AlertInformation>
+                                    {thankYouNote}
+                                </AlertInformation>
+
+                                <Button link route={externalLinkRoute} color="lfiPrimary">TERMINER</Button>
 
                                 <ShareCard title="Encouragez vos ami·es à faire un don" url={routeConfig.contributions.getLink()} />
                             </CBContent>

@@ -6,7 +6,6 @@ import CONFIG from "@agir/donations/common/config";
 
 import {
   StyledBody,
-  StyledIllustration,
   StyledLogo,
   StyledMain,
   StyledPage,
@@ -25,7 +24,8 @@ import DonationPresentation from "@agir/front/genericComponents/donation/Donatio
 import DonationValidation from "@agir/donations/form/DonationValidation";
 import {DonationContent, DonationShow} from "@agir/donations/Common.style";
 import {useIsDesktop} from "@agir/front/genericComponents/grid";
-import DonationLegalMention from "@agir/donations/form/DonationLegaMention";
+import DonationLegalMention from "@agir/donations/form/DonationLegalMention";
+import Legal from "@agir/donations/common/Legal";
 
 const DonTitle = styled.h1`
   font-weight: bold;
@@ -77,6 +77,7 @@ const DonationLandingPage = () => {
                     <DonationPayment />
                     <DonationLegalMention />
                     <DonationValidation />
+                    <Legal />
                   </DonationColumn>
                   <DonationShow>
                     <DonationPresentation />

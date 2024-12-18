@@ -66,7 +66,12 @@ export default function DonationSuccessPage() {
                                         de mieux planifier et organiser ses activités au niveau local et/ou national
                                         tout au long de l’année.</strong></p>
                                 </AlertInformation>
-                                <Button color="lfiPrimary">TERMINER</Button>
+
+                                <AlertInformation>
+                                    {thankYouNote}
+                                </AlertInformation>
+
+                                <Button link route={externalLinkRoute} color="lfiPrimary">TERMINER</Button>
 
                                 <ShareCard title="Encouragez vos ami·es à faire un don" url="/dons" />
                             </CBContent>
