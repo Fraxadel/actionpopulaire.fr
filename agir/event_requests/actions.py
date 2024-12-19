@@ -12,6 +12,7 @@ from agir.event_requests.tasks import (
     send_event_request_validation_emails,
     send_new_publish_event_asset_notification,
     render_event_assets,
+    send_new_event_admin_request_notification,
 )
 from agir.events.models import Calendar, OrganizerConfig
 from agir.events.models import Event
@@ -190,6 +191,8 @@ def create_event_request_from_personform_submission(submission, do_not_create=Fa
         event_request = EventRequest.objects.create(**event_request_data)
         submission.data["event_request_id"] = event_request.id
         submission.save()
+
+        send_new_event_admin_request_notification.delay(event_request.pk)
 
         return event_request
 

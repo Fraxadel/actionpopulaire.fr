@@ -16,6 +16,7 @@ from dynamic_filenames import FilePattern
 
 from agir.events.models import Event
 from agir.events.models import Event, Calendar
+from agir.lib.admin.utils import admin_url
 from agir.lib.documents import (
     render_svg_template,
     rsvg_convert,
@@ -794,6 +795,11 @@ class EventRequest(BaseAPIResource):
         blank=True,
     )
     comment = models.TextField("Commentaire", blank=True, null=False)
+
+    def admin_url(self):
+        return admin_url(
+            "admin:event_requests_eventrequest_change", args=(self.pk,), absolute=True
+        )
 
     @property
     def simple_datetimes(self):

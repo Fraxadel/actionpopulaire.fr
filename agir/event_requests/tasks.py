@@ -5,12 +5,83 @@ from agir.lib.mailing import send_template_email
 from agir.lib.utils import front_url
 from agir.people.models import Person
 
+BASIC_EVENT_FORM_MAPPING = {
+    "duration": "Temps demandé (heure)",
+    "contact_name": "Contact",
+    "contact_email": "Email",
+    "contact_phone": "Téléphone",
+    "location_name": "Lieu",
+}
+
 
 @post_save_task()
 def render_event_assets(event_pk):
     event = Event.objects.get(pk=event_pk)
     for event_asset in event.event_assets.renderable():
         event_asset.render()
+
+
+def format_event_request_detail(event_request):
+    return {
+        BASIC_EVENT_FORM_MAPPING[key]: value
+        for key, value in event_request.event_data.items()
+        if key in BASIC_EVENT_FORM_MAPPING
+    }
+
+
+@emailing_task()
+def send_speaker_answered_request_notification_to_admin(event_request_speaker_pk):
+    event_speaker_request = models.EventSpeakerRequest.objects.select_related(
+        "event_speaker__person",
+        "event_request",
+        "event_request__event_theme",
+    ).get(pk=event_request_speaker_pk)
+
+    event_request_details = format_event_request_detail(
+        event_speaker_request.event_request
+    )
+    email_bindings = (
+        event_speaker_request.event_request.event_theme.get_event_creation_notification_email_bindings()
+    )
+    speaker = event_speaker_request.event_speaker.person
+    email_bindings["subject"] = (
+        f"[{event_speaker_request.event_request.event_theme.name}] {speaker.first_name} {speaker.last_name} a répondu pour le {event_speaker_request.datetime.date()}"
+    )
+
+    send_template_email(
+        template_name="event_request/speaker_answered_request_notification_admin.html",
+        bindings={
+            **email_bindings,
+            "event_request": event_speaker_request.event_request,
+            "event_request_details": event_request_details,
+            "event_speaker_request": event_speaker_request,
+            "speaker": speaker,
+        },
+        recipients=[email_bindings["email_to"]],
+    )
+
+
+@emailing_task()
+def send_new_event_admin_request_notification(event_request_pk):
+    event_request = models.EventRequest.objects.select_related(
+        "event",
+        "event_theme",
+    ).get(pk=event_request_pk)
+
+    event_request_details = format_event_request_detail(event_request)
+    email_bindings = (
+        event_request.event_theme.get_event_creation_notification_email_bindings()
+    )
+
+    send_template_email(
+        template_name="event_request/new_event_admin_email.html",
+        bindings={
+            **email_bindings,
+            "event_request": event_request,
+            "event_request_details": event_request_details,
+        },
+        recipients=[email_bindings["email_to"]],
+    )
 
 
 @emailing_task()

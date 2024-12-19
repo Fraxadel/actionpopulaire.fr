@@ -6,6 +6,9 @@ from ...events.views.api_views import EventListAPIView
 from ...lib.rest_framework_permissions import (
     IsPersonPermission,
 )
+from agir.event_requests.tasks import (
+    send_speaker_answered_request_notification_to_admin,
+)
 
 __all__ = [
     "EventSpeakerRetrieveUpdateAPIView",
@@ -33,8 +36,22 @@ class EventSpeakerRequestRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         IsPersonPermission,
         permissions.EventSpeakerRequestAPIPermissions,
     )
-    queryset = models.EventSpeakerRequest.objects.all().select_related("event_request")
+    queryset = models.EventSpeakerRequest.objects.all().select_related(
+        "event_request", "event_speaker"
+    )
     serializer_class = serializers.EventSpeakerRequestSerializer
+
+    def patch(self, request, *args, **kwargs):
+        response = super().patch(request, *args, **kwargs)
+        event_speaker_request = self.get_object()
+        is_available = request.data.get("available", False)
+        if event_speaker_request.is_answerable and is_available:
+            if request.user.person == event_speaker_request.event_speaker.person:
+                send_speaker_answered_request_notification_to_admin.delay(
+                    event_speaker_request.pk
+                )
+
+        return response
 
 
 class EventSpeakerEventListAPIView(EventListAPIView):
