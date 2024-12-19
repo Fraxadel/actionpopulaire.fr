@@ -435,10 +435,9 @@ const LinkButton = styled(BaseButton)`
 `;
 
 const LFIButtonActiveMixin = css`
-    color: ${(props) => props.theme.white};
+    color: ${(props) => props.theme.text25};
     background-color: ${(props) => props.theme.LFIprimary500};
     fill: white;
-
 `
 
 const LFIButton = styled(BaseButton)`
@@ -487,7 +486,7 @@ const LFIButton = styled(BaseButton)`
 
 const LFIPrimaryButton = styled(LFIButton)`
   font-size: inherit;
-  color: ${(props) => props.theme.white};
+  color: ${(props) => props.theme.text25};
   background-color: ${(props) => props.theme.LFIprimary500};
   border-color: ${(props) => props.theme.LFIprimary500};
   border-width: 2px;
@@ -507,7 +506,7 @@ const LFIPrimaryButton = styled(LFIButton)`
 
   &:focus,
   &:active {
-    color: ${(props) => props.theme.white};
+    color: ${(props) => props.theme.text25};
     background-color: ${(props) => props.theme.LFIprimary500};
   }
 
