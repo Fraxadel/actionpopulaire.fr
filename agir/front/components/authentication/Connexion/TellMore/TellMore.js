@@ -306,7 +306,7 @@ const TellMore = ({ dismiss }) => {
             <div>
               <CheckboxField
                 name="mandat"
-                label="Je suis lu·e"
+                label="Je suis élu·e"
                 value={formData.mandat !== null}
                 onChange={toggleShowMandat}
                 disabled={isLoading}
