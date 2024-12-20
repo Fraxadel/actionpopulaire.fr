@@ -7,7 +7,10 @@ import { mergeRefs } from "@agir/lib/utils/react";
 import FeatherIcon from "@agir/front/genericComponents/FeatherIcon";
 import FaIcon from "../genericComponents/FaIcon";
 
-const StyledLabel = styled.span``;
+const StyledLabel = styled.span`
+
+  
+`;
 const StyledHelpText = styled.span``;
 const StyledIcon = styled(FaIcon)``;
 const StyledInput = styled.input``;
@@ -19,7 +22,9 @@ const StyledCounter = styled.span`
 const StyledError = styled.span``;
 
 export const FieldRequiredLabelMixin = css`
+  
   ${({ $required, theme }) => {
+    console.log('$required',$required)
     if ($required) {
       return css`
           &::after {

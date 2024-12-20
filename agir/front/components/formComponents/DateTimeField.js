@@ -15,6 +15,8 @@ import FeatherIcon from "@agir/front/genericComponents/FeatherIcon";
 import "moment/locale/fr";
 import "react-datetime/css/react-datetime.css";
 
+import {FieldRequiredLabelMixin} from "@agir/front/formComponents/TextField";
+
 const StyledLabel = styled.span``;
 const StyledHelpText = styled.span``;
 const StyledInputs = styled.span``;
@@ -62,6 +64,8 @@ const StyledField = styled.div`
     grid-row: 1;
     grid-column: 1/3;
     font-weight: 600;
+
+    ${FieldRequiredLabelMixin}
   }
   ${StyledHelpText} {
     grid-row: 2;
@@ -159,6 +163,7 @@ const DateTimeField = (props) => {
     dateFieldProps,
     timeFieldProps,
     defaultValue,
+    required,
     ...rest
   } = props;
   const parsedValue = useMemo(() => value ? parseDatetime(value) : null, [value]);
@@ -223,7 +228,7 @@ const DateTimeField = (props) => {
   const currentDate = new Date()
 
   return (
-    <StyledField $valid={!error} $invalid={!!error} $empty={!!value}>
+    <StyledField $required={!!required} $valid={!error} $invalid={!!error} $empty={!!value}>
       {label && <StyledLabel htmlFor={id}>{label}</StyledLabel>}
       {helpText && <StyledHelpText>{helpText}</StyledHelpText>}
       <StyledInputs>
