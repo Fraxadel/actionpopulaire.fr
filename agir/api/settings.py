@@ -317,7 +317,7 @@ EMAIL_TEMPLATES = {
     ## TEMPLATE LFI
     ################
     # DONATION_MESSAGE variables : [PROFILE_LINK]
-    "DONATION_MESSAGE": "https://mosaico.lafranceinsoumise.fr/emails/09099c9c-1a8b-4758-a4c0-d486a01d2a0a.html",
+    "DONATION_MESSAGE": "https://mosaico.lafranceinsoumise.fr/emails/093c541a-c215-450e-9d85-2456dfa5bdfe.html",
     # DONATION_MESSAGE_2022 variables :
     "DONATION_MESSAGE_2022": "https://mosaico.lafranceinsoumise.fr/emails/e4480ee7-5337-4119-ac37-0b4cbe11d7ba.html",
     # INVITATION_SUBSCRIPTION_MESSAGE: [GROUP_NAME], [CONFIRMATION_URL] [SIGNAL_URL]
