@@ -615,7 +615,8 @@ class PushAnnouncement(BaseAPIResource):
             }
 
         try:
-            response = gcm_devices.send_message(notification_message)
+            for devices in gcm_devices.iterator():
+                response = devices.send_message(notification_message)
         except Exception as e:
             response = f"Exception: {str(e)}"
 
