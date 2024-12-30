@@ -181,8 +181,11 @@ def find_or_create_person_from_payment(payment):
             )
 
             if "date_of_birth" in person_meta:
+                date_birth_format = "%d/%m/%Y"
+                if "-" in person_meta["date_of_birth"]:
+                    date_birth_format = "%Y-%m-%d"
                 person_meta["date_of_birth"] = datetime.strptime(
-                    person_meta["date_of_birth"], "%d/%m/%Y"
+                    person_meta["date_of_birth"], date_birth_format
                 ).date()
 
             if not payment.email:
