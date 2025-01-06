@@ -800,6 +800,13 @@ class Event(
         )
 
     def get_organizer_people(self):
+        if (
+            self.organizers_groups.count() > 0
+            and self.organizers_groups.first().type
+            == SupportGroup.TYPE_BOUCLE_DEPARTEMENTALE
+        ):
+            return list(set(self.organizers.all()))
+
         organizer_people = sum(
             [
                 group.referents or group.managers
