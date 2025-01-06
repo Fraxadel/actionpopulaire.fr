@@ -90,7 +90,7 @@ export const AlertInformation = styled.p`
     padding: 1.2rem;
     background-color: ${(props) => props.theme.background75};
     color: ${(props) => props.theme.text1000};
-
+    text-align: ${({center}) => center ? 'center' : 'left'};
 `
 
 export const AlertWarning = styled.p`

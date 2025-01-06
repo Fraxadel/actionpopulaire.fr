@@ -5,10 +5,13 @@ import {useGroupDonation} from "@agir/donations/common/hooks";
 import {useLocation} from "react-router-dom";
 import {Row} from "@agir/front/genericComponents/grid";
 import {useDonationContext} from "@agir/donations/DonationContext";
-import {FormContainer} from "@agir/donations/Common.style";
+import {AlertInformation, FormContainer} from "@agir/donations/Common.style";
 import PageFadeIn from "@agir/front/genericComponents/PageFadeIn";
 import Skeleton from "@agir/front/genericComponents/Skeleton";
 import styled from "styled-components";
+import {useSelector} from "@agir/front/globalContext/GlobalContext";
+import {getIsConnected} from "@agir/front/globalContext/reducers";
+import Link from "@agir/front/app/Link";
 
 const TitleDonationGroup = styled.h3`
     cursor: pointer;
@@ -20,6 +23,8 @@ export default function DonationGroup() {
     const urlParams = new URLSearchParams(search);
     const {currentGroup, hasSelectedGroup, update} = useDonationContext()
     const [selectedGroup, setSelectedGroup] = useState(false)
+
+    const isConnected = useSelector(getIsConnected);
 
     const groupId = urlParams.get("group")
     const { group, groups } = useGroupDonation(
@@ -80,23 +85,36 @@ export default function DonationGroup() {
             />
         </Row>
         <PageFadeIn ready={ready} wait={<Skeleton boxes={1}/>}>
-        {open && <div>
-            <p>Séléctionner un groupe certifié</p>
-            <SelectField
-                label=""
-                helpText=""
-                name="group"
-                placeholder="Selectionnez un groupe d'action certifié"
-                value={selectedGroup}
-                options={groupChoices}
-                onChange={(_group) => {
-                    setSelectedGroup(_group);
-                    update({currentGroup: _group});
-                }}
-                small
-            />
-        </div>
+        {open &&
+            <>
+            {isConnected ?
+            <div>
+                <p>Séléctionner un groupe certifié</p>
+                <SelectField
+                    label=""
+                    helpText=""
+                    name="group"
+                    placeholder="Selectionnez un groupe d'action certifié"
+                    value={selectedGroup}
+                    options={groupChoices}
+                    onChange={(_group) => {
+                        setSelectedGroup(_group);
+                        update({currentGroup: _group});
+                    }}
+                    small
+                />
+            </div> : <MustBeAuth/>}
+            </>
         }
         </PageFadeIn>
     </FormContainer>
+}
+
+function MustBeAuth() {
+    const { pathname, search } = useLocation();
+
+    return <AlertInformation center>
+        Vous devez être connecté·e pour donner à un groupe.<br />
+        <Link route="login" params={{ next: pathname + search }}>Se connecter</Link>
+    </AlertInformation>
 }

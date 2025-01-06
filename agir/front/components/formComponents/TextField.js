@@ -22,9 +22,7 @@ const StyledCounter = styled.span`
 const StyledError = styled.span``;
 
 export const FieldRequiredLabelMixin = css`
-  
   ${({ $required, theme }) => {
-    console.log('$required',$required)
     if ($required) {
       return css`
           &::after {

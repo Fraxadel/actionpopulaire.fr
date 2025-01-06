@@ -6,8 +6,8 @@ import styled from "styled-components";
 import Button from "@agir/front/genericComponents/Button";
 import CheckboxField from "@agir/front/formComponents/CheckboxField";
 import {useSelector} from "@agir/front/globalContext/GlobalContext";
-import {getUser} from "@agir/front/globalContext/reducers";
-import {ErrorMessage, FormContainer} from "@agir/donations/Common.style";
+import {getIsConnected, getUser} from "@agir/front/globalContext/reducers";
+import {AlertInformation, ErrorMessage, FormContainer} from "@agir/donations/Common.style";
 import CustomField from "@agir/donations/common/CustomField";
 import CountryField from "@agir/front/formComponents/CountryField";
 import StaticToast from "@agir/front/genericComponents/StaticToast";
@@ -17,7 +17,8 @@ import { OpenStreetMapProvider } from "leaflet-geosearch";
 import SearchAndSelectField, {useRemoteSearch} from "@agir/front/formComponents/SearchAndSelectField";
 import {debounce} from "@agir/lib/utils/promises";
 import DateTimeField from "@agir/front/formComponents/DateTimeField";
-import {DateTime} from "luxon";
+import Link from "@agir/front/app/Link";
+import {useLocation} from "react-router-dom";
 
 const Civilite = styled.div`
     display: flex;
@@ -48,6 +49,8 @@ export default function DonationPersonInformation() {
     const [searchOptions, setSearchOptions] = useState([])
     const [searchIsLoading, setSearchIsLoading] = useState(false)
     const [disableSearch, setDisableSearch] = useState(false)
+    const { pathname, search } = useLocation();
+    const isConnected = useSelector(getIsConnected);
 
     const user = useSelector(getUser);
     const {
@@ -129,6 +132,10 @@ export default function DonationPersonInformation() {
 
     return <FormContainer>
         <h3>Mes informations</h3>
+        {!isConnected && <AlertInformation center>
+            Inscrit·e sur actionpopulaire ?
+            <Link route="login" params={{ next: pathname + search }}> Se connecter</Link>
+        </AlertInformation>}
 
         <Form>
             <span>
