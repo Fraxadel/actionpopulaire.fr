@@ -1,11 +1,5 @@
-from datetime import datetime
-
-import pytz
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.utils import timezone
 from django.views import View
 from django.views.generic.edit import FormMixin
 from rest_framework.generics import GenericAPIView, get_object_or_404

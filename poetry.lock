@@ -1050,38 +1050,24 @@ files = [
 
 [[package]]
 name = "django"
-version = "3.2.25"
-description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
+version = "4.2.18"
+description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "Django-3.2.25-py3-none-any.whl", hash = "sha256:a52ea7fcf280b16f7b739cec38fa6d3f8953a5456986944c3ca97e79882b4e38"},
-    {file = "Django-3.2.25.tar.gz", hash = "sha256:7ca38a78654aee72378594d63e51636c04b8e28574f5505dff630895b5472777"},
+    {file = "Django-4.2.18-py3-none-any.whl", hash = "sha256:ba52eff7e228f1c775d5b0db2ba53d8c49d2f8bfe6ca0234df6b7dd12fb25b19"},
+    {file = "Django-4.2.18.tar.gz", hash = "sha256:52ae8eacf635617c0f13b44f749e5ea13dc34262819b2cc8c8636abb08d82c4b"},
 ]
 
 [package.dependencies]
-asgiref = ">=3.3.2,<4"
-pytz = "*"
-sqlparse = ">=0.2.2"
+asgiref = ">=3.6.0,<4"
+sqlparse = ">=0.3.1"
+tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
 argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
-
-[[package]]
-name = "django-admin-cursor-paginator"
-version = "0.1.6"
-description = "Drop-in replacement for django admin default pagination that works fast with huge tables."
-optional = false
-python-versions = ">=3.4"
-groups = ["main"]
-files = [
-    {file = "django-admin-cursor-paginator-0.1.6.tar.gz", hash = "sha256:42f81854c3f7774b1b9a327ce974586bdbdcca1c761b634a1ebf162c8a65cab9"},
-]
-
-[package.dependencies]
-Django = ">=2.0"
 
 [[package]]
 name = "django-admin-rangefilter"
@@ -4659,4 +4645,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "2a92cf68a58c1b0913e1c1f0abfd12015c1a0aabf2de6fb62979ff4653ffcf01"
+content-hash = "39f487f993e5ab42753bcc1be08f94dfb7a18db3d614aa63fa628438a4e92e0b"

@@ -1,10 +1,10 @@
 import logging
+import zoneinfo
 from functools import partial
 from uuid import UUID
 
 import django_countries
 import iso8601
-import pytz
 from data_france.models import CodePostal
 from django import forms
 from django.core.exceptions import ValidationError
@@ -511,7 +511,7 @@ PREDEFINED_CHOICES = {
         (code, code) for code in CodePostal.objects.all().values_list("code", flat=True)
     ),
     "countries": django_countries.countries,
-    "timezones": lambda instance: ((tz, tz) for tz in pytz.common_timezones),
+    "timezones": lambda instance: ((tz, tz) for tz in zoneinfo.available_timezones()),
 }
 
 

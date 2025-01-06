@@ -4,8 +4,8 @@ from io import BytesIO
 from itertools import chain, islice
 from string import ascii_uppercase, digits
 from urllib.parse import urljoin, urlparse, parse_qs
+from zoneinfo import ZoneInfo
 
-import pytz
 import requests
 from PIL import Image, ImageOps
 from django.conf import settings
@@ -105,18 +105,8 @@ def is_absolute_url(url):
 
 
 def replace_datetime_timezone(dt, timezone_name):
-    timezone = pytz.timezone(timezone_name)
-    return timezone.localize(
-        datetime(
-            dt.year,
-            dt.month,
-            dt.day,
-            dt.hour,
-            dt.minute,
-            dt.second,
-            dt.microsecond,
-        ),
-    )
+    timezone = ZoneInfo(timezone_name)
+    return dt.astimezone(timezone)
 
 
 def validate_facebook_event_url(url):

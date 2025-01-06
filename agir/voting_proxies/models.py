@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
-import pytz
 from data_france.models import Commune
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -28,44 +28,44 @@ from agir.payments.models import Payment
 class AbstractVoter(BaseAPIResource):
     VOTING_DATE_CHOICES = (
         (
-            datetime(2022, 4, 10, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2022, 4, 10, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "10 avril 2022 — 1er tour de la présidentielle",
         ),
         (
-            datetime(2022, 4, 24, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2022, 4, 24, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "24 avril 2022 — 2nd tour de la présidentielle",
         ),
         (
-            datetime(2022, 6, 12, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2022, 6, 12, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "12 juin 2022 — 1er tour des législatives",
         ),
         (
-            datetime(2022, 6, 19, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2022, 6, 19, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "19 juin 2022 — 2nd tour des législatives",
         ),
         (
-            datetime(2024, 6, 9, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2024, 6, 9, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "Dimanche 9 juin 2024 (samedi 8 juin pour la Guadeloupe, la Martinique, "
             "la Guyane, la Polynésie française et les Français·es de l'étranger résidant sur le continent américain) — "
             "Élections européennes 2024",
         ),
         (
-            datetime(2024, 6, 30, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2024, 6, 30, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "Dimanche 30 juin 2024 (samedi 29 juin pour la Guadeloupe, la Martinique, la Guyane, la Polynésie française "
             "et les Français·es de l'étranger résidant sur le continent américain) — 1er tour des législatives",
         ),
         (
-            datetime(2024, 7, 7, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2024, 7, 7, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "Dimanche 7 juillet 2024 (samedi 6 juillet pour la Guadeloupe, la Martinique, la Guyane, la Polynésie "
             "française et les Français·es de l'étranger résidant sur le continent américain) — 2nd tour des "
             "législatives",
         ),
         (
-            datetime(2025, 1, 12, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2025, 1, 12, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "Dimanche 12 Janvier 2025 - 1er tour des législatives partielles",
         ),
         (
-            datetime(2025, 1, 19, 0, 0, 0, tzinfo=pytz.timezone("Europe/Paris")).date(),
+            datetime(2025, 1, 19, 0, 0, 0, tzinfo=ZoneInfo("Europe/Paris")).date(),
             "Dimanche 19 Janvier 2025 - 2nd tour des législatives partielles",
         ),
     )

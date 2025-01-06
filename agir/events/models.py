@@ -2,13 +2,13 @@ import hashlib
 import json
 import random
 import re
+import zoneinfo
+from zoneinfo import ZoneInfo
 from datetime import timedelta
 from secrets import token_urlsafe
 from urllib.parse import urljoin
 
-import numpy as np
 import ics
-import pytz
 from django import forms
 from django.conf import settings
 from django.contrib.gis.db.models.functions import Distance
@@ -501,7 +501,7 @@ class Event(
     timezone = models.CharField(
         "Fuseau horaire",
         max_length=255,
-        choices=((name, name) for name in pytz.all_timezones),
+        choices=((name, name) for name in zoneinfo.available_timezones()),
         default=timezone.get_default_timezone().zone,
         blank=False,
         null=False,
@@ -824,12 +824,12 @@ class Event(
 
     @property
     def local_start_time(self):
-        tz = pytz.timezone(self.timezone)
+        tz = ZoneInfo(self.timezone)
         return self.start_time.astimezone(tz)
 
     @property
     def local_end_time(self):
-        tz = pytz.timezone(self.timezone)
+        tz = ZoneInfo(self.timezone)
         return self.end_time.astimezone(tz)
 
     def get_datestring(self):

@@ -1,8 +1,7 @@
 import datetime
+import zoneinfo
 from copy import deepcopy
-from functools import partial
 
-import pytz
 from django.db import transaction
 from django.utils import timezone
 from django.utils.text import slugify
@@ -103,7 +102,7 @@ def create_event_for_event_request(event_request, event_speakers, start_time):
         )
 
     tz = data.pop("timezone", None)
-    if tz not in pytz.all_timezones:
+    if tz not in zoneinfo.available_timezones():
         tz = timezone.get_default_timezone().zone
 
     duration = int(data.pop("duration", 1))

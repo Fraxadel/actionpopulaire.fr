@@ -1,6 +1,7 @@
 import datetime
 from datetime import timedelta
 from pathlib import PurePath
+from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
 from django.core import validators
@@ -10,7 +11,6 @@ from django.db.models.functions import Concat, Replace, Lower, MD5
 from django.utils import timezone
 from django.utils.text import slugify
 from django_countries.serializer_fields import CountryField
-from pytz import utc, InvalidTimeError
 from rest_framework import serializers
 from rest_framework.fields import empty
 
@@ -746,10 +746,10 @@ class DateTimeWithTimezoneField(serializers.DateTimeField):
         if field_timezone is not None and not timezone.is_aware(value):
             try:
                 return timezone.make_aware(value, field_timezone)
-            except InvalidTimeError:
+            except ValueError:
                 self.fail("make_aware", timezone=field_timezone)
         elif (field_timezone is None) and timezone.is_aware(value):
-            return timezone.make_naive(value, utc)
+            return timezone.make_naive(value, ZoneInfo("UTC"))
         return value
 
 
