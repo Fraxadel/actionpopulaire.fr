@@ -60,7 +60,7 @@ export default function DonationGroup() {
         }
     }, [currentGroup, hasSelectedGroup, open]);
 
-    const ready =  ((groupId !== null && currentGroup !== null) || groupId === null)
+    const ready =  ((groupId !== null && selectedGroup !== null) || groupId === null)
 
     function toggleOpen() {
         update({ hasSelectedGroup: !open})
