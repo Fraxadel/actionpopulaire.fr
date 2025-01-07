@@ -16,10 +16,6 @@ import CurrencyField from "@agir/front/formComponents/CurrencyField";
 const DonationAmountContainer = styled.div`
     text-align: center;
 
-    p {
-        font-weight: bold;
-    }
-
     @media (max-width: ${(props) => props.theme.collapse}px) {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -120,6 +116,7 @@ export default function DonationAmount() {
                 paymentTiming === PAYMENT_TIMING.MONTHLY) ? <DonationExisting subscription={existingDonation} /> :
             <DonationAmountContainer>
                 <ErrorMessage message={errors?.amount} display={errors?.amount} />
+                {paymentTiming === PAYMENT_TIMING.SINGLE_TIME ? <p>Je fais un don une seule fois d'un montant de :</p> : <p>Je fais un don tous les mois d'un montant de :</p>}
                 <AmountChoices>
                     <AmountButton value={500}/>
                     <AmountButton value={1000}/>
