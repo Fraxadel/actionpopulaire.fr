@@ -155,6 +155,12 @@ const ManagerActions = (props) => {
               <Link to={groupSettingsLinks.stats}>Statistiques</Link>
             </li>
           )}
+          {groupSettingsLinks?.help && (
+              <li>
+                  <RawFeatherIcon color="primary500" name="file" />
+                  <Link to={groupSettingsLinks.help}>Ressources - Documents</Link>
+              </li>
+          )}
         </ul>
       </StyledPanel>
       <Button link route="createEvent" color="primary" icon="plus" small>
