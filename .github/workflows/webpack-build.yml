@@ -35,7 +35,7 @@ jobs:
       - name: Print build asset tree
         run: tree -L 3 assets/
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: assets
           path: assets/
