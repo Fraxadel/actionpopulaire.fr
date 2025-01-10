@@ -19,7 +19,9 @@ const fontawesome = (icon, asObject = false) => {
   if (!BINDINGS[icon]) {
     const [iconName, iconStyle = ""] = icon.toLowerCase().split(":");
     const span = document.createElement("span");
+
     span.className = [
+      iconName.includes("fak") && "fak",
       prefixClassName(iconStyle),
       prefixClassName(iconName),
     ].join(" ");

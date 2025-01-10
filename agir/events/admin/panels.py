@@ -1065,7 +1065,7 @@ class EventSubtypeAdmin(admin.ModelAdmin):
         background = obj.color or "#f4ed0f"
         color = "white" if obj.color else "#000000"
         split = obj.icon_name.split(":")
-        print(split)
+
         icon_name = split.pop(0)
         icon_variant = split.pop(0) if split else "solid"
         marker_style = (
@@ -1086,10 +1086,11 @@ class EventSubtypeAdmin(admin.ModelAdmin):
             "text-decoration:none;"
         )
         href = f"https://fontawesome.com/icons/{icon_name}?f=classic&s={icon_variant}"
+        prefix = "fak" if "fak" in icon_name else "fa"
 
         return mark_safe(
             f'<a target="_blank" href="{href}" style="{marker_style}">'
-            f'<i class="fa-{icon_variant} fa-{icon_name} fa-2x" style="transform:rotate(45deg);"></i>'
+            f'<i class="{prefix} fa-{icon_variant} fa-{icon_name} fa-2x" style="transform:rotate(45deg);"></i>'
             "</a>",
         )
 
@@ -1099,6 +1100,7 @@ class EventSubtypeAdmin(admin.ModelAdmin):
                 "https://media.actionpopulaire.fr/fontawesome/css/all.min.css",
                 "https://media.actionpopulaire.fr/fontawesome/css/v4-font-face.min.css",
                 "https://media.actionpopulaire.fr/fontawesome/css/v4-shims.min.css",
+                "https://media.actionpopulaire.fr/fontawesome/css/custom-icons.min.css",
             )
         }
 

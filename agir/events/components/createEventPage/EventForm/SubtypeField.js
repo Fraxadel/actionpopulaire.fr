@@ -114,7 +114,7 @@ export const DefaultOption = (props) => {
         height="1rem"
       />
       <span
-        className={`fa fa-${option.iconName || "calendar"}`}
+        className={`${option.iconName.includes("fak") ? "fak" : "fa"} fa-${option.iconName || "calendar"}`}
         style={{ color: option.color }}
       />
       {option.description && (
