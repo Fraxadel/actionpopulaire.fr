@@ -177,7 +177,7 @@ export default function DonationPersonInformation() {
                 dateFieldProps={{
                     initialViewDate: currentDate.setFullYear(currentDate.getFullYear() - 18)
                 }}
-                placeHolder="19/08/1951"
+                placeholder="19/08/1951"
             />
             <CustomField
                 variant="lfi"
