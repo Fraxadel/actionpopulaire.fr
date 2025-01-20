@@ -12,7 +12,6 @@ import {useLocation} from "react-router-dom";
 import { routeConfig } from "@agir/front/app/routes.config";
 import DonationSubscriptionRenewWarning from "@agir/donations/form/DonationSubscriptionRenewWarning";
 import CurrencyField from "@agir/front/formComponents/CurrencyField";
-import {MONTHLY_PAYMENT, SINGLE_TIME_PAYMENT} from "@agir/donations/common/form.config";
 
 const DonationAmountContainer = styled.div`
     text-align: center;
@@ -51,7 +50,7 @@ const AmountAfterImpot = styled.span`
 const Container = styled.div``
 const ButtonTiming = styled.div``
 
-const DEFAULT_AMOUNT = [500, 1000, 1500, 3000, 5000, 10000]
+const DEFAULT_AMOUNT = [0, 500, 1000, 1500, 3000, 5000, 10000]
 
 export default function DonationAmount() {
     const location = useLocation()
@@ -103,7 +102,7 @@ export default function DonationAmount() {
                 ? PAYMENT_TIMING.MONTHLY
                 : PAYMENT_TIMING.SINGLE_TIME)
         }
-        let amountParam = parseInt(urlParams.get("montant")) ?? 0
+        let amountParam = parseInt(urlParams.get("montant") ?? 0)
         amountParam = amountParam < 500 ? amountParam * 100 : amountParam
         if (DEFAULT_AMOUNT.includes(amountParam) === false) {
             setCustomAmount(true)
