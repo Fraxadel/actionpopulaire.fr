@@ -271,6 +271,10 @@ class Segment(BaseSegment, models.Model):
         "Personnes nées avant le", blank=True, null=True, help_text=DATE_HELP_TEXT
     )
 
+    born_isnull = models.BooleanField(
+        "Personnes sans date de naissance", blank=True, null=True
+    )
+
     donation_after = models.DateField(
         "A fait au moins un don (don mensuel inclus) après le",
         blank=True,
@@ -657,6 +661,9 @@ class Segment(BaseSegment, models.Model):
 
         if self.born_before is not None:
             q = q & Q(date_of_birth__lt=self.born_before)
+
+        if self.born_isnull is not None:
+            q = q & Q(date_of_birth__isnull=self.born_isnull)
 
         if self.donation_after is not None:
             q = q & Q(payments__created__gt=self.donation_after, **DONATION_FILTER)

@@ -109,7 +109,7 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
         ),
         (
             "Informations personnelles",
-            {"fields": ("gender", "born_after", "born_before")},
+            {"fields": ("gender", "born_after", "born_before", "born_isnull")},
         ),
         (
             "Historique des dons",
