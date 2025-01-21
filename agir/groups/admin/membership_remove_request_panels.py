@@ -11,7 +11,7 @@ from django.urls import path
 
 
 Status_couleur = {
-    MembershipRemoveRequest.Status.AWAIT_PEER_REVIEW: "#f4ed0f",
+    MembershipRemoveRequest.Status.AWAIT_PEER_REVIEW: "#f39c12",
     MembershipRemoveRequest.Status.AWAIT_ADMIN_REVIEW: "#DFB5FF",
     MembershipRemoveRequest.Status.DONE: "#16a460",
     MembershipRemoveRequest.Status.REFUSED: "#ff5e35",
