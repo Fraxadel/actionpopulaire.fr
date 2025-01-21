@@ -459,6 +459,9 @@ class SupportGroupDetailView(
 class SupportGroupSettingsView(HardLoginRequiredMixin, SupportGroupDetailView):
     permission_required = ("groups.change_supportgroup",)
 
+    def get_api_preloads(self):
+        return []
+
 
 class CreateSupportGroupSpendingRequestView(
     HardLoginRequiredMixin, SupportGroupDetailView

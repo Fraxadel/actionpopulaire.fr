@@ -1,3 +1,5 @@
+from numpy.ma.core import absolute
+
 from agir.lib.models import BaseAPIResource
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -89,7 +91,8 @@ class MembershipRemoveRequest(BaseAPIResource):
     def front_url(self):
         return front_url(
             "view_group_membership_remove_request",
-            args=(self.id,),
+            kwargs={"pk": self.supportgroup_id, "request_pk": self.pk},
+            absolute=True,
         )
 
     def admin_url(self):

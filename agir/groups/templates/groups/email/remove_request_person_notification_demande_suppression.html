@@ -1,0 +1,18 @@
+{% extends email_template %}
+
+{% block header %}{% endblock %}
+
+{% block subject %}
+  Vous avez été retiré·e du groupe {{ group.name }} !
+{% endblock %}
+
+{% block html_content %}
+  <p>{{ greetings }}</p>
+  <p>Suite à votre demande auprès des animateur·rices du groupe d’action {{ group.name }}, nous vous confirmons que vous avez bien été retiré·e de celui-ci.</p>
+
+  <p>
+    S’il s’agit d’une erreur, merci de contacter le Pôle des groupes d’action par e-mail à groupes@actionpopulaire.fr
+  </p>
+{% endblock %}
+
+{% block html_footer %}{% endblock %}

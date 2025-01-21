@@ -281,7 +281,7 @@ export const routeConfig = {
     id: "groupDetailsGestion",
     path: "/groupes/:groupPk/gestion/:any?/:action?",
     exact: false,
-    neededAuthentication: AUTHENTICATION.NONE,
+    neededAuthentication: AUTHENTICATION.HARD,
     label: "Page gestion du groupe",
     Component: RouteComponents.GroupPage,
     hideTopBar: true,

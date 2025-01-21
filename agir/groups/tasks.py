@@ -843,6 +843,7 @@ def send_notifications_remove_request_referent(person_pk, group_pk, request_pk):
 
     person = Person.objects.get(pk=person_pk)
     group = SupportGroup.objects.get(pk=group_pk)
+    remove_request = MembershipRemoveRequest.objects.get(pk=request_pk)
 
     Activity.objects.create(
         type=Activity.TYPE_REQUEST_MEMBERSHIP_REMOVE_VALIDATION,
@@ -859,7 +860,7 @@ def send_notifications_remove_request_referent(person_pk, group_pk, request_pk):
         template_name="groups/email/remove_request_validation_referent.html",
         from_email=settings.EMAIL_FROM,
         recipients=[person],
-        bindings={"group": group},
+        bindings={"group": group, "remove_request": remove_request},
     )
 
 
@@ -871,6 +872,21 @@ def send_email_remove_request_ga(remove_request_pk):
         template_name="groups/email/remove_request_ga_information.html",
         from_email=settings.EMAIL_FROM,
         recipients=[settings.EMAIL_GA],
+        bindings={
+            "group": remove_request.supportgroup,
+            "remove_request": remove_request,
+        },
+    )
+
+
+@emailing_task()
+def send_email_remove_request_done_user(remove_request_pk):
+    remove_request = MembershipRemoveRequest.objects.get(pk=remove_request_pk)
+
+    send_template_email(
+        template_name=f"groups/email/remove_request_person_notification_{remove_request.reason_type}.html",
+        from_email=settings.EMAIL_FROM,
+        recipients=[remove_request.person],
         bindings={
             "group": remove_request.supportgroup,
             "remove_request": remove_request,

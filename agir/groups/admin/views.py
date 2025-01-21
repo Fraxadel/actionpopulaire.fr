@@ -20,6 +20,7 @@ from .forms import AddMemberForm
 from ..actions.automatic_memberships import maj_boucles, update_memberships_from_segment
 from ..actions.export import pdf_group_attendance_list
 from ..models import SupportGroup, Membership, MembershipRemoveRequest
+from ..tasks import send_email_remove_request_done_user
 from ...lib.utils import front_url
 
 logger = logging.getLogger(__name__)
@@ -352,11 +353,14 @@ def delete_member_from_group(model_admin, request, pk, group_id, member_id):
         remove_request.status = MembershipRemoveRequest.Status.DONE
         remove_request.resolved_date = timezone.now()
         remove_request.save()
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            "La personne a bien été supprimée du groupe, les animateurices ont reçus un mail.",
-        )
+        message = "La personne a bien été supprimée du groupe."
+        if (
+            remove_request.reason_type
+            != MembershipRemoveRequest.REASON_NE_MILITE_PLUS_A_LA_FI
+        ):
+            send_email_remove_request_done_user.delay(remove_request.pk)
+            message += " Un mail va être envoyé."
+        messages.add_message(request, messages.SUCCESS, message)
     except ObjectDoesNotExist:
         messages.add_message(request, messages.WARNING, "Une erreur est survenue.")
 

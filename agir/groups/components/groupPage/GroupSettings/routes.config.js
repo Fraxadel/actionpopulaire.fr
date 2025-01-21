@@ -12,7 +12,6 @@ import illustrationContact from "@agir/front/genericComponents/images/group_cont
 import illustrationLinks from "@agir/front/genericComponents/images/group_links.svg";
 import illustrationHelp from "@agir/front/genericComponents/images/group_help.svg";
 import illustrationStats from "@agir/front/genericComponents/images/group_stats.svg";
-import GroupMemberRemoveRequest from "@agir/groups/groupPage/GroupSettings/GroupMembershipRemoveRequest/GroupMemberRemoveRequest";
 
 const GroupSettingsReadOnlyMembers = lazy(
   () =>

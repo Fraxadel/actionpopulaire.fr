@@ -20,6 +20,7 @@ Status_couleur = {
 
 @admin.register(models.MembershipRemoveRequest)
 class MembershipRemoveRequestAdmin(admin.ModelAdmin):
+    ordering = ("-created",)
     list_display = [
         "created",
         "resolved_date",
@@ -79,7 +80,7 @@ class MembershipRemoveRequestAdmin(admin.ModelAdmin):
             "class='button'"
             "style='display:inline-flex;align-items:center;height:35px;background:{color};padding:0 15px;' "
             "href='{url}'>{label}</a><div class='help' style='margin: 0; padding: 0;'>"
-            "Attention : cliquer sur ce bouton quitte la page et perd vos modifications courantes."
+            "Attention : cette action est définitive, vous ne pouvez pas revenir en arrière !"
             "</div>"
         )
 
