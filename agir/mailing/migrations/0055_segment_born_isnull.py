@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mailing', '0054_alter_segment_newsletters'),
+        ("mailing", "0054_alter_segment_newsletters"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='segment',
-            name='born_isnull',
-            field=models.BooleanField(blank=True, null=True, verbose_name='Personnes sans date de naissance'),
+            model_name="segment",
+            name="born_isnull",
+            field=models.BooleanField(
+                blank=True, null=True, verbose_name="Personnes sans date de naissance"
+            ),
         ),
     ]
