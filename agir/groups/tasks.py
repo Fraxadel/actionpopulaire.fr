@@ -886,7 +886,7 @@ def send_email_remove_request_done_user(remove_request_pk):
     send_template_email(
         template_name=f"groups/email/remove_request_person_notification_{remove_request.reason_type}.html",
         from_email=settings.EMAIL_FROM,
-        recipients=[remove_request.person],
+        recipients=[remove_request.person, settings.EMAIL_GA],
         bindings={
             "group": remove_request.supportgroup,
             "remove_request": remove_request,

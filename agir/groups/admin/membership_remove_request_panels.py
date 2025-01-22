@@ -50,7 +50,6 @@ class MembershipRemoveRequestAdmin(admin.ModelAdmin):
         "created",
         "created_by",
         "details",
-        "reason_type",
         "supportgroup",
         "person",
         "resolved_date",

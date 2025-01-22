@@ -9,10 +9,10 @@
 {% block html_content %}
   <p>{{ greetings }}</p>
   <p>Vous avez été retiré·e du groupe d’action {{ group.name }} car vous avez rejoint un autre groupe.
-    Cependant si vous souhaitez toujours suivre l’activité de ce groupe, vous pouvez de nouveau le rejoindre sur Action populaire.</p>
+    Cependant si vous souhaitez toujours <a href="{{ group.front_url }}">suivre l’activité de ce groupe, ou le rejoindre, vous pouvez le faire sur Action populaire.</a></p>
 
   <p>
-    S’il s’agit d’une erreur, merci de contacter le Pôle des groupes d’action par e-mail à groupes@actionpopulaire.fr
+    S’il s’agit d’une erreur, merci de contacter le Pôle des groupes d’action par e-mail à <a href="mailto:groupes@actionpopulaire.fr"><em>groupes@actionpopulaire.fr</em></a>
   </p>
 {% endblock %}
 
