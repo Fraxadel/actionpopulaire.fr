@@ -44,6 +44,9 @@ from agir.payments.actions.subscriptions import (
 )
 from agir.payments.models import Subscription
 
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
+
 
 class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
     permission_classes = (IsActionPopulaireClientPermission,)
@@ -99,7 +102,7 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                     "type": payment_type,
                     "mode": payment_mode,
                     "amount": amount,
-                    "meta": validated_data,
+                    "meta": {**validated_data, **self.get_utm_infos()},
                     "effect_date": effect_date,
                     "end_date": end_date,
                 },
@@ -121,7 +124,7 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                 mode=payment_mode,
                 amount=amount,
                 allocations=allocations,
-                meta=validated_data,
+                meta={**validated_data, **self.get_utm_infos()},
                 effect_date=effect_date,
                 end_date=end_date,
             )
@@ -130,10 +133,29 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
 
         return Response({"next": reverse("subscription_page", args=[subscription.pk])})
 
+    @staticmethod
+    def get_utm_value(query, key):
+        value = query.get(key, "")
+        if value is not "":
+            return value[0]
+        return value
+
+    def get_utm_infos(self):
+        referer = self.request.META.get("HTTP_REFERER")
+        parsed_url = urlparse(referer)
+        query = parse_qs(parsed_url.query)
+        return {
+            "utm_source": self.get_utm_value(query, "utm_source"),
+            "utm_medium": self.get_utm_value(query, "utm_medium"),
+            "utm_campaign": self.get_utm_value(query, "utm_campaign"),
+        }
+
     def make_payment(self):
         payment_type = self.validated_data.get("payment_type")
         payment_mode = self.validated_data.get("payment_mode")
         amount = self.validated_data.get("amount")
+
+        meta = {**self.validated_data, **self.get_utm_infos()}
 
         with transaction.atomic():
             payment = create_payment(
@@ -141,7 +163,7 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                 type=payment_type,
                 mode=payment_mode,
                 price=amount,
-                meta=self.validated_data,
+                meta=meta,
                 **self.kwargs,
             )
 
