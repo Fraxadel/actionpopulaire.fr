@@ -10,6 +10,8 @@ from agir.activity.models import Activity, Announcement, PushAnnouncement
 from agir.lib.admin.utils import display_json_details
 from agir.lib.search import PrefixSearchQuery
 
+__all__ = ["ActivityAdmin"]
+
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
