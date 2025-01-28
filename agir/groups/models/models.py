@@ -15,7 +15,6 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
-from exceptiongroup import catch
 
 from agir.activity.models import Activity
 from agir.api.black_list_utils import BlackListFieldMixin

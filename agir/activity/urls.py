@@ -1,6 +1,11 @@
 from django.urls import path
 
 from . import views
+from .views_banner_announcement import (
+    BannerAnnouncementView,
+    BannerAnnouncementViewEdit,
+    person_closed_banner_announcement,
+)
 
 app_name = "activity"
 
@@ -52,5 +57,20 @@ urlpatterns = [
         "push/<uuid:pk>/lien/",
         views.PushAnnouncementLinkView.as_view(),
         name="push_announcement_link",
+    ),
+    path(
+        "api/activite/bannerannouncements/",
+        BannerAnnouncementView.as_view(),
+        name="api_banner_announcements_list",
+    ),
+    path(
+        "api/activite/bannerannouncements/<uuid:pk>/answer/<int:answerId>",
+        BannerAnnouncementViewEdit.as_view(),
+        name="api_banner_announcements_edit",
+    ),
+    path(
+        "api/activite/bannerannouncements/<uuid:pk>/close",
+        person_closed_banner_announcement,
+        name="api_banner_annoucements_close",
     ),
 ]

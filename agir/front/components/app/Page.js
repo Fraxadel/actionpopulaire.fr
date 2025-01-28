@@ -22,6 +22,7 @@ import logger from "@agir/lib/utils/logger";
 import ErrorBoundary from "./ErrorBoundary";
 
 import Redirect from "./Redirect";
+import BannerAnnouncement from "@agir/activity/BannerAnnouncements/BannerAnnouncement";
 
 const log = logger(__filename);
 
@@ -141,6 +142,7 @@ const Page = (props) => {
   return (
     <ErrorBoundary>
       <StyledPage $hasTopBar={hasTopBar}>
+        <BannerAnnouncement />
         <Layout {...(routeConfig?.layoutProps || {})} active={routeConfig.id}>
           <Suspense fallback={<div style={{ minHeight: "100vh" }} />}>
             <Component route={routeConfig} {...routeParams} {...rest} />
