@@ -5,6 +5,7 @@ from functools import partial
 from urllib.parse import urlencode
 
 import django_otp
+from admin_cursor_paginator import CursorPaginatorAdmin
 from django.contrib import admin, messages
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.contrib.admin.utils import display_for_value, unquote
@@ -77,7 +78,9 @@ __all__ = [
 
 
 @admin.register(Person)
-class PersonAdmin(DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin):
+class PersonAdmin(
+    DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin, CursorPaginatorAdmin
+):
     list_display = (
         "__str__",
         "display_contact_phone",

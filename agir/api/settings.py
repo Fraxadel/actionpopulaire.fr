@@ -214,6 +214,7 @@ INSTALLED_APPS = [
     "data_france",
     # profiling
     "silk",
+    "admin_cursor_paginator",
 ]
 
 # OTPMiddleware vérifie si l'utilisateur connecté a un Device configuré à chaque requête.
