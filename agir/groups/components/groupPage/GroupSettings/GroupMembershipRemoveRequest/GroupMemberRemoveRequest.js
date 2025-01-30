@@ -99,7 +99,7 @@ export default function GroupMemberRemoveRequest({member, groupId, onBack, remov
                     <p>Votre co-animateur·rice a été notifié·e de la demande et devra la valider. Le pôle des
                         groupes d’action examinera ensuite la demande, vous serez informé·e une fois qu’une
                         décision aura été prise.</p>
-                    <p>Merci encore pour votre vigilence. À bientôt !</p>
+                    <p>Merci encore pour votre vigilance. À bientôt !</p>
                 </RequestValidationMessage>
             }
         </>}
