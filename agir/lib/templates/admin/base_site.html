@@ -8,6 +8,7 @@
   {% else %}
     <link rel="stylesheet" type="text/css" href="{% static "admin/staging_colors.css" %}"/>
   {% endif %}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/panel.css" %}" />
     <style>
     .form-row .widget-limit-max-height {
       max-height: 250px;
@@ -19,4 +20,5 @@
 {% endblock %}
 {% block extrahead %}
   {{ block.super }}
+  <script src="{% static 'admin/js/htmx.min.js' %}" defer></script>
 {% endblock %}

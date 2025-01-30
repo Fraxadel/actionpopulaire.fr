@@ -1,0 +1,3 @@
+<span id="subscribers-count-{{ segment.id }}">
+    {{ segment.get_subscribers_count }} personnes <a href="{% url 'admin:people_person_changelist' %}?segment={{ segment.id }}&bounced_email=0">(Voir la liste)</a>
+</span>

@@ -24,13 +24,13 @@ unicode-slugify = "==0.1.*"  # optional requirement of django-dynamic-filenames
 ## additional features
 django-crispy-forms = "==1.*" # better forms
 django-otp = "==1.*"  # 2FA in admin
-django-filter = "==22.*"  # add useful filters
+django-filter = "^24.3"  # add useful filters
 django-oauth-toolkit = "==1.*"  # add OAuth server
 rules = "==3.*"  # add useful authorization rules
 django-reversion = "==5.*"  # versioning of models
 ## Django Rest Framework
 djangorestframework = "==3.*,>=3.10"
-djangorestframework-gis = "==0.17"
+djangorestframework-gis = "^1.1.0"
 ## adapters for third-party systems
 django-redis = "==5.*"
 psycopg2 = "*"
@@ -63,7 +63,7 @@ django-anymail =  "==9.*"
 boto3 = "*"
 num2words = "*"
 sepaxml = "==2.*"
-social-auth-app-django = "==4.*"
+social-auth-app-django = "^5"
 # data wrangling
 glom = "*"
 pyrogram = "==2.*"
@@ -80,13 +80,12 @@ django-silk = "*"
 sentry-sdk = "*"
 django-push-notifications =  {version = "^3.1.0", extras = ["FCM", "WP"]}
 pywebpush = "*"
-social-auth-core = "4.0.3"
+social-auth-core = "^4.4.1"
 django-storages = "^1.13.2"
 qrcode = {extras = ["pil"], version = "^7.4"}
 xlsxwriter = "*"
 trio = "^0.22.0"
 asks = "^3.0.0"
-Django = "^3.2"
 pydantic = "^1.10.7"
 lxml = "^4.9.2"
 gspread = "^5.7.0"
@@ -96,6 +95,7 @@ weasyprint = "^60.2"
 openpyxl = "^3.1.5"
 schwifty = "^2024.9.0"
 django-admin-cursor-paginator = "^0.1.6"
+django-htmx = "^1.21.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "*"

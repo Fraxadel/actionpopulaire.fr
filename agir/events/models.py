@@ -502,7 +502,7 @@ class Event(
         "Fuseau horaire",
         max_length=255,
         choices=((name, name) for name in zoneinfo.available_timezones()),
-        default=timezone.get_default_timezone().zone,
+        default=timezone.get_default_timezone(),
         blank=False,
         null=False,
     )

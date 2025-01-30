@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from nuntius.admin import (
     CampaignAdmin,
     CampaignSentEventAdmin,
@@ -26,6 +27,7 @@ from agir.lib.admin.utils import admin_url
 from agir.mailing.admin import list_filters, actions
 from agir.mailing.admin.forms import SegmentAdminForm
 from agir.mailing.models import Segment
+from agir.mailing.views import subscriber_count_view, people_count_view
 
 
 @admin.register(Segment)
@@ -222,17 +224,15 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
         if not instance:
             return "-"
 
-        count = instance.get_count()
-
-        if count == 0:
-            return "Ce segment est vide"
-
-        return format_html(
-            '{} personne{}&ensp;(<a href="{}?segment={}">Voir la liste</a>)',
-            count,
-            "s" if count > 1 else "",
-            reverse("admin:people_person_changelist"),
-            str(instance.pk),
+        return mark_safe(
+            f"""
+            <span id="subscribers-count-{instance.id}" 
+                  hx-get="/admin/mailing/segment/{instance.id}/people/count/" 
+                  hx-trigger="load"
+                  hx-swap="innerHTML">
+                  Chargement..
+            </span>
+        """
         )
 
     @admin.display(description="Nombre de personnes avec une adresse email valide")
@@ -240,17 +240,15 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
         if not instance:
             return "-"
 
-        count = instance.get_subscribers_count()
-
-        if count == 0:
-            return "Ce segment est vide"
-
-        return format_html(
-            '{} personne{}&ensp;(<a href="{}?segment={}&bounced_email=0">Voir la liste</a>)',
-            count,
-            "s" if count > 1 else "",
-            reverse("admin:people_person_changelist"),
-            str(instance.pk),
+        return mark_safe(
+            f"""
+            <span id="subscribers-count-{instance.id}" 
+                  hx-get="/admin/mailing/segment/{instance.id}/subscribers/count/" 
+                  hx-trigger="load"
+                  hx-swap="innerHTML">
+                  Chargement..
+            </span>
+        """
         )
 
     @admin.display(description="Abonné·es")
@@ -294,6 +292,16 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
                 "<int:pk>/export/sms/",
                 self.admin_site.admin_view(self.download_for_sms),
                 name="mailing_segment_download_for_sms",
+            ),
+            path(
+                "<int:pk>/subscribers/count/",
+                subscriber_count_view,
+                name="subscriber_count",
+            ),
+            path(
+                "<int:pk>/people/count/",
+                people_count_view,
+                name="subscriber_count",
             ),
         ] + super().get_urls()
 

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name="timezone",
             field=models.CharField(
                 choices=((name, name) for name in pytz.all_timezones),
-                default=timezone.get_default_timezone().zone,
+                default=timezone.get_default_timezone(),
                 max_length=255,
                 verbose_name="Fuseau horaire",
             ),

@@ -172,6 +172,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_htmx",
     # see https://docs.djangoproject.com/en/3.1/ref/forms/renderers/#templatessetting
     "django.forms",
     # sitemaps
@@ -237,6 +238,7 @@ MIDDLEWARE = [
     "social_django.middleware.SocialAuthExceptionMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
     "silk.middleware.SilkyMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 if ENABLE_DEBUG_TOOLBAR:

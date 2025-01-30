@@ -39,7 +39,9 @@ class SignatureGenerator(PasswordResetTokenGenerator):
             raise TypeError(
                 f"The following arguments are compulsory: {self.token_params!r}"
             )
-        return self._make_token_with_timestamp(params, self._num_seconds(self._now()))
+        return self._make_token_with_timestamp(
+            params, self._num_seconds(self._now()), self.secret
+        )
 
     def _make_hash_value(self, params: Mapping[str, Any], timestamp):
         # order the params by lexicographical order, so that there is some determinism
@@ -88,9 +90,13 @@ class SignatureGenerator(PasswordResetTokenGenerator):
             return False
 
         # Check that the timestamp/uid has not been tampered with
-        if not constant_time_compare(
-            self._make_token_with_timestamp(params, ts, legacy=ts < 7228), token
-        ):
+        for secret in [self.secret, *self.secret_fallbacks]:
+            if constant_time_compare(
+                self._make_token_with_timestamp(params, ts, secret),
+                token,
+            ):
+                break
+        else:
             return False
 
         if ts < 7228:
