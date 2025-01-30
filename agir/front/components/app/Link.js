@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import { routeConfig } from "@agir/front/app/routes.config";
 import { addQueryStringParams } from "@agir/lib/utils/url";
-import { useRoute } from "./hooks";
+import {useMobileApp, useRoute} from "./hooks";
 
 const ExternalLink = (props) => {
   const { params, forwardedRef, ...rest } = props;
@@ -72,15 +72,26 @@ RouteLink.propTypes = {
 
 const Link = (() => {
   const LinkComponent = (props, ref) => {
-    const { route, href, to } = props;
+    const { route, href, to, download } = props;
+    let newHref = href;
+
+    const {isAndroid, isIOS} = useMobileApp();
+    if (download) {
+      if (isAndroid) {
+        newHref = newHref.replace("https", "intent") + "#Intent;scheme=https;end"
+      } else if (isIOS) {
+        newHref = "x-safari-" + newHref
+      }
+    }
+
     if (route) {
-      return <RouteLink forwardedRef={ref} {...props} />;
+      return <RouteLink forwardedRef={ref} {...props} href={newHref} />;
     }
     if (to) {
-      return <InternalLink forwardedRef={ref} to={to} {...props} />;
+      return <InternalLink forwardedRef={ref} to={to} {...props} href={newHref} />;
     }
     if (href) {
-      return <ExternalLink forwardedRef={ref} {...props} />;
+      return <ExternalLink forwardedRef={ref} {...props} href={newHref} />;
     }
 
     return null;

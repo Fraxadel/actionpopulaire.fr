@@ -96,6 +96,7 @@ const GroupMemberMainPanel = (props) => {
         href={routes?.downloadMemberList}
         style={{ display: "flex", alignItems: "flex-start" }}
         target="_blank"
+        download
       >
         <RawFeatherIcon
           name="download"
@@ -110,6 +111,8 @@ const GroupMemberMainPanel = (props) => {
       <Link
         href={routes?.downloadAttendanceList}
         style={{ display: "flex", alignItems: "flex-start" }}
+        target="_blank"
+        download
       >
         <RawFeatherIcon
           name="download"
