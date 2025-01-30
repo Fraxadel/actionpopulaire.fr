@@ -94,6 +94,8 @@ class PersonAdmin(
     list_display_links = ("__str__",)
     form = PersonAdminForm
     list_per_page = 40
+    show_full_result_count = False
+    show_query_result_count = False
 
     fieldsets = (
         (
@@ -210,7 +212,7 @@ class PersonAdmin(
     # doit être non vide pour afficher le formulaire de recherche,
     # mais n'est en réalité pas utilisé pour déterminer les champs
     # de recherche
-    search_fields = ["search", "contact_phone"]
+    search_fields = ["search"]
 
     actions = (export_people_to_csv, bulk_add_tag)
 
