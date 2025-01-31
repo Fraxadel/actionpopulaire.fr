@@ -163,7 +163,7 @@ class RSVPEventView(SoftLoginRequiredMixin, DetailView):
 
         return super().get_context_data(**kwargs)
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.event = self.object = self.get_object()
         if self.event.subscription_form is None and self.event.is_free:
@@ -328,7 +328,7 @@ class ChangeRSVPPaymentView(SoftLoginRequiredMixin, DetailView):
     def get_queryset(self):
         return self.request.user.person.rsvps.exclude(payment=None)
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, *args, **kwargs):
         rsvp = self.get_object()
 
@@ -351,7 +351,7 @@ class ChangeIdentifiedGuestPaymentView(SoftLoginRequiredMixin, DetailView):
             rsvp__person=self.request.user.person
         ).exclude(payment=None)
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, *args, **kwargs):
         guest = self.get_object()
 

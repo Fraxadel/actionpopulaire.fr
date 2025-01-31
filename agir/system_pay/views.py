@@ -4,6 +4,7 @@ from django.db import transaction
 from django.http import HttpResponse, Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from rest_framework import serializers
@@ -62,7 +63,7 @@ class SystempayRedirectView(BaseSystemPayRedirectView):
             **kwargs,
         )
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.payment = kwargs["payment"]
         self.transaction = SystemPayTransaction.objects.create(payment=self.payment)
@@ -80,7 +81,7 @@ class SystemPaySubscriptionRedirectView(BaseSystemPayRedirectView):
             **kwargs,
         )
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.subscription = kwargs["subscription"]
         self.transaction = SystemPayTransaction.objects.create(

@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.middleware.csrf import get_token
+from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import exceptions, permissions, status
 from rest_framework.decorators import api_view, permission_classes

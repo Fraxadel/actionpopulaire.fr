@@ -7,7 +7,7 @@ from agir.api.redis import using_separate_redis_server
 from agir.lib.utils import front_url
 from agir.loans import views
 from agir.loans.loan_config import LoanConfiguration
-from agir.loans.views import generate_and_send_contract, loan_notification_listener
+from agir.loans.views import loan_notification_listener
 from agir.payments.actions.payments import complete_payment
 from agir.payments.models import Payment
 from agir.people.models import Person

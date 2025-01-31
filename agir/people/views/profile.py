@@ -172,7 +172,7 @@ class ConfirmMergeAccountView(View):
             context={"message": self.error_messages[key_error]},
         )
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, **kwargs):
         pk_requester = request.GET.get("pk_requester")
         pk_merge = request.GET.get("pk_merge")
@@ -221,7 +221,7 @@ class SendConfirmationMergeAccountView(HardLoginRequiredMixin, TemplateView):
     template_merge = "people/confirmation_change_mail_merge_account_sent.html"
     template_name = "people/profile/confirmation_change_mail_merge_account_sent.html"
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.email = request.GET.get("email")
         self.is_merging = True if request.GET.get("is_merging") == "True" else False
@@ -239,7 +239,7 @@ class SendConfirmationMergeAccountView(HardLoginRequiredMixin, TemplateView):
 class ChangePrimaryEmailView(SoftLoginRequiredMixin, RedirectView):
     url = reverse_lazy("contact")
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.person = request.user.person
         email = PersonEmail.objects.get(pk=self.kwargs["pk"])
@@ -305,7 +305,7 @@ class PaymentsView(AskAmountView, ProfileViewMixin, TemplateView):
     session_namespace = DONATION_SESSION_NAMESPACE
     success_url = reverse_lazy("donation_information_modal")
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.subscriptions = self.get_subscriptions()
         return super().get(request, *args, **kwargs)

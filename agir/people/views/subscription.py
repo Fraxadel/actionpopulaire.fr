@@ -98,7 +98,7 @@ class ConfirmSubscriptionView(View):
     show_already_created_message = True
     default_type = SUBSCRIPTION_TYPE_LFI
 
-    @never_cache
+    @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         params = request.GET.dict()
 

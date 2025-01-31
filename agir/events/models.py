@@ -824,12 +824,16 @@ class Event(
 
     @property
     def local_start_time(self):
-        tz = ZoneInfo(self.timezone)
+        tz = self.timezone
+        if isinstance(self.timezone, str):
+            tz = ZoneInfo(self.timezone)
         return self.start_time.astimezone(tz)
 
     @property
     def local_end_time(self):
-        tz = ZoneInfo(self.timezone)
+        tz = self.timezone
+        if isinstance(self.timezone, str):
+            tz = ZoneInfo(self.timezone)
         return self.end_time.astimezone(tz)
 
     def get_datestring(self):
