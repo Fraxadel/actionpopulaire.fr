@@ -221,7 +221,7 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
 
     @admin.display(description="Nombre de personnes dans le segment")
     def people_count(self, instance):
-        if not instance:
+        if not instance or instance.id is None:
             return "-"
 
         return mark_safe(
@@ -237,7 +237,7 @@ class SegmentAdmin(CenterOnFranceMixin, OSMGeoAdmin):
 
     @admin.display(description="Nombre de personnes avec une adresse email valide")
     def subscribers_count(self, instance):
-        if not instance:
+        if not instance or instance.id is None:
             return "-"
 
         return mark_safe(
