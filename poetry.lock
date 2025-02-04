@@ -2843,14 +2843,14 @@ files = [
 
 [[package]]
 name = "nuntius"
-version = "2.4.4a2"
+version = "2.4.4"
 description = "A newsletter app to be used with Django or standalone."
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "nuntius-2.4.4a2-py3-none-any.whl", hash = "sha256:8bb2c63fb4b42ef8fd29cc9851c2d538750bae0f420d4aea1ba37b027d940f92"},
-    {file = "nuntius-2.4.4a2.tar.gz", hash = "sha256:6b13ca1e2ed75ee24d18568a3bf564909a18420acc9c32e47ba58fa74de47fd9"},
+    {file = "nuntius-2.4.4-py3-none-any.whl", hash = "sha256:584c6c32f439a27dd3a862e3c34b99ea589c22d145d281717211c050651810bc"},
+    {file = "nuntius-2.4.4.tar.gz", hash = "sha256:f446181167ad628d563d042282028253a1ae9a5d237342f30a6fbe65e2a2972a"},
 ]
 
 [package.dependencies]
@@ -4748,4 +4748,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "4b027bf0624565c0a18276893ecc6f4e1ef8aaab19753efda004b431e2ad932f"
+content-hash = "7484f5f2a09d0965d0b51380e0d6353df28f084ab37bbeece13e51805160cc4c"
