@@ -72,12 +72,12 @@ class APIAdminSite(OTPAdminSite):
             **super().each_context(request),
         }
 
-    def get_app_list(self, request):
+    def get_app_list(self, request, app_label=None):
         """
         Return a sorted list of all the installed apps that have been
         registered in this site, using the default collation
         """
-        app_dict = self._build_app_dict(request)
+        app_dict = self._build_app_dict(request, label=app_label)
 
         # Sort the apps alphabetically.
         app_list = sorted(
