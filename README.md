@@ -14,10 +14,11 @@
 * Docker
 * Lando >= 3.X
 
-
 ### Installation
 
 ```bash
+git clone https://github.com/lafranceinsoumise/actionpopulaire.fr
+cd actionpopulaire.fr
 lando start
 lando manage migrate 
 
@@ -29,6 +30,10 @@ Vous pourrez ensuite accéder à la partie front du projet via : http://ap.lfi.s
 Pour accéder à la partie admin via le compte précédemment créé : http://ap.lfi.site/admin
 
 Chaque mail émis par le système est capturé par mailhog, que vous pouvez consulter via : http://mailhog.ap.lfi.site/
+
+### Contribuer au projet
+
+Pour contribuer au projet suivre les [guidelines](https://github.com/lafranceinsoumise/actionpopulaire.fr/blob/staging/GUIDELINES.md)
 
 
 ## Commandes utiles
