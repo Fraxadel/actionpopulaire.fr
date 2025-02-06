@@ -103,7 +103,7 @@ def create_event_for_event_request(event_request, event_speakers, start_time):
 
     tz = data.pop("timezone", None)
     if tz not in zoneinfo.available_timezones():
-        tz = timezone.get_default_timezone().zone
+        tz = timezone.get_default_timezone()
 
     duration = int(data.pop("duration", 1))
     end_time = start_time + datetime.timedelta(hours=duration)
