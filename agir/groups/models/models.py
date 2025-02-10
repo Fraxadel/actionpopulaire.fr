@@ -267,6 +267,7 @@ class MembershipQuerySet(models.QuerySet):
             .with_email()
         )
 
+
 class MembershipManager(models.Manager.from_queryset(MembershipQuerySet)):
     def bulk_create(self, instances, send_post_save_signal=False, **kwargs):
         memberships = []
