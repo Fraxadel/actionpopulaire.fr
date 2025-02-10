@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
+from exceptiongroup import catch
 
 from agir.activity.models import Activity
 from agir.carte.models import StaticMapImage
@@ -266,24 +267,29 @@ class MembershipQuerySet(models.QuerySet):
             .with_email()
         )
 
-
 class MembershipManager(models.Manager.from_queryset(MembershipQuerySet)):
     def bulk_create(self, instances, send_post_save_signal=False, **kwargs):
+        memberships = []
         with transaction.atomic():
-            memberships = super().bulk_create(instances, **kwargs)
+            for membership in instances:
+                try:
+                    membership.save()
+                    memberships.append(membership)
+                except:
+                    pass
 
-            if not send_post_save_signal:
-                return memberships
-
-            for membership in memberships:
-                models.signals.post_save.send(
-                    self.model,
-                    instance=membership,
-                    created=True,
-                    using=self._db,
-                )
-
+        if not send_post_save_signal:
             return memberships
+
+        for membership in memberships:
+            models.signals.post_save.send(
+                self.model,
+                instance=membership,
+                created=True,
+                using=self._db,
+            )
+
+        return memberships
 
 
 @reversion.register(for_concrete_model=True, follow=("subtypes", "links"))
