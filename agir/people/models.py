@@ -660,6 +660,7 @@ class Person(
         )
 
     def save(self, *args, **kwargs):
+        self.clean()
         if self._state.adding:
             metrics.subscriptions.inc()
 
