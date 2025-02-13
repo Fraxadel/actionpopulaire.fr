@@ -1121,8 +1121,11 @@ MATERIEL_REST_API_PASSWORD = os.environ.get("MATERIEL_REST_API_PASSWORD")
 
 EVENT_BLACK_LIST_WORD_DESCRIPTION = []
 EVENT_BLACK_LIST_WORD_NAME = []
+BLACK_LIST_DF = pd.DataFrame()
 try:
     black_list_data_frame = pd.read_csv(BASE_DIR.parent / "black_list_words.csv")
+    BLACK_LIST_DF = black_list_data_frame
+    # refacto event black list words with same mixin logic, as Person, SupportGroup..
     EVENT_BLACK_LIST_WORD_DESCRIPTION = list(
         black_list_data_frame.event_description.dropna()
     )

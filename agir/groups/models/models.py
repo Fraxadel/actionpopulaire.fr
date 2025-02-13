@@ -18,6 +18,7 @@ from django_prometheus.models import ExportModelOperationsMixin
 from exceptiongroup import catch
 
 from agir.activity.models import Activity
+from agir.api.black_list_utils import BlackListFieldMixin
 from agir.carte.models import StaticMapImage
 from agir.lib.admin.utils import admin_url
 from agir.lib.form_fields import CustomJSONEncoder
@@ -295,6 +296,7 @@ class MembershipManager(models.Manager.from_queryset(MembershipQuerySet)):
 
 @reversion.register(for_concrete_model=True, follow=("subtypes", "links"))
 class SupportGroup(
+    BlackListFieldMixin,
     ExportModelOperationsMixin("support_group"),
     BaseAPIResource,
     LocationMixin,

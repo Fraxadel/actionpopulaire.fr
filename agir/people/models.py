@@ -44,6 +44,7 @@ from agir.lib.utils import generate_token_params, resize_and_autorotate
 from . import metrics
 from .model_fields import MandatesField, ValidatedPhoneNumberField
 from .person_forms.models import *
+from ..api.black_list_utils import BlackListFieldMixin
 from ..elus.models import StatutMandat
 from ..events.models import CustomDateTimeField
 from ..lib.display import genrer
@@ -60,7 +61,6 @@ __all__ = [
     "PersonFormSubmission",
     "PersonValidationSMS",
 ]
-
 
 person_image_path = FilePattern(
     filename_pattern="{app_label}/{model_name}/{instance.id}/{uuid:s}{ext}"
@@ -395,7 +395,13 @@ class NewsletterChoices(models.TextChoices):
     ELUES = "ELUES", "Les informations destinées aux élu·es"
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class Person(
+    BlackListFieldMixin,
     AbstractSubscriber,
     ExportModelOperationsMixin("person"),
     BaseAPIResource,

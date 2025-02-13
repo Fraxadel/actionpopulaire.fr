@@ -1,11 +1,8 @@
-from functools import partial
-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Div
 from crispy_forms.layout import Fieldset
 from crispy_forms.layout import HTML, Row, Submit, Layout
 from django import forms
-from django.db import transaction
 from django.forms import Form
 from django.urls import reverse
 from django.utils.html import format_html
