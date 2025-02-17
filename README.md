@@ -24,7 +24,8 @@ lando start
 lando manage migrate 
 
 # Faire un super user pour la partie admin
-lando manage createsuperperson --email yourEmail@email.com
+# garder bien de côté vos identifiants
+lando manage createsuperperson
 ```
 
 Vous pourrez ensuite accéder à la partie front du projet via : http://ap.lfi.site/
