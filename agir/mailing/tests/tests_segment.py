@@ -287,7 +287,7 @@ class SegmentSupportgroupFilterTestCase(TestCase):
         )
 
         return member
-    
+
     def create_follower(self, *args, **kwargs):
         return self.create_member(
             *args, membership_type=Membership.MEMBERSHIP_TYPE_FOLLOWER, **kwargs
@@ -403,7 +403,6 @@ class SegmentSupportgroupFilterTestCase(TestCase):
             self.assertIn(person, s.get_people())
         for person in excludes:
             self.assertNotIn(person, s.get_people())
-
 
     def test_supportgroup_status_manager_filter(self):
         supportgroup = self.create_group()
