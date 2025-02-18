@@ -31,6 +31,7 @@ import ReportFormCard from "./ReportFormCard";
 import { DOOR2DOOR_EVENT_SUBTYPE_LABEL } from "@agir/events/common/utils";
 import { useSelector } from "@agir/front/globalContext/GlobalContext";
 import { getUser } from "@agir/front/globalContext/reducers";
+import EventOrganizerInfo from "@agir/events/eventPage/EventOrganizerInfo";
 
 const CardLikeSection = styled.section``;
 const StyledMain = styled(RenderIfVisible)`
@@ -219,6 +220,7 @@ const MobileEventPage = (props) => {
       </StyledMain>
 
       <StyledMain once>
+        <EventOrganizerInfo {...props} />
         <EventInfoCard {...props} />
         <EventPhotosCard {...props} />
         <EventReportCard {...props} />

@@ -844,6 +844,7 @@ class EventSubtypeAdmin(admin.ModelAdmin):
                     "description",
                     "hide_text_label",
                     "has_priority",
+                    "default_visibility",
                 )
             },
         ),

@@ -30,6 +30,7 @@ import EventReportCard from "./EventReportCard";
 import OnlineUrlCard from "./OnlineUrlCard";
 import ReportFormCard from "./ReportFormCard";
 import EventSpeakers from "./EventSpeakers";
+import EventOrganizerInfo from "@agir/events/eventPage/EventOrganizerInfo";
 
 const CardLikeSection = styled.section``;
 const StyledColumn = styled(Column)`
@@ -128,6 +129,7 @@ const DesktopEventPage = (props) => {
                 isPast={isPast}
               />
               <EventPhotosCard {...props} />
+              <EventOrganizerInfo {...props} />
               <EventReportCard {...props} />
               <EventDescriptionCard {...props} />
               <GroupsOrganizingCard

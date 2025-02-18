@@ -259,6 +259,7 @@ class EventSerializer(FlexibleFieldsMixin, serializers.Serializer):
     hasProject = serializers.SerializerMethodField(
         read_only=True, method_name="get_has_project"
     )
+    visibility = serializers.CharField(read_only=True)
 
     def __init__(self, instance=None, data=empty, fields=None, **kwargs):
         self.is_event_card = fields == self.EVENT_CARD_FIELDS

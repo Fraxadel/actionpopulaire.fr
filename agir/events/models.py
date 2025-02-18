@@ -390,6 +390,11 @@ report_image_path = FilePattern(
 )
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class EventManager(models.Manager.from_queryset(EventQuerySet)):
     def create(self, *args, **kwargs):
         subtype = kwargs.get("subtype", None)
@@ -398,6 +403,7 @@ class EventManager(models.Manager.from_queryset(EventQuerySet)):
                 "description", subtype.default_description
             )
             kwargs["image"] = kwargs.get("image", subtype.default_image)
+            kwargs["visibility"] = subtype.default_visibility
         return self.create_event(*args, **kwargs)
 
     def create_event(
@@ -502,7 +508,7 @@ class Event(
         "Fuseau horaire",
         max_length=255,
         choices=((name, name) for name in zoneinfo.available_timezones()),
-        default=timezone.get_default_timezone(),
+        default=str(timezone.get_default_timezone()),
         blank=False,
         null=False,
     )
@@ -1355,6 +1361,13 @@ class EventSubtype(BaseSubtype):
         help_text=_(
             "Un emoji à utiliser à la place de l'icône dans certaines situations"
         ),
+    )
+
+    default_visibility = models.CharField(
+        "Visibilité des événements crées",
+        max_length=1,
+        choices=Event.VISIBILITY_CHOICES,
+        default=Event.VISIBILITY_PUBLIC,
     )
 
     class Meta:
