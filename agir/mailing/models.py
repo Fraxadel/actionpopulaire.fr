@@ -46,12 +46,14 @@ def default_newsletters():
 
 class Segment(BaseSegment, models.Model):
     GA_STATUS_NOT_MEMBER = "N"
+    GA_STATUS_FOLLOWER = "F"
     GA_STATUS_MEMBER = "m"
     GA_STATUS_MANAGER = "M"
     GA_STATUS_REFERENT = "R"
     GA_STATUS_CHOICES = (
         (GA_STATUS_NOT_MEMBER, "Non membres de GA"),
-        (GA_STATUS_MEMBER, "Membres de GA"),
+        (GA_STATUS_FOLLOWER, "Abonné·e et membres de GA"),
+        (GA_STATUS_MEMBER, "Membres de GA (abonné·es exclus)"),
         (GA_STATUS_MANAGER, "Animateur·ices et gestionnaires de GA"),
         (GA_STATUS_REFERENT, "Animateur·ices de GA"),
     )
@@ -441,6 +443,14 @@ class Segment(BaseSegment, models.Model):
             if self.supportgroup_status == self.GA_STATUS_MANAGER:
                 filter_kwargs["memberships__membership_type__gte"] = (
                     Membership.MEMBERSHIP_TYPE_MANAGER
+                )
+            if self.supportgroup_status == self.GA_STATUS_MEMBER:
+                filter_kwargs["memberships__membership_type__gte"] = (
+                    Membership.MEMBERSHIP_TYPE_MEMBER
+                )
+            if self.supportgroup_status == self.GA_STATUS_FOLLOWER:
+                filter_kwargs["memberships__membership_type__gte"] = (
+                    Membership.MEMBERSHIP_TYPE_FOLLOWER
                 )
 
             if self.supportgroup_status == self.GA_STATUS_NOT_MEMBER:

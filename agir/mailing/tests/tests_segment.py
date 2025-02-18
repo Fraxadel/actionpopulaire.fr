@@ -287,6 +287,11 @@ class SegmentSupportgroupFilterTestCase(TestCase):
         )
 
         return member
+    
+    def create_follower(self, *args, **kwargs):
+        return self.create_member(
+            *args, membership_type=Membership.MEMBERSHIP_TYPE_FOLLOWER, **kwargs
+        )
 
     def create_manager(self, *args, **kwargs):
         return self.create_member(
@@ -343,22 +348,53 @@ class SegmentSupportgroupFilterTestCase(TestCase):
         for person in excludes:
             self.assertNotIn(person, s.get_people())
 
-    def test_supportgroup_status_member_filter(self):
+    def test_supportgroup_status_follower_filter(self):
         supportgroup = self.create_group()
         includes = [
-            self.create_member(),
-            self.create_member(supportgroup=supportgroup),
             self.create_manager(),
             self.create_manager(supportgroup=supportgroup),
             self.create_referent(),
             self.create_referent(supportgroup=supportgroup),
+            self.create_member(),
+            self.create_member(supportgroup=supportgroup),
+            self.create_follower(supportgroup=supportgroup),
         ]
+
         excludes = [
             Person.objects.create_insoumise(
                 email=fake.email(),
                 create_role=True,
             ),
         ]
+
+        s = Segment.objects.create(
+            newsletters=[],
+            supportgroup_status=Segment.GA_STATUS_FOLLOWER,
+        )
+        for person in includes:
+            self.assertIn(person, s.get_people())
+        for person in excludes:
+            self.assertNotIn(person, s.get_people())
+
+    def test_supportgroup_status_member_filter_exclude_follower(self):
+        supportgroup = self.create_group()
+        includes = [
+            self.create_manager(),
+            self.create_manager(supportgroup=supportgroup),
+            self.create_referent(),
+            self.create_referent(supportgroup=supportgroup),
+            self.create_member(),
+            self.create_member(supportgroup=supportgroup),
+        ]
+
+        excludes = [
+            self.create_follower(supportgroup=supportgroup),
+            Person.objects.create_insoumise(
+                email=fake.email(),
+                create_role=True,
+            ),
+        ]
+
         s = Segment.objects.create(
             newsletters=[],
             supportgroup_status=Segment.GA_STATUS_MEMBER,
@@ -367,6 +403,7 @@ class SegmentSupportgroupFilterTestCase(TestCase):
             self.assertIn(person, s.get_people())
         for person in excludes:
             self.assertNotIn(person, s.get_people())
+
 
     def test_supportgroup_status_manager_filter(self):
         supportgroup = self.create_group()
