@@ -1370,6 +1370,11 @@ class EventSubtype(BaseSubtype):
         default=Event.VISIBILITY_PUBLIC,
     )
 
+    send_email_to_group_members = models.BooleanField(
+        "Envoyer un mail aux membres du groupe organisateur lorsque l'événement sera crée sur AP",
+        default=True,
+    )
+
     class Meta:
         verbose_name = _("Sous-type d'événement")
         verbose_name_plural = _("Sous-types d'événement")
