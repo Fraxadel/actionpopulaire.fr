@@ -898,6 +898,7 @@ class EventSubtypeAdmin(admin.ModelAdmin):
                     "default_image",
                     "default_image_preview",
                     "campaign_template",
+                    "send_email_to_group_members",
                 )
             },
         ),
