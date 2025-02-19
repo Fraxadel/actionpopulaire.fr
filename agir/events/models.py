@@ -1371,7 +1371,7 @@ class EventSubtype(BaseSubtype):
     )
 
     send_email_to_group_members = models.BooleanField(
-        "Envoyer un mail aux membres du groupe organisateur lorsque l'événement sera crée sur AP",
+        "Envoyer mail et notifications aux membres du groupe organisateur lorsque l'événement sera crée sur AP",
         default=True,
     )
 
