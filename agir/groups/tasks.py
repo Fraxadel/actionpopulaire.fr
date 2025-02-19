@@ -295,6 +295,10 @@ def notify_new_group_event(group_pk, event_pk):
     if not OrganizerConfig.objects.filter(event_id=event_pk, as_group_id=group_pk):
         return
 
+    event = Event.objects.get(pk=event_pk)
+    if not event.subtype.send_email_to_group_members:
+        return
+
     recipients = Person.objects.filter(
         notification_subscriptions__membership__supportgroup_id=group_pk,
         notification_subscriptions__type=Subscription.SUBSCRIPTION_PUSH,
@@ -320,7 +324,6 @@ def notify_new_group_event(group_pk, event_pk):
         return
 
     group = SupportGroup.objects.get(pk=group_pk)
-    event = Event.objects.get(pk=event_pk)
     Activity.objects.bulk_create(
         [
             Activity(
