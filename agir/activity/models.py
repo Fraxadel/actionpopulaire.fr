@@ -625,7 +625,8 @@ class PushAnnouncement(BaseAPIResource):
 
         if not isinstance(response, str):
             for r in response.responses:
-                logger.warning(f"Can't send notification: {str(r.exception)}")
+                if not r.success:
+                    logger.warning(f"Can't send notification: {str(r.exception)}")
 
         return {
             "segment": f"{segment.name} [#{segment.id}]",
