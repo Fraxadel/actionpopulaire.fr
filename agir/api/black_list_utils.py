@@ -29,7 +29,7 @@ def clear_nan(df):
 def field_allowed(model, field, value):
     attribute = f"{model}.{field}".lower()
     if attribute in BLACK_LIST_DF:
-        result = BLACK_LIST_DF.loc[
+        result = BLACK_LIST_DF["person.last_name"].dropna().loc[
             BLACK_LIST_DF[attribute].apply(lambda word: str(word).lower() in value)
         ]
         return len(result.index) == 0
