@@ -139,4 +139,7 @@ class BannerAnnouncement(BaseAPIResource, DescriptionMixin):
         return False
 
     def answer_to_slug(self, answer):
-        return slugify(f"{self.question.strip()}-{answer.strip()}", only_ascii=True)
+        length_prefix = 100 - len(answer)
+        return slugify(
+            f"{self.question.strip()[:length_prefix]}-{answer.strip()}", only_ascii=True
+        )
