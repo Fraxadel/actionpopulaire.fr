@@ -19,9 +19,9 @@ from agir.people.models import (
     Person,
     PersonQualification,
 )
+from django.utils.translation import gettext_lazy as _
 
 __all__ = ["Segment"]
-
 
 DATE_HELP_TEXT = (
     "Écrivez en toute lettre JJ/MM/AAAA plutôt qu'avec le widget, ça ira plus vite."
@@ -262,8 +262,12 @@ class Segment(BaseSegment, models.Model):
         null=True,
     )
 
+    GENDER_UNKNOWN = "U"
     gender = models.CharField(
-        "Genre", max_length=1, blank=True, choices=Person.GENDER_CHOICES
+        "Genre",
+        max_length=1,
+        blank=True,
+        choices=Person.GENDER_CHOICES + ((GENDER_UNKNOWN, _("Manquant")),),
     )
 
     born_after = models.DateField(
@@ -663,8 +667,11 @@ class Segment(BaseSegment, models.Model):
         if self.last_login is not None:
             q = q & Q(role__last_login__gt=self.last_login)
 
-        if self.gender:
-            q = q & Q(gender=self.gender)
+        if self.gender is not None:
+            current_gender = self.gender
+            if self.gender is self.GENDER_UNKNOWN:
+                current_gender = ""
+            q = q & Q(gender=current_gender)
 
         if self.born_after is not None:
             q = q & Q(date_of_birth__gt=self.born_after)
