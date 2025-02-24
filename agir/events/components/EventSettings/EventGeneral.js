@@ -251,6 +251,7 @@ const EventGeneral = (props) => {
           <>
             <Spacer size="1rem" />
             <EventSubtypeField
+              eventPk={eventPk}
               name="subtype"
               value={formData.subtype}
               options={options?.subtype}

@@ -174,7 +174,7 @@ export const SubtypePicker = (props) => {
   const term = useMemo(() => slugify(searchTerm), [searchTerm]);
 
   const subtypes = useMemo(() => {
-    const allSubtypes = Array.isArray(options) ? options : [];
+    const allSubtypes = (Array.isArray(options) ? options : []).filter((opt) => !(props.eventPk && opt.label === "assemblee-municipale"))
     if (!term) {
       return allSubtypes;
     }

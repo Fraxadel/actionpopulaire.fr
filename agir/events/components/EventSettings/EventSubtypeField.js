@@ -78,6 +78,7 @@ const EventSubtypeField = (props) => {
               <StyledTitle>Choisir le type de l'événement</StyledTitle>
               <Spacer size="1rem" />
               <SubtypePicker
+                eventPk={props.eventPk}
                 value={selectedSubtype}
                 onChange={handleChangeSubtype}
                 options={options}
