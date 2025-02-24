@@ -15,10 +15,6 @@ from agir.lib.rest_framework_permissions import (
     IsPersonPermission,
 )
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 class BannerAnnouncementView(ListAPIView):
     queryset = BannerAnnouncement.objects.all()
@@ -40,9 +36,7 @@ class BannerAnnouncementView(ListAPIView):
 
             announcements_to_return = []
             for announcement in queryset:
-                logger.error(f"annouecment {announcement}")
                 if announcement.show_to_person(self.request.user.person):
-                    logger.error("append !!")
                     announcements_to_return.append(announcement)
 
             serializer = self.get_serializer(announcements_to_return, many=True)
