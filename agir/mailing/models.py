@@ -667,7 +667,7 @@ class Segment(BaseSegment, models.Model):
         if self.last_login is not None:
             q = q & Q(role__last_login__gt=self.last_login)
 
-        if self.gender is not None:
+        if self.gender:
             current_gender = self.gender
             if self.gender is self.GENDER_UNKNOWN:
                 current_gender = ""
