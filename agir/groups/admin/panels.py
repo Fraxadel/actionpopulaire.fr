@@ -28,7 +28,7 @@ from . import actions
 from . import filters
 from . import inlines
 from . import views
-from .criteria_views import group_criteria_view
+from .fields_views import group_criteria_view, warning_date_view, group_referents_view
 from .forms import SupportGroupAdminForm
 from .. import models
 from ..actions.promo_codes import get_promo_codes
@@ -626,12 +626,23 @@ class UncertifiableGroupAdmin(SupportGroupAdmin):
     )
     date_hierarchy = None
     show_full_result_count = False
-    list_per_page = 50
+    list_per_page = 30
 
     def get_urls(self):
         return [
-            path("<uuid:pk>/criteria", group_criteria_view, name="group_criteria_view")
+            path("<uuid:pk>/criteria", group_criteria_view, name="group_criteria_view"),
+            path(
+                "<uuid:pk>/warning_date",
+                warning_date_view,
+                name="group_warning_date_view",
+            ),
+            path(
+                "<uuid:pk>/referents", group_referents_view, name="group_referents_view"
+            ),
         ] + super().get_urls()
+
+    def referents(self, obj):
+        return self.field_loader(obj, "referents")
 
     @admin.display(description="Groupe", ordering="name")
     def group_link(self, obj):
@@ -653,18 +664,18 @@ class UncertifiableGroupAdmin(SupportGroupAdmin):
 
     @admin.display(description="Avertissement")
     def uncertifiable_warning__date(self, obj):
-        warning_date = obj.uncertifiable_warning_date
-        if not warning_date:
-            return "-"
-
-        return obj.uncertifiable_warning_date.strftime("%-d %B %Y")
+        return self.field_loader(obj, "warning_date")
 
     @admin.display(description="Critères")
     def short_certification_criteria(self, obj):
+        return self.field_loader(obj, "criteria")
+
+    @staticmethod
+    def field_loader(obj, field):
         return format_html(
             f"""
             <div id="certification-critera-{obj.id}"
-                hx-get="/admin/groups/uncertifiablegroup/{obj.id}/criteria"
+                hx-get="/admin/groups/uncertifiablegroup/{obj.id}/{field}"
                 hx-trigger="load"
                 hx-swap="innerHTML">
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
