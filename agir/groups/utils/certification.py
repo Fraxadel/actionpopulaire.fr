@@ -202,6 +202,7 @@ def get_params(qs=None):
         "supportgroupsubtype_ids": list(
             SupportGroupSubtype.objects.active().values_list("id", flat=True)
         ),
+        "supportgroup_ids": [],
     }
 
     if qs:

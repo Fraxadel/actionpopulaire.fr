@@ -28,6 +28,7 @@ from . import actions
 from . import filters
 from . import inlines
 from . import views
+from .criteria_views import group_criteria_view
 from .forms import SupportGroupAdminForm
 from .. import models
 from ..actions.promo_codes import get_promo_codes
@@ -625,6 +626,12 @@ class UncertifiableGroupAdmin(SupportGroupAdmin):
     )
     date_hierarchy = None
     show_full_result_count = False
+    list_per_page = 50
+
+    def get_urls(self):
+        return [
+            path("<uuid:pk>/criteria", group_criteria_view, name="group_criteria_view")
+        ] + super().get_urls()
 
     @admin.display(description="Groupe", ordering="name")
     def group_link(self, obj):
@@ -654,17 +661,16 @@ class UncertifiableGroupAdmin(SupportGroupAdmin):
 
     @admin.display(description="Critères")
     def short_certification_criteria(self, obj):
-        criteria = check_certification_criteria(obj, with_labels=True)
-        html = [
+        return format_html(
             f"""
-            <div style="white-space: nowrap;" title={criterion["help"]}>
-              <img src="/static/admin/img/icon-{'yes' if criterion["value"] else 'no'}.svg" alt="{criterion["value"]}">
-              &nbsp;{criterion["label"]}
+            <div id="certification-critera-{obj.id}"
+                hx-get="/admin/groups/uncertifiablegroup/{obj.id}/criteria"
+                hx-trigger="load"
+                hx-swap="innerHTML">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </div>
             """
-            for key, criterion in criteria.items()
-        ]
-        return format_html("".join(html))
+        )
 
     def has_delete_permission(self, request, obj=None):
         return False

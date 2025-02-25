@@ -1,0 +1,6 @@
+{% for key, criteria in criterion %}
+<div style="white-space: nowrap;" title={{ criteria.help }}>
+  <img src="/static/admin/img/icon-{% if criteria.value %}yes{% else %}no{% endif %}.svg" alt="{{ criteria.value }}">
+  &nbsp;{{ criteria.label }}
+</div>
+{%  endfor %}
