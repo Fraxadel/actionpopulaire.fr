@@ -33,6 +33,7 @@ spécifiques aux types de champs, alors que d'autres s'appliquent à tous les ty
 - `"id": "prenom" [string]`
   L'identifiant court du champs qui sera utilisé pour enregistrer les valeurs renseignées par les utilisateur·ices pour
   le champs. Il doit être unique pour tout le formulaire.
+  Attention il ne doit pas contenir d'espaces, à la fois dans le nom, au début comme à la fin.
 
 - `"label": "Prénom" [string]`
   Le libellé du champs. Cette propriété est obligatoire uniquement si la propriété `person_field` (
