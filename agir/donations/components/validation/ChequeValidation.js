@@ -59,7 +59,7 @@ export default function ChequeValidation() {
     const { data: payment, isLoading } = usePayment(params.paymentId)
 
     const type = params?.type ?? payment?.type ?? CONFIG.default.type;
-    const config = CONFIG[type];
+    const config = CONFIG[type] ?? CONFIG.default;
     const { beneficiary, externalLinkRoute, title} = config;
 
     const amount = payment?.price / 100 ?? 0;
