@@ -103,7 +103,7 @@ export default function DonationAmount() {
                 : PAYMENT_TIMING.SINGLE_TIME)
         }
         let amountParam = parseInt(urlParams.get("montant") ?? 0)
-        amountParam = amountParam < 500 ? amountParam * 100 : amountParam
+        amountParam = amountParam < 200 ? amountParam * 100 : amountParam
         if (DEFAULT_AMOUNT.includes(amountParam) === false) {
             setCustomAmount(true)
         }
