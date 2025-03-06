@@ -27,6 +27,7 @@ class BaseCommand(management.BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "--dry-run",
+            "--dry",
             dest="dry_run",
             action="store_true",
             default=False,

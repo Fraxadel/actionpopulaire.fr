@@ -3,7 +3,7 @@ import math
 import re
 
 import pandas as pd
-from django.core.management import BaseCommand
+from agir.lib.commands import BaseCommand
 
 from agir.donations.allocations import (
     COTISATIONS_ACCOUNT,
@@ -14,6 +14,16 @@ from agir.donations.models import AccountOperation
 
 
 class Command(BaseCommand):
+    """
+    Prend un excel (cotisations) en entrée, avec deux colonnes,
+    * montant
+    * numéro du département
+    Il peut y avoir une ligne CNS | montant
+
+    Chaque ligne (dep) se verra prendre une part pour la Caisse Nationale de solidarité (CNS) (20% par défaut)
+    Le reste sera reversé pour chaque département dans sa caisse provisoire.
+    """
+
     def add_arguments(self, parser):
         parser.add_argument(
             "cotisations",
@@ -33,11 +43,15 @@ class Command(BaseCommand):
             "--comment",
             default="Versement des cotisations d'élus",
         )
+        super().add_arguments(parser)
 
     def handle(self, cotisations, part_cns, comment, **kwargs):
-        df = pd.read_excel(
-            cotisations,
-        )
+        try:
+            df = pd.read_excel(
+                cotisations,
+            )
+        except:
+            df = pd.read_csv(cotisations)
         df.columns = ["departement", "montant"]
         df["departement"] = df.departement.map(str).str.zfill(2).str.upper()
         df["montant"] = (df["montant"] * 100).round().astype(int)
@@ -58,6 +72,15 @@ class Command(BaseCommand):
 
         for d in deps:
             if versements[d]:
+                self.log(
+                    f"""
+                ============================================
+                {COTISATIONS_ACCOUNT} -> {get_account_name_for_departement(d)} : {versements[d]}
+                > {comment}
+                """
+                )
+                if self.dry_run:
+                    continue
                 AccountOperation.objects.create(
                     source=COTISATIONS_ACCOUNT,
                     destination=get_account_name_for_departement(d),
@@ -66,6 +89,15 @@ class Command(BaseCommand):
                 )
 
         if cns:
+            self.log(
+                f"""
+                    ============================================
+                    {COTISATIONS_ACCOUNT} => {CNS_ACCOUNT} : {cns}
+                    > {comment}
+                    """
+            )
+            if self.dry_run:
+                return
             AccountOperation.objects.create(
                 source=COTISATIONS_ACCOUNT,
                 destination=CNS_ACCOUNT,

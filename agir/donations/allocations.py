@@ -15,6 +15,7 @@ DONATIONS_ACCOUNT = "revenu:dons"
 COTISATIONS_ACCOUNT = "revenu:cotisations"
 CNS_ACCOUNT = "actif:cns"
 SPENDING_ACCOUNT = "depenses"
+REMBOURSEMENT_EUROPEENES_2024 = "remboursement:europeenes2024"
 
 
 def get_account_name_for_departement(departement):

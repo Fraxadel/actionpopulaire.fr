@@ -1,5 +1,5 @@
 from data_france.models import CirconscriptionConsulaire
-from django.core.management import CommandError, BaseCommand
+from django.core.management import CommandError
 from django.db import transaction
 from django.db.models import Q, Count, F
 
@@ -7,13 +7,20 @@ from agir.donations.allocations import (
     get_account_name_for_departement,
     CNS_ACCOUNT,
     get_cns_balance,
+    get_account_name_for_group,
 )
 from agir.donations.models import AccountOperation
 from agir.groups.models import SupportGroup
+from agir.lib.commands import BaseCommand
 from agir.lib.geo import FRENCH_COUNTRY_CODES
 
 
 class Command(BaseCommand):
+    """
+    Verse une cotisation à chaque boucle départementale à partir de la Caisse nationale de solidarité.
+    Le montant de la cotisation est ajusté en fonction du nombre de groupe certifié par département.
+    """
+
     def add_arguments(self, parser):
         parser.add_argument(
             "-a",
@@ -27,6 +34,7 @@ class Command(BaseCommand):
             "--comment",
             default="Attribution de la Caisse Nationale de Solidarité",
         )
+        super().add_arguments(parser)
 
     def handle(self, *args, allocation, comment, **options):
         with transaction.atomic():
@@ -87,10 +95,21 @@ class Command(BaseCommand):
             remainder = cns - allocation * nb
 
             for d, p in poids.items():
+                # le résultat de la division entière est toujours inférieur au total
+                # au pire on laisse jusqu'à nb centimes dans la CNS
+                amount = allocation + p * remainder // poids_total
+                self.log(
+                    f"""
+                    ============================================
+                    {CNS_ACCOUNT} => {get_account_name_for_group(d)} : {amount}
+                    > {comment}
+                    """
+                )
+                if self.dry_run:
+                    continue
+
                 AccountOperation.objects.create(
-                    # la résultat de la division entière est toujours inférieur au total
-                    # au pire on laisse jusqu'à nb centimes dans la CNS
-                    amount=allocation + p * remainder // poids_total,
+                    amount=amount,
                     source=CNS_ACCOUNT,
                     destination=get_account_name_for_departement(d),
                     comment=comment,

@@ -14,8 +14,6 @@ from django.utils.text import slugify
 from django_countries.fields import CountryField
 from dynamic_filenames import FilePattern
 
-from agir.events.models import Event
-from agir.events.models import Event, Calendar
 from agir.lib.admin.utils import admin_url
 from agir.lib.documents import (
     render_svg_template,

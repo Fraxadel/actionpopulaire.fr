@@ -1,6 +1,6 @@
 import re
 
-from django.core.management import BaseCommand
+from agir.lib.commands import BaseCommand
 from django.db import transaction
 
 from agir.donations.allocations import (
@@ -19,6 +19,7 @@ class Command(BaseCommand):
             "--comment",
             default="Versement mensuel aux boucles départementales.",
         )
+        super().add_arguments(parser)
 
     def handle(self, *args, comment, **options):
         boucles = SupportGroup.objects.filter(
@@ -36,6 +37,16 @@ class Command(BaseCommand):
                 balance = get_departement_balance(code)
 
                 if balance > 0:
+                    self.log(
+                        f"""
+                    ============================================
+                    {get_account_name_for_departement(code)} => {get_account_name_for_group(b)} : {balance}
+                    > {comment}
+                    """
+                    )
+                    if self.dry_run:
+                        continue
+
                     AccountOperation.objects.create(
                         source=get_account_name_for_departement(code),
                         destination=get_account_name_for_group(b),
