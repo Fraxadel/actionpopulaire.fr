@@ -755,7 +755,20 @@ class Segment(BaseSegment, models.Model):
         return qs.order_by("id", "emails___order").distinct("id")
 
     def get_count(self, exclude_bounced_emails=False):
-        return self.get_people(exclude_bounced_emails).count()
+        return (
+            self._get_own_queryset(exclude_bounced_emails=exclude_bounced_emails)
+            .order_by("id")
+            .distinct("id")
+            .count()
+            + sum(
+                s.get_count(exclude_bounced_emails=exclude_bounced_emails)
+                for s in self.add_segments.all()
+            )
+            - sum(
+                s.get_count(exclude_bounced_emails=exclude_bounced_emails)
+                for s in self.exclude_segments.all()
+            )
+        )
 
     def is_included(self, person):
         qs = Person.objects.filter(pk=person.pk)
