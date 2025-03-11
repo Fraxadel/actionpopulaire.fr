@@ -41,21 +41,17 @@ function mapContextToDonation(context) {
             })
     }
 
-    let endDate = undefined
     let effectDate = undefined;
     if (context.paymentTiming === PAYMENT_TIMING.MONTHLY) {
-        endDate = context.currentDonation?.endDate ?? (typeof config.getEndDate === "function" ? config.getEndDate() : null)
         if (context.currentDonation) {
             // renew contribution
-            effectDate = DateTime.fromISO(endDate).plus({days: 1}).toFormat('yyyy-MM-dd');
-            endDate = DateTime.fromISO(endDate).plus({years: 1}).toISO()
+            effectDate = DateTime.now().setLocale('fr').plus({days: 1}).toFormat('yyyy-MM-dd');
         }
     }
 
     return {
         ...context,
         effectDate,
-        endDate,
         allocations
     }
 }
