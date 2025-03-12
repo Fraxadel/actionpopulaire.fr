@@ -257,7 +257,7 @@ class SubscriptionQueryset(models.QuerySet):
         return (
             self.contributions()
             .filter(status=Subscription.STATUS_ACTIVE)
-            .filter(end_date__gte=timezone.now())
+            .filter(Q(end_date__gte=timezone.now()) | Q(end_date__isnull=True))
         )
 
 

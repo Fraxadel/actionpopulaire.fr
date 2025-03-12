@@ -77,10 +77,7 @@ def get_active_contribution_for_person(person=None):
         return None
 
     monthly_subscription = (
-        Subscription.objects.active_contributions()
-        .filter(person=person)
-        .order_by("-end_date")
-        .first()
+        Subscription.objects.active_contributions().filter(person=person).first()
     )
 
     single_time_payment = (
