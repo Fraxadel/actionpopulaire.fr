@@ -315,9 +315,7 @@ class PaymentsView(AskAmountView, ProfileViewMixin, TemplateView):
         return super().post(request, *args, **kwargs)
 
     def get_subscriptions(self):
-        return self.request.user.person.subscriptions.filter(
-            status=Subscription.STATUS_ACTIVE
-        )
+        return self.request.user.person.subscriptions.active()
 
     def get_initial_for_subscription(self, subscription):
         allocations = get_allocation_list(subscription.allocations)
