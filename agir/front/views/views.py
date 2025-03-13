@@ -28,7 +28,7 @@ from agir.authentication.view_mixins import (
 )
 from agir.donations.actions import (
     can_make_contribution,
-    get_active_contribution_for_person,
+    existing_monthly_payment,
     is_waiting_contribution,
 )
 from agir.donations.models import SpendingRequest
@@ -282,8 +282,8 @@ class AlreadyContributorRedirectView(RedirectView):
             and hasattr(self.request.user, "person")
             and self.request.user.person is not None
         ):
-            active_contribution = get_active_contribution_for_person(
-                person=self.request.user.person
+            active_contribution = existing_monthly_payment(
+                person_or_email=self.request.user.person
             )
 
             if active_contribution and is_waiting_contribution(active_contribution):

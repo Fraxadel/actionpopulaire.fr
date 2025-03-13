@@ -21,7 +21,7 @@ from agir.authentication.view_mixins import (
 from agir.authentication.views import RedirectToMixin
 from agir.donations.actions import (
     can_make_contribution,
-    get_active_contribution_for_person,
+    existing_monthly_payment,
     is_renewable_contribution,
 )
 from agir.donations.allocations import get_allocation_list
@@ -344,9 +344,7 @@ class PaymentsView(AskAmountView, ProfileViewMixin, TemplateView):
         kwargs["can_make_contribution"] = can_make_contribution(
             person=self.request.user.person
         )
-        active_contribution = get_active_contribution_for_person(
-            self.request.user.person
-        )
+        active_contribution = existing_monthly_payment(self.request.user.person)
 
         if is_renewable_contribution(active_contribution):
             kwargs["renewable_active_contribution"] = active_contribution

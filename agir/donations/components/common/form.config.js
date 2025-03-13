@@ -1,7 +1,5 @@
 import validate from "@agir/lib/utils/validate";
-import {
-  getAllocationDepartement,
-} from "./allocations.config";
+import { getAllocationDepartement } from "./allocations.config";
 
 export const SINGLE_TIME_PAYMENT = "S";
 export const MONTHLY_PAYMENT = "M";
@@ -120,11 +118,12 @@ export const DONATION_DATA_CONSTRAINTS = (config) => ({
   dateOfBirth: {
     presence: {
       allowEmpty: false,
-      message: "Ce champ ne peut pas être vide."
+      message: "Ce champ ne peut pas être vide.",
     },
     dateOfBirth: {
-      message: "Vous devez avoir la majorité pour donner un don."
-    }
+      message:
+        "Vous devez être une personne majeure pour pouvoir faire un don.",
+    },
   },
   contactPhone: {
     presence: {
@@ -166,32 +165,27 @@ export const DONATION_DATA_CONSTRAINTS = (config) => ({
   nationality: {
     presence: {
       allowEmpty: false,
-      message: "Ce champ ne peut pas être vide.",
-    },
-  },
-  to: {
-    presence: {
-      allowEmpty: false,
-      message: "Ce champ ne peut pas être vide.",
+      message:
+        "Votre nationalité fait partie des informations que nous devons déclarer aux autorités de régulation.",
     },
   },
   paymentMode: {
     presence: {
       allowEmpty: false,
-      message: "Merci de séléctionner un mode de paiment.",
+      message: "Indiquez le mode de paiement à utiliser",
     },
   },
   amount: {
     presence: {
       allowEmpty: false,
-      message: "Ce champ ne peut pas être vide.",
+      message: "Choisissez le montant de votre don.",
     },
     numericality: {
       onlyInteger: true,
       greaterThan: 0,
       lessThan: (config?.maxAmount ?? 0) + 1,
-      message: "Merci de séléctionner un montant entre 5 et 7500 €."
-    }
+      message: "Merci de sélectionner un montant entre 1 et 7500 €.",
+    },
   },
   paymentTiming: {
     presence: {
@@ -202,12 +196,14 @@ export const DONATION_DATA_CONSTRAINTS = (config) => ({
   honorCertified: {
     presence: {
       allowEmpty: false,
-      message: "Certifier votre don."
+      message:
+        "Nous devons impérativement recueillir votre engagement que ce don ne provient pas d'une personne morale.",
     },
     bool: {
-      message: "Certifier votre don"
-    }
-  }
+      message:
+        "Nous devons impérativement recueillir votre engagement que ce don ne provient pas d'une personne morale.",
+    },
+  },
 });
 
 const NEW_DONATION_DATA_CONSTRAINTS = (config) => ({

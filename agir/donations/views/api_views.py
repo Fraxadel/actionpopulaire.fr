@@ -1,9 +1,11 @@
 import json
+from datetime import timezone
 
 import reversion
 from django.db import transaction
 from django.http import Http404
 from django.urls import reverse
+from django.utils import timezone
 from nested_multipart_parser.drf import DrfNestedParser
 from rest_framework.generics import (
     GenericAPIView,
@@ -16,9 +18,10 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
 from agir.donations.actions import (
-    get_active_contribution_for_person,
+    existing_monthly_payment,
     is_renewable_contribution,
 )
+from agir.donations.apps import DonsConfig
 from agir.donations.models import SpendingRequest, Document
 from agir.donations.serializers import (
     DonationSerializer,
@@ -61,9 +64,7 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
             del self.request.session[DONATION_SESSION_NAMESPACE]
 
     def get_existing_subscription(self, **kwargs):
-        return Subscription.objects.filter(
-            person=self.person, status=Subscription.STATUS_ACTIVE, **kwargs
-        ).first()
+        return existing_monthly_payment(self.person)
 
     def make_subscription(self):
         validated_data = self.validated_data
@@ -71,8 +72,10 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
         payment_mode = validated_data.get("payment_mode")
         amount = validated_data.get("amount")
         allocations = validated_data.get("allocations", [])
-        effect_date = validated_data.get("effect_date", None)
-        end_date = validated_data.get("end_date")
+
+        # aujourd'hui selon la zone Europe/Paris
+        today = timezone.now().astimezone(timezone.get_default_timezone()).date()
+        effect_date = today + timezone.timedelta(days=1)
 
         # Confirm email if the user is unknown
         if self.person is None:
@@ -88,9 +91,9 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                 {"next": reverse("monthly_donation_confirmation_email_sent")}
             )
 
-        existing_subscription = self.get_existing_subscription(mode=payment_mode)
+        existing_subscription = self.get_existing_subscription()
         # Redirect to a specific page if the existing subscription is not a contribution
-        if existing_subscription and existing_subscription.type != payment_type:
+        if existing_subscription:
             # stocker toutes les infos en session
             # attention à ne pas juste modifier le dictionnaire existant,
             # parce que la session ne se "rendrait pas compte" qu'elle a changé
@@ -103,19 +106,10 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                     "mode": payment_mode,
                     "amount": amount,
                     "meta": {**validated_data, **self.get_utm_infos()},
-                    "effect_date": effect_date,
-                    "end_date": end_date,
                 },
             }
 
             return Response({"next": reverse("already_has_subscription")})
-
-        existing_contribution = get_active_contribution_for_person(person=self.person)
-
-        if existing_contribution and not is_renewable_contribution(
-            existing_contribution
-        ):
-            return Response({"next": reverse("already_contributor")})
 
         with transaction.atomic():
             subscription = create_subscription(
@@ -126,7 +120,6 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                 allocations=allocations,
                 meta={**validated_data, **self.get_utm_infos()},
                 effect_date=effect_date,
-                end_date=end_date,
             )
 
             self.clear_session()
@@ -135,8 +128,8 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
 
     @staticmethod
     def get_utm_value(query, key):
-        value = query.get(key, "")
-        if value is not "":
+        value = query.get(key, None)
+        if value is not None:
             return value[0]
         return value
 
@@ -185,7 +178,7 @@ class CreateDonationAPIView(UpdateModelMixin, GenericAPIView):
                 self.validated_data["allocations"]
             )
 
-        if self.validated_data["payment_timing"] == MONTHLY:
+        if self.validated_data["payment_type"] == DonsConfig.MONTHLY_DONATION_TYPE:
             return self.make_subscription()
 
         return self.make_payment()
@@ -206,7 +199,7 @@ class ActiveSubscriptionRetrieveAPIView(RetrieveAPIView):
 
     def get_object(self):
         person = self.request.user.person
-        obj = get_active_contribution_for_person(person)
+        obj = existing_monthly_payment(person)
 
         if obj is None:
             raise Http404

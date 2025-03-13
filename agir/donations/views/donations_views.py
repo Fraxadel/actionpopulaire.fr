@@ -14,7 +14,7 @@ from agir.authentication.tokens import monthly_donation_confirmation_token_gener
 from agir.authentication.utils import soft_login
 from agir.authentication.view_mixins import VerifyLinkSignatureMixin
 from agir.donations import forms
-from agir.donations.actions import get_active_contribution_for_person
+from agir.donations.actions import existing_monthly_payment
 from agir.donations.allocations import (
     apply_payment_allocations,
     get_allocation_list,
@@ -264,7 +264,7 @@ class MonthlyDonationEmailConfirmationView(VerifyLinkSignatureMixin, View):
 
         soft_login(request, person)
 
-        existing_contribution = get_active_contribution_for_person(person=person)
+        existing_contribution = existing_monthly_payment(person_or_email=person)
 
         # Redirect if user already contributor
         if existing_contribution is not None:
