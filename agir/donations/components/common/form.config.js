@@ -24,7 +24,7 @@ export const INITIAL_DATA = {
   frenchResident: true,
   departement: "",
 
-  to: "",
+  paymentType: "",
   paymentMode: "",
   amount: 0,
   paymentTiming: "",

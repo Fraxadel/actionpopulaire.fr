@@ -1,22 +1,16 @@
-from datetime import date
-
 import reversion
 from django.conf import settings
 from django.core import validators
 from django.db import transaction
-from django.shortcuts import resolve_url
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import empty
 
 from agir.checks import DonationCheckPaymentMode
 from agir.donations.actions import (
-    can_make_contribution,
-    monthly_to_single_time_contribution,
     is_renewable_contribution,
     get_contribution_end_date,
     single_time_to_monthly_contribution,
-    existing_monthly_payment,
 )
 from agir.donations.allocations import get_allocation_list
 from agir.donations.apps import DonsConfig
@@ -112,7 +106,7 @@ class DonationSerializer(serializers.ModelSerializer):
     contactPhone = PhoneField(max_length=30, required=True, source="contact_phone")
     nationality = serializers.CharField(max_length=100)
 
-    to = serializers.ChoiceField(
+    paymentType = serializers.ChoiceField(
         choices=(
             (DonsConfig.SINGLE_TIME_DONATION_TYPE, "don à la France insoumise"),
             (DonsConfig.MONTHLY_DONATION_TYPE, "don mensuel à la France insoumise"),
@@ -221,8 +215,8 @@ class DonationSerializer(serializers.ModelSerializer):
             "locationCountry",
             "contactPhone",
             "nationality",
-            "to",
             "amount",
+            "paymentType",
             "paymentMode",
             "allocations",
             "dateOfBirth",

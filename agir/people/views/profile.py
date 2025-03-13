@@ -298,47 +298,19 @@ class VolunteerView(ProfileViewMixin, UpdateView):
         return self.request.user.person
 
 
-class PaymentsView(AskAmountView, ProfileViewMixin, TemplateView):
+class PaymentsView(ProfileViewMixin, TemplateView):
     template_name = "people/profile/payments.html"
     tab_code = "PAYMENTS"
-    form_class = AllocationSubscriptionForm
-    session_namespace = DONATION_SESSION_NAMESPACE
-    success_url = reverse_lazy("donation_information_modal")
 
     @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.subscriptions = self.get_subscriptions()
         return super().get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        self.subscriptions = self.get_subscriptions()
-        return super().post(request, *args, **kwargs)
-
     def get_subscriptions(self):
         return self.request.user.person.subscriptions.active()
 
-    def get_initial_for_subscription(self, subscription):
-        allocations = get_allocation_list(subscription.allocations)
-        initial = {
-            "amount": subscription.price,
-            "previous_subscription": subscription.pk,
-            "allocations": allocations,
-        }
-
-        return initial
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
     def get_context_data(self, **kwargs):
-        for subscription in self.subscriptions:
-            subscription.modify_form = self.form_class(
-                user=self.request.user,
-                initial=self.get_initial_for_subscription(subscription),
-            )
-
         kwargs["can_make_contribution"] = can_make_contribution(
             person=self.request.user.person
         )

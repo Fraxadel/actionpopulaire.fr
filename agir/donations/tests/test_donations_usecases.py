@@ -2,7 +2,6 @@ import json
 import re
 import uuid
 from unittest import mock
-from urllib.parse import urlencode
 
 from django.core import mail
 from django.urls import reverse
@@ -31,7 +30,6 @@ from ..views import (
     notification_listener as donation_notification_listener,
     subscription_notification_listener as monthly_donation_subscription_listener,
 )
-from ... import donations
 from ...authentication.tokens import monthly_donation_confirmation_token_generator
 from ...system_pay.models import SystemPayAlias, SystemPaySubscription
 
@@ -52,7 +50,7 @@ class DonationTestMixin:
             "contactPhone": "+33645789845",
             "amount": "20000",
             "paymentMode": payment_modes.DEFAULT_MODE,
-            "paymentTiming": donations.serializers.SINGLE_TIME,
+            "paymentType": DonsConfig.SINGLE_TIME_DONATION_TYPE,
             "gender": "F",
         }
 
@@ -214,7 +212,7 @@ class DonationTestCase(DonationTestMixin, APITestCase):
             self.create_donation_url,
             {
                 **self.donation_information_payload,
-                "paymentTiming": donations.serializers.SINGLE_TIME,
+                "paymentType": DonsConfig.SINGLE_TIME_DONATION_TYPE,
                 "amount": "200",
                 "allocations": allocations,
             },
@@ -329,7 +327,7 @@ class MonthlyDonationTestCase(DonationTestMixin, APITestCase):
             self.create_donation_url,
             {
                 **self.donation_information_payload,
-                "paymentTiming": donations.serializers.MONTHLY,
+                "paymentType": DonsConfig.MONTHLY_DONATION_TYPE,
                 "allocations": [{"group": str(self.group.pk), "amount": 10000}],
             },
         )
@@ -393,25 +391,6 @@ class MonthlyDonationTestCase(DonationTestMixin, APITestCase):
         self.assertEqual(operation.destination, f"actif:groupe:{self.group.id}")
         self.assertEqual(operation.amount, 10000)
 
-    def test_can_also_create_monthly_donation_from_profile(self):
-        self.client.force_login(self.p1.role)
-        profile_payments_page = reverse("view_payments")
-        res = self.client.get(profile_payments_page)
-        self.assertEqual(res.status_code, 200)
-        res = self.client.post(
-            profile_payments_page,
-            urlencode(
-                {
-                    "type": donations.serializers.MONTHLY,
-                    "amount": "200",
-                    "group": str(self.group.pk),
-                    "allocation": "100",
-                }
-            ),
-            content_type="application/x-www-form-urlencoded",
-        )
-        self.assertRedirects(res, self.information_modal_url)
-
     def test_can_see_monthly_payment_from_profile(self):
         s = self.create_subscription(
             person=self.p1, amount=1000, allocations={self.group: 600}
@@ -447,7 +426,7 @@ class MonthlyDonationTestCase(DonationTestMixin, APITestCase):
             self.create_donation_url,
             {
                 **self.donation_information_payload,
-                "paymentTiming": donations.serializers.MONTHLY,
+                "paymentType": DonsConfig.MONTHLY_DONATION_TYPE,
                 "allocations": [],
             },
         )
@@ -515,57 +494,6 @@ class MonthlyDonationTestCase(DonationTestMixin, APITestCase):
             self.donation_information_payload["locationCountry"],
         )
 
-    @mock.patch("agir.donations.views.donations_views.create_and_replace_subscription")
-    def test_can_modify_subscription(self, create_and_replace_subscription):
-        s = self.create_subscription(
-            person=self.p1, amount=1000, allocations={self.group: 600}
-        )
-
-        self.client.force_login(self.p1.role)
-
-        _res = self.client.post(
-            reverse("view_payments"),
-            {
-                "amount": "1200",
-                "allocations": json.dumps(
-                    [{"group": str(self.group.pk), "amount": 700}]
-                ),
-                "previous_subscription": s.id,
-            },
-        )
-
-        res = self.client.post(
-            self.create_donation_url,
-            {
-                **self.donation_information_payload,
-                "amount": 700,
-                "allocations": [{"group": str(self.group.pk), "amount": 700}],
-                "paymentTiming": donations.serializers.MONTHLY,
-            },
-        )
-
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(reverse("already_has_subscription"), res.data["next"])
-
-        res = self.client.post(
-            reverse("already_has_subscription"),
-            urlencode({"choice": "A"}),
-            content_type="application/x-www-form-urlencoded",
-        )
-
-        self.assertRedirects(res, reverse("view_payments"))
-        create_and_replace_subscription.assert_called_once()
-        call_args = create_and_replace_subscription.call_args[0]
-        self.maxDiff = None
-        self.assertEqual(call_args[0].get("amount", None), 700)
-        self.assertEqual(call_args[0].get("person", None), self.p1)
-        self.assertEqual(
-            call_args[0].get("meta", {}).get("payment_timing", None),
-            donations.serializers.MONTHLY,
-            call_args[0],
-        )
-        self.assertEqual(call_args[1], s)
-
     @mock.patch(
         "agir.donations.views.api_views.send_monthly_donation_confirmation_email"
     )
@@ -584,7 +512,7 @@ class MonthlyDonationTestCase(DonationTestMixin, APITestCase):
             data={
                 "email": existing_person.email,
                 **self.donation_information_payload,
-                "paymentTiming": donations.serializers.MONTHLY,
+                "paymentType": DonsConfig.MONTHLY_DONATION_TYPE,
                 "amount": "500",
                 "allocations": allocations,
             },

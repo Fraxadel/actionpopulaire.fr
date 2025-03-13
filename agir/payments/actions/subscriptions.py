@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 import pandas as pd
 from django.conf import settings
@@ -28,7 +29,9 @@ class SubscriptionException(Exception):
 def create_subscription(person, mode, amount, allocations=None, **kwargs):
     subscription_type_id = kwargs.pop("type", DonsConfig.MONTHLY_DONATION_TYPE)
 
-    effect_date = kwargs.pop("effect_date")
+    today = timezone.now().astimezone(timezone.get_default_timezone())
+
+    effect_date = kwargs.pop("effect_date", today + timedelta(days=1))
     day_of_month = effect_date.day
 
     if day_of_month >= 28:

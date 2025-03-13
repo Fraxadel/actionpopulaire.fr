@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 import { PAYMENT_TIMING } from "@agir/donations/Donation.domain";
 
 function mapContextToDonation(context) {
-  const to =
+  const paymentType =
     context.paymentTiming === PAYMENT_TIMING.MONTHLY ? "don_mensuel" : "don";
 
   const allocations = [];
@@ -46,7 +46,7 @@ function mapContextToDonation(context) {
   return {
     ...context,
     allocations,
-    to,
+    paymentType,
   };
 }
 
@@ -54,10 +54,10 @@ export default function DonationValidation() {
   const { errors, update, ...context } = useDonationContext();
 
   async function validate() {
-    const to =
+    const paymentType =
       context.paymentTiming === PAYMENT_TIMING.MONTHLY ? "don_mensuel" : "don";
 
-    const config = CONFIG[to];
+    const config = CONFIG[paymentType];
     const results = validateDonationData(context, config);
     update({ errors: results });
     if (!results) {
