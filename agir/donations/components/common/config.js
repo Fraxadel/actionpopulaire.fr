@@ -46,6 +46,7 @@ export const don = {
   theme: themeLFI,
   allowedPaymentModes: {
     [SINGLE_TIME_PAYMENT]: ["system_pay", "check_donations"],
+    [MONTHLY_PAYMENT]: ["system_pay"],
   },
   legalParagraph:
     "Les dons seront versés à L'Association de financement de La France insoumise (AFLFI). Premier alinéa de l’article 11-4 de la loi 88-227 du 11 mars 1988 modifiée : une personne physique peut verser un don à un parti ou groupement politique si elle est de nationalité française ou si elle réside en France.",
@@ -65,7 +66,7 @@ const don_ilb = {
     theme: {...themeLFI, ...{light: {Logo: ILBLogo, logoHeight: "7rem",}, dark: { Logo: ILBLogo, logoHeight: "7rem",}}}
 }
 
-const contribution = {
+const don_mensuel = {
   ...don,
   // Contribution ends in december :
   // - of the current year until august
@@ -76,8 +77,8 @@ const contribution = {
         ? new Date().getFullYear()
         : new Date().getFullYear() + 1
     }-12-31T22:59:59Z`,
-  type: "contribution",
-  title: "Devenir financeur·euse de La France insoumise",
+  type: "don_mensuel",
+  title: "Devenir donateur·rice mensuel de La France insoumise",
   fixedRatio: 0.2,
   allowedPaymentModes: {
     [MONTHLY_PAYMENT]: ["system_pay", "check_donations"],
@@ -88,7 +89,8 @@ const contribution = {
 const CONFIG = {
   don,
   n,
-  contribution,
+  don_mensuel: don_mensuel,
+  contribution: don_mensuel,
   default: don,
   don_ilb: don_ilb
 };

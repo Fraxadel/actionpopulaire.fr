@@ -39,6 +39,7 @@ const LegalParagraph = styled.p`
 
 const PaymentParagraph = styled.p`
   padding: 1.5rem 0;
+
   max-width: 582px;
   margin: 0 auto;
   text-align: center;

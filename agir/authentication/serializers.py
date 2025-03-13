@@ -12,7 +12,7 @@ from agir.authentication.utils import (
     get_bookmarked_emails,
 )
 from agir.donations.actions import (
-    get_active_contribution_for_person,
+    existing_monthly_payment,
     get_contribution_end_date,
     is_renewable_contribution,
 )
@@ -91,7 +91,7 @@ class UserContextSerializer(serializers.Serializer):
         ]
 
     def get_active_contribution(self, obj):
-        active_contribution = get_active_contribution_for_person(obj)
+        active_contribution = existing_monthly_payment(obj)
         if active_contribution:
             return {
                 "id": active_contribution.id,

@@ -27,23 +27,28 @@ lando manage migrate
 # garder bien de côté vos identifiants
 lando manage createsuperperson
 ```
-
-Vous pourrez ensuite accéder à la partie front du projet via : http://ap.lfi.site/
-Pour accéder à la partie admin via le compte précédemment créé : http://ap.lfi.site/admin
+Une fois le compte crée, vous connectez via l'interface admin http://ap.lfi.site/admin
+Dans le même temps, vous serez connecté à action populaire : http://ap.lfi.site/
 
 Chaque mail émis par le système est capturé par mailhog, que vous pouvez consulter via : http://mailhog.ap.lfi.site/
+
+*Une fois la `superperson` créé*, vous pouvez peupler la base de données, vous serez ajouter en tant qu'animateur·ice
+à un groupe d'action certifié, ainsi, qu'à une boucle départementale.
+
+Autre compte disponible pour développer :
+```
+membre@lfi.fr - membre de votre GA
+```
 
 ### Contribuer au projet
 
 Pour contribuer au projet suivre les [guidelines](https://github.com/lafranceinsoumise/actionpopulaire.fr/blob/staging/GUIDELINES.md)
 
-
 ## Commandes utiles
 
 ### Base de données
-Whenever you change the django models, you'll have to generate the migrations and apply them.
+À chaque changement de vos models, vous devez générer et appliquer les migrations de vos tables.
 
-Generate, then apply the migrations :
 ```bash
 lando manage makemigrations your_app
 lando manage migrate 

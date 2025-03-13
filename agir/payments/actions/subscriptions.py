@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 import pandas as pd
 from django.conf import settings
@@ -26,20 +27,15 @@ class SubscriptionException(Exception):
 
 
 def create_subscription(person, mode, amount, allocations=None, **kwargs):
-    from agir.payments.types import SUBSCRIPTION_TYPES
-
     subscription_type_id = kwargs.pop("type", DonsConfig.MONTHLY_DONATION_TYPE)
-    subscription_type = SUBSCRIPTION_TYPES.get(subscription_type_id, None)
-    day_of_month = kwargs.pop("day_of_month", None)
-    if not day_of_month:
-        if (
-            subscription_type
-            and hasattr(subscription_type, "day_of_month")
-            and isinstance(subscription_type.day_of_month, int)
-        ):
-            day_of_month = subscription_type.day_of_month
-        else:
-            day_of_month = settings.MONTHLY_DONATION_DAY
+
+    today = timezone.now().astimezone(timezone.get_default_timezone())
+
+    effect_date = kwargs.pop("effect_date", today + timedelta(days=1))
+    day_of_month = effect_date.day
+
+    if day_of_month >= 28:
+        day_of_month = 1
 
     subscription = Subscription.objects.create(
         person=person,

@@ -16,8 +16,6 @@ export const DEFAULT_CONTEXT = {
     currentGroup: null,
     hasSelectedGroup: false,
     honorCertified: false,
-    to: DON_TYPE.SINGLE_TIME_DONATION_TYPE,
-    updateExistingSubscription: false
 }
 
 export default function DonationContextProvider({ children }) {

@@ -21,7 +21,7 @@ from agir.authentication.view_mixins import (
 from agir.authentication.views import RedirectToMixin
 from agir.donations.actions import (
     can_make_contribution,
-    get_active_contribution_for_person,
+    existing_monthly_payment,
     is_renewable_contribution,
 )
 from agir.donations.allocations import get_allocation_list
@@ -298,55 +298,23 @@ class VolunteerView(ProfileViewMixin, UpdateView):
         return self.request.user.person
 
 
-class PaymentsView(AskAmountView, ProfileViewMixin, TemplateView):
+class PaymentsView(ProfileViewMixin, TemplateView):
     template_name = "people/profile/payments.html"
     tab_code = "PAYMENTS"
-    form_class = AllocationSubscriptionForm
-    session_namespace = DONATION_SESSION_NAMESPACE
-    success_url = reverse_lazy("donation_information_modal")
 
     @method_decorator(never_cache)
     def get(self, request, *args, **kwargs):
         self.subscriptions = self.get_subscriptions()
         return super().get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        self.subscriptions = self.get_subscriptions()
-        return super().post(request, *args, **kwargs)
-
     def get_subscriptions(self):
-        return self.request.user.person.subscriptions.filter(
-            status=Subscription.STATUS_ACTIVE
-        )
-
-    def get_initial_for_subscription(self, subscription):
-        allocations = get_allocation_list(subscription.allocations)
-        initial = {
-            "amount": subscription.price,
-            "previous_subscription": subscription.pk,
-            "allocations": allocations,
-        }
-
-        return initial
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
+        return self.request.user.person.subscriptions.active()
 
     def get_context_data(self, **kwargs):
-        for subscription in self.subscriptions:
-            subscription.modify_form = self.form_class(
-                user=self.request.user,
-                initial=self.get_initial_for_subscription(subscription),
-            )
-
         kwargs["can_make_contribution"] = can_make_contribution(
             person=self.request.user.person
         )
-        active_contribution = get_active_contribution_for_person(
-            self.request.user.person
-        )
+        active_contribution = existing_monthly_payment(self.request.user.person)
 
         if is_renewable_contribution(active_contribution):
             kwargs["renewable_active_contribution"] = active_contribution

@@ -70,10 +70,8 @@ const AmountWidget = (props) => {
     groupId,
     fixedRatio,
     paymentTiming,
-    allowedPaymentTimings,
     onChangeAmount,
     onChangeAllocations,
-    onChangePaymentTiming,
     disabled,
     hasAllocations = true,
   } = props;

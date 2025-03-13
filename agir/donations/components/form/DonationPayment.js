@@ -54,7 +54,6 @@ const PAYMENT_MODE = {
 }
 
 export default function DonationPayment() {
-
     const {update, paymentMode, errors} = useDonationContext()
     const { to, paymentTiming } = useDonationContext()
     const config =  CONFIG[to] ?? CONFIG.default;

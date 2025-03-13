@@ -4,7 +4,6 @@ import Button from "@agir/front/genericComponents/Button";
 import styled from "styled-components";
 import Spacer from "@agir/front/genericComponents/Spacer";
 import {countRepartition, DON_TYPE, MAX_AMOUNT_DON, PAYMENT_TIMING} from "@agir/donations/Donation.domain";
-import NumberField from "@agir/front/formComponents/NumberField";
 import {useActiveContributionAPI} from "@agir/donations/common/api";
 import DonationExisting from "@agir/donations/form/DonationExisting";
 import {ErrorMessage, FormContainer} from "@agir/donations/Common.style";
@@ -79,7 +78,6 @@ export default function DonationAmount() {
 
     function updatePaymentTiming(timing) {
         update({
-            to: timing === PAYMENT_TIMING.SINGLE_TIME ? DON_TYPE.SINGLE_TIME_DONATION_TYPE : DON_TYPE.CONTRIBUTION_TYPE,
             paymentTiming: timing,
             ...countRepartition(amount, timing, currentGroup !== null)
         });
@@ -92,16 +90,11 @@ export default function DonationAmount() {
     }, [existingDonation]);
 
     useEffect(() => {
-        const onContribution = routeConfig.contributions.match(location.pathname)
         const urlParams = new URLSearchParams(location.search);
-        if (onContribution) {
-            updatePaymentTiming(PAYMENT_TIMING.MONTHLY)
-        } else {
-            const isMonthly = location.pathname.includes("dons-mensuels") || urlParams.get("regularite") === "M"
-            updatePaymentTiming(isMonthly
-                ? PAYMENT_TIMING.MONTHLY
-                : PAYMENT_TIMING.SINGLE_TIME)
-        }
+        const isMonthly = location.pathname.includes("dons-mensuels") || urlParams.get("regularite") === "M"
+        updatePaymentTiming(isMonthly
+            ? PAYMENT_TIMING.MONTHLY
+            : PAYMENT_TIMING.SINGLE_TIME)
         let amountParam = parseInt(urlParams.get("montant") ?? 0)
         amountParam = amountParam < 200 ? amountParam * 100 : amountParam
         if (DEFAULT_AMOUNT.includes(amountParam) === false) {

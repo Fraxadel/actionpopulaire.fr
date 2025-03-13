@@ -81,7 +81,7 @@ export const useDonations = (
   const [formData, setFormData] = useState({
     ...INITIAL_DATA,
     ...defaults,
-    to: config.type,
+    paymentType: config.type,
     paymentTiming: Object.keys(config.allowedPaymentModes)[0],
     endDate:
       typeof config.getEndDate === "function" ? config.getEndDate() : null,

@@ -1,5 +1,3 @@
-from datetime import date
-
 import reversion
 from django.conf import settings
 from django.core import validators
@@ -10,13 +8,9 @@ from rest_framework.fields import empty
 
 from agir.checks import DonationCheckPaymentMode
 from agir.donations.actions import (
-    can_make_contribution,
-    get_end_date_from_datetime,
-    monthly_to_single_time_contribution,
     is_renewable_contribution,
     get_contribution_end_date,
     single_time_to_monthly_contribution,
-    get_active_contribution_for_person,
 )
 from agir.donations.allocations import get_allocation_list
 from agir.donations.apps import DonsConfig
@@ -112,26 +106,16 @@ class DonationSerializer(serializers.ModelSerializer):
     contactPhone = PhoneField(max_length=30, required=True, source="contact_phone")
     nationality = serializers.CharField(max_length=100)
 
-    to = serializers.ChoiceField(
+    paymentType = serializers.ChoiceField(
         choices=(
             (DonsConfig.SINGLE_TIME_DONATION_TYPE, "don à la France insoumise"),
-            (DonsConfig.CONTRIBUTION_TYPE, "contribution à la France insoumise"),
+            (DonsConfig.MONTHLY_DONATION_TYPE, "don mensuel à la France insoumise"),
         ),
         default=DonsConfig.SINGLE_TIME_DONATION_TYPE,
         source="payment_type",
     )
     amount = serializers.IntegerField(required=True)
-    endDate = serializers.DateTimeField(
-        required=False,
-        allow_null=True,
-        default=None,
-        source="end_date",
-    )
     paymentMode = serializers.CharField(max_length=20, source="payment_mode")
-    paymentTiming = serializers.ChoiceField(
-        source="payment_timing",
-        choices=((SINGLE_TIME, "une seule fois"), (MONTHLY, "tous les mois")),
-    )
     allocations = serializers.ListField(
         child=DonationAllocationSerializer(),
         allow_empty=True,
@@ -143,16 +127,6 @@ class DonationSerializer(serializers.ModelSerializer):
         if self.instance is None and value is None:
             raise serializers.ValidationError("L'email est obligatoire.")
         return value
-
-    def validate_end_date(self, value):
-        if value is None:
-            return value
-        now = timezone.now().date()
-        if value > now:
-            return value
-        raise serializers.ValidationError(
-            "La date de fin de paiement est une date passée"
-        )
 
     def validate_allocation_amount(self, attrs):
         allocations = attrs.get("allocations")
@@ -193,52 +167,17 @@ class DonationSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def validate_lfi_donations(self, attrs):
-        payment_mode = attrs["payment_mode"]
-        error = False
-
-        if attrs["payment_timing"] == MONTHLY:
-            if payment_mode not in MONTHLY_PAYMENT_MODES:
-                error = True
-        elif attrs["payment_timing"] == SINGLE_TIME:
-            if payment_mode not in SINGLE_TIME_PAYMENT_MODES:
-                error = True
-
-        if error:
-            raise serializers.ValidationError(
-                detail={
-                    "global": "Ce mode de paiement n'est actuellement pas autorisé pour ce type de dons."
-                }
-            )
-        return attrs
-
-    def validate_lfi_contributions(self, attrs):
-        if not can_make_contribution(email=attrs.get("email")):
-            raise serializers.ValidationError(
-                detail={
-                    "global": "Merci de votre soutien, mais vous avez déjà fait une contribution pour cette année !"
-                }
-            )
-
-        existing_contribution = get_active_contribution_for_person(attrs.get("email"))
-        effect_date = get_contribution_end_date(existing_contribution)
+    def validate_monthly(self, attrs):
         payment_mode = attrs.get("payment_mode")
 
-        attrs["end_date"] = get_end_date_from_datetime(attrs["end_date"])
-
         if payment_mode not in MONTHLY_PAYMENT_MODES:
-            # Force single time payment for checks and update amounts
-            attrs = monthly_to_single_time_contribution(attrs, from_date=effect_date)
-            attrs["payment_timing"] = SINGLE_TIME
-        else:
-            # Force monthly payment for system pay
-            attrs["payment_timing"] = MONTHLY
-            attrs["effect_date"] = (
-                effect_date.strftime("%Y-%m-%d")
-                if isinstance(effect_date, date)
-                else effect_date
+            raise serializers.ValidationError(
+                detail={
+                    "global": f"Les dons mensuels ne sont possibles que par carte "
+                    f"bleue. Si vous ne pouvez donner que par chèque, "
+                    f"faites plutôt un don ponctuel."
+                }
             )
-
         return attrs
 
     def validate(self, attrs):
@@ -246,10 +185,8 @@ class DonationSerializer(serializers.ModelSerializer):
 
         payment_type = attrs.get("payment_type")
 
-        if payment_type == DonsConfig.CONTRIBUTION_TYPE:
-            attrs = self.validate_lfi_contributions(attrs)
-        elif payment_type == DonsConfig.SINGLE_TIME_DONATION_TYPE:
-            attrs = self.validate_lfi_donations(attrs)
+        if payment_type == DonsConfig.MONTHLY_DONATION_TYPE:
+            attrs = self.validate_monthly(attrs)
 
         attrs = self.validate_amount_range(attrs)
         attrs = self.validate_allocation_amount(attrs)
@@ -278,11 +215,9 @@ class DonationSerializer(serializers.ModelSerializer):
             "locationCountry",
             "contactPhone",
             "nationality",
-            "to",
             "amount",
-            "endDate",
+            "paymentType",
             "paymentMode",
-            "paymentTiming",
             "allocations",
             "dateOfBirth",
         )

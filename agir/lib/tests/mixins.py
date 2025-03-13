@@ -69,21 +69,39 @@ def create_location():
     }
 
 
+def as_default(fun):
+    return fun()
+
+
 # PEOPLE
-def create_person():
-    person = {
-        "password": PASSWORD,
-        "first_name": fake.first_name(),
-        "last_name": fake.last_name(),
-        "email": fake.email(),
-        "contact_phone": "+33600000000",
-        "gender": random.choice(
+def create_person(
+    first_name=None,
+    last_name=None,
+    gender=None,
+    email=None,
+):
+    first_name = fake.first_name() if first_name is None else first_name
+    last_name = fake.first_name() if last_name is None else last_name
+    if email is None:
+        email = f"{first_name}.{last_name}{fake.unique.pyint()}@lafranceinsoumise.fr"
+    gender = (
+        random.choice(
             [
                 Person.GENDER_FEMALE,
                 Person.GENDER_MALE,
                 Person.GENDER_OTHER,
             ]
-        ),
+        )
+        if gender is None
+        else gender
+    )
+    person = {
+        "password": PASSWORD,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "contact_phone": "+33600000000",
+        "gender": gender,
         "date_of_birth": fake.date_between(start_date="-100y"),
         "is_political_support": fake.boolean(),
         "newsletters": random.sample(
@@ -152,6 +170,56 @@ def create_activities(how_many=2, person_email=None):
     return activities
 
 
+def create_local_group(name, people, referents, certification_date=None, **kwargs):
+    group = {
+        "name": name,
+        "type": SupportGroup.TYPE_LOCAL_GROUP,
+        "description": fake.paragraph(),
+        "image": create_image_url(True),
+        "published": fake.boolean(),
+        "allow_html": fake.boolean(),
+        "certification_date": certification_date,
+        **create_location(),
+        **kwargs,
+    }
+    group = SupportGroup.objects.create(**group)
+
+    if not people:
+        add_random_people_to_groupe(group)
+    else:
+        for p in people:
+            Membership.objects.get_or_create(
+                supportgroup=group,
+                person=p,
+                membership_type=Membership.MEMBERSHIP_TYPE_MEMBER,
+            )
+    for r in referents:
+        Membership.objects.get_or_create(
+            supportgroup=group,
+            person=r,
+            membership_type=Membership.MEMBERSHIP_TYPE_REFERENT,
+        )
+
+
+def add_random_people_to_groupe(group):
+    nb_people = random.choice(range(20))
+    for _ in range(nb_people):
+        person = get_random_object(Person)
+        if not Membership.objects.filter(supportgroup=group, person=person).exists():
+            Membership.objects.get_or_create(
+                supportgroup=group,
+                person=person,
+                membership_type=random.choice(
+                    [
+                        Membership.MEMBERSHIP_TYPE_FOLLOWER,
+                        Membership.MEMBERSHIP_TYPE_MEMBER,
+                        Membership.MEMBERSHIP_TYPE_MANAGER,
+                        Membership.MEMBERSHIP_TYPE_REFERENT,
+                    ]
+                ),
+            )
+
+
 # GROUPS
 def create_group():
     contact = get_random_object(Person)
@@ -178,23 +246,8 @@ def create_group():
 
     group_subtype = get_random_object(SupportGroupSubtype)
     group_subtype.supportgroups.set([group])
+    add_random_people_to_groupe(group)
 
-    nb_people = random.choice(range(20))
-    for _ in range(nb_people):
-        person = get_random_object(Person)
-        if not Membership.objects.filter(supportgroup=group, person=person).exists():
-            Membership.objects.get_or_create(
-                supportgroup=group,
-                person=person,
-                membership_type=random.choice(
-                    [
-                        Membership.MEMBERSHIP_TYPE_FOLLOWER,
-                        Membership.MEMBERSHIP_TYPE_MEMBER,
-                        Membership.MEMBERSHIP_TYPE_MANAGER,
-                        Membership.MEMBERSHIP_TYPE_REFERENT,
-                    ]
-                ),
-            )
     return group
 
 
