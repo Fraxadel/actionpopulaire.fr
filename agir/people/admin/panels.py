@@ -78,7 +78,9 @@ __all__ = [
 
 
 @admin.register(Person)
-class PersonAdmin(DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin):
+class PersonAdmin(
+    DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin, CursorPaginatorAdmin
+):
     list_display = (
         "__str__",
         "display_contact_phone",
@@ -94,7 +96,6 @@ class PersonAdmin(DisplayContactPhoneMixin, CenterOnFranceMixin, OSMGeoAdmin):
     list_per_page = 40
     show_full_result_count = False
     show_query_result_count = False
-    cursor_ordering_field = "-created"
 
     fieldsets = (
         (
