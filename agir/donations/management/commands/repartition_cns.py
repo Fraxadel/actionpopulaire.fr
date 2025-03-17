@@ -1,3 +1,4 @@
+from agir.donations.management.commands.command_operation import CommandOperation
 from data_france.models import CirconscriptionConsulaire
 from django.core.management import CommandError
 from django.db import transaction
@@ -15,7 +16,7 @@ from agir.lib.commands import BaseCommand
 from agir.lib.geo import FRENCH_COUNTRY_CODES
 
 
-class Command(BaseCommand):
+class Command(CommandOperation):
     """
     Verse une cotisation à chaque boucle départementale à partir de la Caisse nationale de solidarité.
     Le montant de la cotisation est ajusté en fonction du nombre de groupe certifié par département.
@@ -98,19 +99,7 @@ class Command(BaseCommand):
                 # le résultat de la division entière est toujours inférieur au total
                 # au pire on laisse jusqu'à nb centimes dans la CNS
                 amount = allocation + p * remainder // poids_total
-                self.log(
-                    f"""
-                    ============================================
-                    {CNS_ACCOUNT} => {get_account_name_for_group(d)} : {amount}
-                    > {comment}
-                    """
+                self.register_transaction(
+                    CNS_ACCOUNT, get_account_name_for_departement(d), amount, comment
                 )
-                if self.dry_run:
-                    continue
-
-                AccountOperation.objects.create(
-                    amount=amount,
-                    source=CNS_ACCOUNT,
-                    destination=get_account_name_for_departement(d),
-                    comment=comment,
-                )
+        super().export_transactions()

@@ -1,5 +1,6 @@
 import re
 
+from agir.donations.management.commands.command_operation import CommandOperation
 from agir.lib.commands import BaseCommand
 from django.db import transaction
 
@@ -12,7 +13,7 @@ from agir.donations.models import AccountOperation
 from agir.groups.models import SupportGroup
 
 
-class Command(BaseCommand):
+class Command(CommandOperation):
     def add_arguments(self, parser):
         parser.add_argument(
             "-c",
@@ -37,19 +38,10 @@ class Command(BaseCommand):
                 balance = get_departement_balance(code)
 
                 if balance > 0:
-                    self.log(
-                        f"""
-                    ============================================
-                    {get_account_name_for_departement(code)} => {get_account_name_for_group(b)} : {balance}
-                    > {comment}
-                    """
+                    self.register_transaction(
+                        get_account_name_for_departement(code),
+                        get_account_name_for_group(b),
+                        balance,
+                        comment,
                     )
-                    if self.dry_run:
-                        continue
-
-                    AccountOperation.objects.create(
-                        source=get_account_name_for_departement(code),
-                        destination=get_account_name_for_group(b),
-                        amount=balance,
-                        comment=comment,
-                    )
+        super().export_transactions()

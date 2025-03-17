@@ -3,6 +3,8 @@ import math
 import re
 
 import pandas as pd
+
+from .command_operation import CommandOperation
 from agir.lib.commands import BaseCommand
 
 from agir.donations.allocations import (
@@ -10,10 +12,9 @@ from agir.donations.allocations import (
     get_account_name_for_departement,
     CNS_ACCOUNT,
 )
-from agir.donations.models import AccountOperation
 
 
-class Command(BaseCommand):
+class Command(CommandOperation):
     """
     Prend un excel (cotisations) en entrée, avec deux colonnes,
     * montant
@@ -72,35 +73,14 @@ class Command(BaseCommand):
 
         for d in deps:
             if versements[d]:
-                self.log(
-                    f"""
-                ============================================
-                {COTISATIONS_ACCOUNT} -> {get_account_name_for_departement(d)} : {versements[d]}
-                > {comment}
-                """
-                )
-                if self.dry_run:
-                    continue
-                AccountOperation.objects.create(
-                    source=COTISATIONS_ACCOUNT,
-                    destination=get_account_name_for_departement(d),
-                    amount=versements[d],
-                    comment=comment,
+                self.register_transaction(
+                    COTISATIONS_ACCOUNT,
+                    get_account_name_for_departement(d),
+                    versements[d],
+                    comment,
                 )
 
         if cns:
-            self.log(
-                f"""
-                    ============================================
-                    {COTISATIONS_ACCOUNT} => {CNS_ACCOUNT} : {cns}
-                    > {comment}
-                    """
-            )
-            if self.dry_run:
-                return
-            AccountOperation.objects.create(
-                source=COTISATIONS_ACCOUNT,
-                destination=CNS_ACCOUNT,
-                amount=cns,
-                comment=comment,
-            )
+            self.register_transaction(COTISATIONS_ACCOUNT, CNS_ACCOUNT, cns, comment)
+
+        super().export_transactions()
