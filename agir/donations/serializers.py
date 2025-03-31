@@ -247,6 +247,9 @@ class ContributionSerializer(serializers.ModelSerializer):
     nationality = serializers.CharField(source="meta.nationality")
 
     def to_representation(self, instance):
+        if "gender" not in instance.meta:
+            instance.meta["gender"] = instance.person.gender
+
         representation = super().to_representation(instance)
 
         if representation["paymentTiming"] == SINGLE_TIME:
