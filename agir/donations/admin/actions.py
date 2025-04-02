@@ -154,8 +154,20 @@ export_spending_requests_to_csv.select_across = True
 
 def mark_spending_request_as_paid(model_admin, request, queryset):
     to_status = SpendingRequest.Status.PAID
+
+    if queryset.exclude(status=SpendingRequest.Status.TO_PAY).exists():
+        messages.add_message(
+            request,
+            messages.ERROR,
+            "Certaines des demandes sélectionnées ne sont pas en attente de paiement !",
+        )
+        return
+
     queryset_ids = list(queryset.values_list("id", flat=True))
-    queryset.update(status=to_status)
+
+    with reversion.create_revision(atomic=True):
+        reversion.set_comment("Demandes indiquées comme payées")
+        queryset.update(status=to_status, modified=timezone.now())
 
     for spending_request_pk in queryset_ids:
         spending_request_notify_group_managers.delay(
