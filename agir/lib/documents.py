@@ -3,9 +3,12 @@ import io
 import os
 import subprocess
 from functools import partial
-
 from django.core.files import File
 from django.template import engines
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def html_to_pdf(html_content, dest_path=None):
@@ -86,6 +89,7 @@ def rsvg_convert(
         raise TicketGenerationException("Timeout")
 
     if rsvg.returncode:
+        logger.error(error)
         raise TicketGenerationException("Return code: %d" % rsvg.returncode)
 
     return File(io.BytesIO(output), name=filename)
