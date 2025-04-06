@@ -1,0 +1,43 @@
+{% extends email_template %}
+
+{% block header %}{% endblock %}
+
+{% block subject %}
+  Merci !
+{% endblock %}
+
+{% block html_content %}
+  <p>{{ greetings }}</p>
+
+  <p><strong>Vous venez d'adresser un don à la France insoumise et nous vous en
+    remercions.</strong></p>
+
+  <p>La mobilisation de celles et ceux qui, comme vous, nous apportent un soutien
+    financier, est une aide précieuse qui nous aide à assurer nos actions et
+    mobilisations partout dans le pays.</p>
+
+  <p>Ensemble, nous construisons la victoire !</p>
+  <p>Amitiés,<br>La France insoumise</p>
+{% endblock %}
+
+{% block text_content %}
+{{ greetings }}
+
+Vous venez d’adresser un don à la France insoumise et nous vous en remercions.
+
+La mobilisation de celles et ceux qui, comme vous, nous apportent un soutien financier,
+est une aide précieuse qui nous aide à assurer nos actions et mobilisations partout dans
+le pays.
+
+Ensemble, nous construisons la victoire !
+
+Amitiés,
+
+La France insoumise
+{% endblock %}
+
+{% block html_footer %}
+{% block text_footer %}
+Vous n'êtes pas à l'origine de cette opération ? Ignorez simplement ce message.
+{% endblock %}
+{% endblock %}

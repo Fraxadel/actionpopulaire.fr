@@ -24,7 +24,7 @@ from agir.system_pay.models import SystemPaySubscription
 @emailing_task(post_save=True)
 def send_donation_email(person_pk, payment_type):
     person = Person.objects.prefetch_related("emails").get(pk=person_pk)
-    template_code = "DONATION_MESSAGE"
+    template_code = "donations/emails/remerciements_dons_ponctuels.html"
     email_from = settings.EMAIL_FROM
 
     if (
@@ -63,7 +63,7 @@ def send_monthly_donation_confirmation_email(
     *,
     data,
     confirmation_view_name="monthly_donation_confirm",
-    email_template="donations/confirmation_email.html",
+    email_template="donations/emails/confirmation_email.html",
     from_email=settings.EMAIL_FROM_LFI,
 ):
     data = data.copy()

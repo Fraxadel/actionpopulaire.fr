@@ -1,0 +1,53 @@
+{% extends email_template %}
+
+{% block header %}{% endblock %}
+
+{% block subject %}
+  Merci !
+{% endblock %}
+
+{% block html_content %}
+  <p>{{ greetings }}</p>
+
+  <p><strong>Vous venez de souscrire un don mensuel à la France insoumise et nous vous
+    en remercions.</strong></p>
+
+  <p>Grâce à la mobilisation financière de toutes celles et tous ceux qui, comme vous,
+    nous apportent un soutien financier régulier, notre mouvement est en mesure
+    d’organiser davantage d’actions, de production de matériel militant ou encore
+    d’événements partout dans le pays.</p>
+
+  <p><strong>En faisant ce choix, vous vous êtes durablement engagé·es à nos
+    côtés</strong> pour enfin tout changer et construire la nouvelle France.</p>
+  <p>Amitiés,<br>La France insoumise</p>
+
+  <p>Ensemble, nous construisons la victoire !</p>
+
+  <p>Amitiés,<br>La France insoumise</p>
+{% endblock %}
+
+{% block text_content %}
+{{ greetings }}
+
+Vous venez d’adresser un don mensuel à la France insoumise et nous vous en remercions.
+
+Grâce à la mobilisation financière de toutes celles et tous ceux qui, comme vous, nous
+apportent un soutien financier régulier, notre mouvement est en mesure d’organiser
+davantage d’actions, de production de matériel militant ou encore d’événements partout
+dans le pays.
+
+En faisant ce choix, vous vous êtes durablement engagé·es à nos côtés pour enfin tout
+changer et construire la nouvelle France.
+
+Ensemble, nous construisons la victoire !
+
+Amitiés,
+Manuel Bompard
+Coordinateur de la France insoumise
+{% endblock %}
+
+{% block html_footer %}
+{% block text_footer %}
+Vous n'êtes pas à l'origine de cette opération ? Ignorez simplement ce message.
+{% endblock %}
+{% endblock %}

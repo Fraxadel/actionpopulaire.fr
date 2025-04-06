@@ -87,6 +87,7 @@ class DonsConfig(AppConfig):
             description_template="donations/description.html",
             description_context_generator=payment_description_context_generator,
             matomo_goal=settings.MONTHLY_DONATION_MATOMO_GOAL,
+            email_template_code="donations/emails/remerciements_dons_mensuels.html",
         )
 
         register_payment_type(monthly_donation_payment_type)
