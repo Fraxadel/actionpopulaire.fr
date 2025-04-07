@@ -488,9 +488,8 @@ class EventRequestAdmin(admin.ModelAdmin):
         ),
     )
     readonly_fields = (
-        "event_theme_type",
-        "event_theme",
         "event_speaker_request_action",
+        "event_theme_type",
         "event_field",
     )
     list_display = (
@@ -508,6 +507,7 @@ class EventRequestAdmin(admin.ModelAdmin):
         filters.EventThemesAutocompleteFilter,
         filters.EventAutocompleteFilter,
     )
+    autocomplete_fields = ("event_theme",)
     inlines = (inlines.EventSpeakerRequestInline,)
     date_hierarchy = "created"
 

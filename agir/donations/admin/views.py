@@ -1,14 +1,39 @@
+from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.generic import DetailView
 
 from agir.donations.admin.actions import save_spending_request_admin_review
 from agir.donations.admin.forms import HandleRequestForm
+from agir.donations.admin.generate_spending_request_pdf import (
+    SpendingRequestGenerationPdf,
+)
 from agir.donations.models import SpendingRequest
 from agir.donations.spending_requests import admin_summary
 from agir.lib.admin.panels import AdminViewMixin
+import logging
+import io
+
+
+@permission_required("spendingrequest.view_spendingrequest", raise_exception=True)
+def spending_request_download_all_documents(request, pk):
+    spending_request = get_object_or_404(SpendingRequest, pk=pk)
+
+    generation = SpendingRequestGenerationPdf(spending_request)
+    generated_pdf = generation.generate()
+
+    pdf_buffer = io.BytesIO()
+    generated_pdf.write(pdf_buffer)
+    pdf_buffer.seek(0)
+    response = HttpResponse(pdf_buffer, content_type="application/pdf")
+    response["Content-Transfer-Encoding"] = "binary"
+    response["Content-Disposition"] = f'inline; filename="{generation.get_file_name()}"'
+    response.write(generated_pdf)
+
+    return response
 
 
 class HandleRequestView(AdminViewMixin, DetailView):
@@ -36,10 +61,11 @@ class HandleRequestView(AdminViewMixin, DetailView):
             title="Résumé des événements",
             spending_request=self.object,
             documents=self.object.documents.filter(deleted=False),
+            file_name_documents=self.object.get_download_file_name(),
             fields=admin_summary(self.object),
             history=self.object.get_history(admin=True),
             **self.get_admin_helpers(kwargs["form"], kwargs["form"].fields),
-            **kwargs
+            **kwargs,
         )
 
     def post(self, request, *args, **kwargs):

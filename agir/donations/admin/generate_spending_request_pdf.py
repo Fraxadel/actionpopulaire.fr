@@ -1,0 +1,146 @@
+import requests
+from django.conf import settings
+import mimetypes
+
+from agir.donations.models import SpendingRequest
+from fpdf import FPDF
+from PIL import Image
+from pypdf import PdfReader, PdfWriter
+import io
+from django.template.defaultfilters import floatformat
+
+A4_RATIO = 210 / 297
+PX_MM_RATIO = 0.264583
+
+
+class SpendingRequestGenerationPdf:
+    spending_request: SpendingRequest
+    # contains text and images
+    pdf: FPDF
+    # contains other pdf
+    pdf_writer: PdfWriter
+
+    def __init__(self, spending_request):
+        self.spending_request = spending_request
+        self.pdf = FPDF()
+        self.pdf_writer = PdfWriter()
+
+    def gen_intro_page(self):
+        # header
+        self.pdf.add_page()
+        self.pdf.add_font(
+            family="DejaVuSansCondensed",
+            fname="/usr/share/fonts/DejaVuSansCondensed.ttf",
+            uni=True,
+        )
+        self.pdf.set_font("DejaVuSansCondensed", size=14)
+
+        self.pdf.cell(40)
+        self.pdf.cell(120, 10, self.spending_request.title, 1, 0, "C")
+        self.pdf.ln(20)
+        self.append_text(
+            f"Type de dépense : {SpendingRequest.Timing(self.spending_request.timing).label}"
+        )
+        self.append_text(f"Date d'achat : {self.spending_request.spending_date}")
+        self.append_text(
+            f"Montant : {floatformat(self.spending_request.amount/100, 2)} €"
+        )
+        if self.spending_request.creator:
+            self.append_text(
+                f"Demande réalisée par : {self.spending_request.creator.get_full_name()}"
+            )
+            self.append_text(f"Email : {self.spending_request.creator.email}")
+            self.append_text(
+                f"Numéro de téléphone : {self.spending_request.creator.contact_phone}"
+            )
+        self.append_text(
+            f"Catégorie : {SpendingRequest.Category(self.spending_request.category).label}"
+        )
+        self.append_text(f"Motif d'achat : {self.spending_request.explanation}")
+        self.append_text(
+            f"Groupe lié à la dépense : {self.spending_request.group.name}"
+        )
+        self.append_text(
+            f"Dans cadre d'une campagne éléctorale : {'Oui' if self.spending_request.campaign else 'Non'}"
+        )
+        self.pdf.ln(10)
+        self.pdf.line(10, 140, 170, 140)
+        self.pdf.ln(10)
+        self.append_text(f"IBAN : {self.spending_request.bank_account_iban}")
+        self.append_text(f"BIC : {self.spending_request.bank_account_bic}")
+
+        self.append_to_writer()
+        self.append_rib()
+
+    def append_rib(self):
+        try:
+            if "application/pdf" in mimetypes.guess_type(
+                self.spending_request.bank_account_rib.file.name
+            ):
+                self.add_pdf(self.spending_request.bank_account_rib.url)
+            else:
+                self.add_image(self.spending_request.bank_account_rib)
+        except ValueError as e:
+            # bank_account_rib is empty
+            pass
+
+    def append_text(self, text):
+        self.pdf.cell(0, 10, text, 0, 1)
+
+    def get_file_name(self):
+        return self.spending_request.get_download_file_name()
+
+    def add_image(self, image):
+        img = Image.open(image.file)
+        img.verify()
+        self.pdf.add_page()
+        page_length = len(self.pdf.pages)
+        page_dimensions = self.pdf.pages.get(page_length).dimensions()
+        path = settings.FRONT_DOMAIN + image.file.url
+        width = img.size[0]
+
+        if width > page_dimensions[0]:
+            width = int(page_dimensions[0] * PX_MM_RATIO)
+
+        self.pdf.image(path, w=width)
+
+    def append_to_writer(self):
+        pdf_buffer = io.BytesIO()
+        self.pdf.output(pdf_buffer, "F")
+        pdf_buffer.seek(0)
+        pdf_reader = PdfReader(pdf_buffer)
+        for page in pdf_reader.pages:
+            self.pdf_writer.add_page(page)
+        self.pdf = FPDF()
+
+    def add_pdf(self, pdf_to_add_url):
+        current_pdf_url = settings.FRONT_DOMAIN + pdf_to_add_url
+        response = requests.get(current_pdf_url)
+        response.raise_for_status()  # Optionnel : lève une erreur si le téléchargement échoue
+
+        pdf_file = io.BytesIO(response.content)
+        reader = PdfReader(pdf_file)
+
+        for page in reader.pages:
+            self.pdf_writer.add_page(page)
+
+    def print_documents(self):
+        all_documents = self.spending_request.documents.filter(deleted=False)
+        pdf_list = [
+            doc.file.url
+            for doc in all_documents
+            if "application/pdf" in mimetypes.guess_type(doc.file.name)
+        ]
+        image_list = [
+            doc
+            for doc in all_documents
+            if "application/pdf" not in mimetypes.guess_type(doc.file.name)
+        ]
+        [self.add_image(image) for image in image_list]
+        self.append_to_writer()
+        [self.add_pdf(pdf) for pdf in pdf_list]
+
+    def generate(self):
+        self.gen_intro_page()
+        self.print_documents()
+        return self.pdf_writer

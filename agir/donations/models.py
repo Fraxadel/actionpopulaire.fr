@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 import reversion
@@ -12,6 +13,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, ngettext
 from dynamic_filenames import FilePattern
 from reversion.models import Version
+from slugify import slugify
 
 from agir.donations.model_fields import BalanceField, PositiveBalanceField
 from agir.lib.admin.utils import admin_url
@@ -730,6 +732,16 @@ class SpendingRequest(HistoryMixin, TimeStampedModel):
             for version in versions
             if version.field_dict["status"] == self.Status.AWAITING_PEER_REVIEW
         ]
+
+    def get_download_file_name(self):
+        spending_request_slug = slugify(self.title)
+
+        return (
+            spending_request_slug
+            + "-"
+            + datetime.datetime.now().strftime("%d_%m_%Y-%HH%M")
+            + ".pdf"
+        )
 
     def can_peer_review(self, user):
         return self.peer_reviewers and user != self.peer_reviewers[0]

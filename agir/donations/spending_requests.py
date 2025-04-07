@@ -1,8 +1,5 @@
-from functools import partial
-
 import reversion
 from django.core.exceptions import FieldDoesNotExist
-from django.db import transaction
 from django.utils.html import format_html
 from django.utils.translation import ngettext
 from glom import glom, T, Coalesce

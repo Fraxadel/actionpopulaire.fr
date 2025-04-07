@@ -17,7 +17,10 @@ from agir.donations.admin.actions import (
     campaign_bank_transfers_from_spending_requests,
     campaign_bank_transfers_from_spending_requests_and_mark_as_paid,
 )
-from agir.donations.admin.views import HandleRequestView
+from agir.donations.admin.views import (
+    HandleRequestView,
+    spending_request_download_all_documents,
+)
 from agir.donations.models import (
     SpendingRequest,
     AccountOperation,
@@ -152,10 +155,15 @@ class SpendingRequestAdmin(VersionAdmin):
     def get_urls(self):
         return [
             path(
+                "<uuid:pk>/review/download/documents/",
+                self.admin_site.admin_view(spending_request_download_all_documents),
+                name="donations_spendingrequest_review_download_all_documents",
+            ),
+            path(
                 "<uuid:pk>/review/",
                 self.admin_site.admin_view(HandleRequestView.as_view(model_admin=self)),
                 name="donations_spendingrequest_review",
-            )
+            ),
         ] + super().get_urls()
 
 
