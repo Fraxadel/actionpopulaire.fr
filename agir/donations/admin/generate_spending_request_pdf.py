@@ -54,17 +54,22 @@ class SpendingRequestGenerationPdf:
                 f"Numéro de téléphone : {self.spending_request.creator.contact_phone}"
             )
         self.append_text(
+            f"Bénéficiaire : {self.spending_request.bank_account_first_name} {self.spending_request.bank_account_last_name}"
+        )
+        self.append_text(
             f"Catégorie : {SpendingRequest.Category(self.spending_request.category).label}"
         )
         self.append_text(f"Motif d'achat : {self.spending_request.explanation}")
         self.append_text(
-            f"Groupe lié à la dépense : {self.spending_request.group.name}"
+            f"Groupe lié à la dépense : {self.spending_request.get_group_full_name()}"
         )
         self.append_text(
             f"Dans cadre d'une campagne éléctorale : {'Oui' if self.spending_request.campaign else 'Non'}"
         )
         self.pdf.ln(10)
-        self.pdf.line(10, 140, 170, 140)
+        self.pdf.line(
+            self.pdf.get_x(), self.pdf.get_y(), self.pdf.get_x() + 150, self.pdf.get_y()
+        )
         self.pdf.ln(10)
         self.append_text(f"IBAN : {self.spending_request.bank_account_iban}")
         self.append_text(f"BIC : {self.spending_request.bank_account_bic}")

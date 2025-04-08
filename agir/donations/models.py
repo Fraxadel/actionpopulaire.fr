@@ -16,6 +16,7 @@ from reversion.models import Version
 from slugify import slugify
 
 from agir.donations.model_fields import BalanceField, PositiveBalanceField
+from agir.groups.models import SupportGroup
 from agir.lib.admin.utils import admin_url
 from agir.lib.data import departements_or_circo_fe_choices
 from agir.lib.display import display_price
@@ -733,15 +734,19 @@ class SpendingRequest(HistoryMixin, TimeStampedModel):
             if version.field_dict["status"] == self.Status.AWAITING_PEER_REVIEW
         ]
 
-    def get_download_file_name(self):
-        spending_request_slug = slugify(self.title)
+    def get_group_full_name(self):
+        if self.group.type == SupportGroup.TYPE_BOUCLE_DEPARTEMENTALE:
+            return f"BD {self.group.location_departement_id}"
+        elif self.group.type == SupportGroup.TYPE_LOCAL_GROUP:
+            return f"GA {self.group.name}"
+        return ""
 
-        return (
-            spending_request_slug
-            + "-"
-            + datetime.datetime.now().strftime("%d_%m_%Y-%HH%M")
-            + ".pdf"
-        )
+    def get_download_file_name(self):
+        creator_full_name = self.creator.get_full_name() if self.creator else ""
+        prefix = self.get_group_full_name() + " - " + creator_full_name
+        suffix = self.bank_account_full_name
+
+        return prefix.upper() + suffix.upper() + ".pdf"
 
     def can_peer_review(self, user):
         return self.peer_reviewers and user != self.peer_reviewers[0]
