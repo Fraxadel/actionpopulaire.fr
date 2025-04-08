@@ -2,6 +2,8 @@ import requests
 from django.conf import settings
 import mimetypes
 
+from storages.backends.s3 import S3File
+
 from agir.donations.models import SpendingRequest
 from fpdf import FPDF
 from PIL import Image
@@ -112,7 +114,13 @@ class SpendingRequestGenerationPdf:
         if width > page_dimensions[0]:
             width = int(page_dimensions[0] * PX_MM_RATIO)
 
-        self.pdf.image(self.normalize_url(image.file.url), w=width)
+        url = ""
+        if isinstance(image, S3File):
+            url = image.url
+        else:
+            url = image.file.url
+
+        self.pdf.image(self.normalize_url(url), w=width)
 
     def append_to_writer(self):
         pdf_buffer = io.BytesIO()
