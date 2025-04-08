@@ -95,19 +95,24 @@ class SpendingRequestGenerationPdf:
     def get_file_name(self):
         return self.spending_request.get_download_file_name()
 
+    def normalize_url(self, url):
+        if not url.startswith("https"):
+            return settings.FRONT_DOMAIN + url
+        return url
+
     def add_image(self, image):
         img = Image.open(image.file)
         img.verify()
+
         self.pdf.add_page()
         page_length = len(self.pdf.pages)
         page_dimensions = self.pdf.pages.get(page_length).dimensions()
-        path = settings.FRONT_DOMAIN + image.file.url
         width = img.size[0]
 
         if width > page_dimensions[0]:
             width = int(page_dimensions[0] * PX_MM_RATIO)
 
-        self.pdf.image(path, w=width)
+        self.pdf.image(self.normalize_url(image.file.url), w=width)
 
     def append_to_writer(self):
         pdf_buffer = io.BytesIO()
@@ -119,8 +124,7 @@ class SpendingRequestGenerationPdf:
         self.pdf = FPDF()
 
     def add_pdf(self, pdf_to_add_url):
-        current_pdf_url = settings.FRONT_DOMAIN + pdf_to_add_url
-        response = requests.get(current_pdf_url)
+        response = requests.get(self.normalize_url(pdf_to_add_url))
         response.raise_for_status()  # Optionnel : lève une erreur si le téléchargement échoue
 
         pdf_file = io.BytesIO(response.content)
