@@ -118,15 +118,26 @@ class SpendingRequestGenerationPdf:
         page_length = len(self.pdf.pages)
         page_dimensions = self.pdf.pages.get(page_length).dimensions()
         width = img.size[0]
-
-        if width > page_dimensions[0]:
-            width = int(page_dimensions[0] * PX_MM_RATIO)
-        else:
-            width = int(width * PX_MM_RATIO)
-
+        height = img.size[1]
+        image_ratio = height / width
         url = self.get_url_from(image)
 
-        self.pdf.image(self.normalize_url(url), w=width)
+        if image_ratio > 1:
+            if height > page_dimensions[1]:
+                height = int(page_dimensions[1] * PX_MM_RATIO)
+                width = height / image_ratio
+            else:
+                height = int(height * PX_MM_RATIO)
+                width = height / image_ratio
+        else:
+            if width > page_dimensions[0]:
+                width = int(page_dimensions[0] * PX_MM_RATIO)
+                height = int(width * image_ratio)
+            else:
+                width = int(width * PX_MM_RATIO)
+                height = int(width * image_ratio)
+
+        self.pdf.image(self.normalize_url(url), w=width, h=height)
 
     def append_to_writer(self):
         pdf_buffer = io.BytesIO()
