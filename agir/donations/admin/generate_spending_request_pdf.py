@@ -2,6 +2,7 @@ import requests
 from django.conf import settings
 import mimetypes
 
+from fpdf.enums import WrapMode, XPos
 from storages.backends.s3 import S3File
 
 from agir.donations.models import SpendingRequest
@@ -93,7 +94,10 @@ class SpendingRequestGenerationPdf:
             pass
 
     def append_text(self, text):
-        self.pdf.cell(0, 10, text, 0, 1)
+        self.pdf.multi_cell(
+            w=0, h=None, text=text, align="L", wrapmode=WrapMode.CHAR, new_x=XPos.LEFT
+        )
+        self.pdf.ln()
 
     def get_file_name(self):
         return self.spending_request.get_download_file_name()
