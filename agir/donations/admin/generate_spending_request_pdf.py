@@ -80,13 +80,14 @@ class SpendingRequestGenerationPdf:
         self.append_rib()
 
     def append_rib(self):
+        self.add(self.spending_request.bank_account_rib)
+
+    def add(self, field):
         try:
-            if "application/pdf" in mimetypes.guess_type(
-                self.spending_request.bank_account_rib.file.name
-            ):
-                self.add_pdf(self.spending_request.bank_account_rib.url)
+            if "application/pdf" in mimetypes.guess_type(field.file.name):
+                self.add_pdf(field.url)
             else:
-                self.add_image(self.spending_request.bank_account_rib)
+                self.add_image(field)
         except ValueError as e:
             # bank_account_rib is empty
             pass
@@ -102,6 +103,9 @@ class SpendingRequestGenerationPdf:
             return settings.FRONT_DOMAIN + url
         return url
 
+    def get_url_from(self, field):
+        return field.url if hasattr(field, "url") else field.file.url
+
     def add_image(self, image):
         img = Image.open(image.file)
         img.verify()
@@ -114,11 +118,7 @@ class SpendingRequestGenerationPdf:
         if width > page_dimensions[0]:
             width = int(page_dimensions[0] * PX_MM_RATIO)
 
-        url = ""
-        if isinstance(image, S3File):
-            url = image.url
-        else:
-            url = image.file.url
+        url = self.get_url_from(image)
 
         self.pdf.image(self.normalize_url(url), w=width)
 
@@ -131,8 +131,8 @@ class SpendingRequestGenerationPdf:
             self.pdf_writer.add_page(page)
         self.pdf = FPDF()
 
-    def add_pdf(self, pdf_to_add_url):
-        response = requests.get(self.normalize_url(pdf_to_add_url))
+    def add_pdf(self, pdf_url):
+        response = requests.get(self.normalize_url(pdf_url))
         response.raise_for_status()  # Optionnel : lève une erreur si le téléchargement échoue
 
         pdf_file = io.BytesIO(response.content)
