@@ -117,6 +117,8 @@ class SpendingRequestGenerationPdf:
 
         if width > page_dimensions[0]:
             width = int(page_dimensions[0] * PX_MM_RATIO)
+        else:
+            width = int(width * PX_MM_RATIO)
 
         url = self.get_url_from(image)
 
